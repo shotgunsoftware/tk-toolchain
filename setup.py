@@ -12,19 +12,19 @@ def read(fname):
 
 
 setup(
-    name='pytest-tk-build',
+    name='tk-build',
     version='0.1.0',
     author='Shotgun Software',
     author_email='support@shotgunsoftware.com',
     maintainer='Shotgun Software',
     maintainer_email='support@shotgunsoftware.com',
     license='MIT',
-    url='https://github.com/shotgunsoftware/pytest-tk-build',
+    url='https://github.com/shotgunsoftware/tk-build',
     description='Build tools for Shotgun Toolkit.',
     long_description=read('README.rst'),
-    py_modules=['pytest_tk_build'],
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
-    install_requires=['pytest>=3.5.0'],
+    py_modules=['pytest_tk_build', 'tx_build'],
+    python_requires='~=2.7.0',
+    install_requires=['pytest>=3.5.0', 'memoize2~=0.1.1'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Pytest',
