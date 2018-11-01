@@ -24,7 +24,7 @@ setup(
     long_description=read('README.rst'),
     py_modules=['pytest_tk_build', 'tx_build'],
     python_requires='~=2.7.0',
-    install_requires=['pytest>=3.5.0', 'memoize2~=0.1.1'],
+    install_requires=['pytest>=3.5.0', 'memoize2~=0.1.1', "mock", "coverage", "unittest2"],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Pytest',

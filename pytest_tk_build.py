@@ -50,9 +50,6 @@ def pytest_configure(config):
         _update_sys_path(
             "Adding repository tests/python folder", os.path.join(repo_root, "tests", "python")
         )
-        _update_sys_path(
-            "Adding repository tests/python folder", os.path.join(repo_root, "tests", "python", "third_party")
-        )
 
     repos_root = os.path.dirname(repo_root)
     # FIME: Named this way to please the publisher tests, but should probably
@@ -68,11 +65,6 @@ def pytest_configure(config):
     _update_sys_path(
         "Adding Toolkit test framework",
         os.path.join(tk_core_repo_root, "tests", "python")
-    )
-
-    _update_sys_path(
-        "Adding Toolkit test third-parties",
-        os.path.join(os.path.dirname(repo_root), "tk-core", "tests", "python", "third_party")
     )
 
     os.environ["TK_TEST_FIXTURES"] = os.path.join(repo_root, "tests", "fixtures")
