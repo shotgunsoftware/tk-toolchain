@@ -166,10 +166,10 @@ def _mogrify_pngs(execution_folder):
     profiles.
     """
     for png_file in glob.iglob(os.path.join(execution_folder, "*.png")):
-        subprocess.check_output(["mogrify", png_file], cwd=execution_folder)
+        subprocess.check_output(["mogrify", png_file])
 
 
-def build_resource(output_folder, resource_file_name="resources.qrc"):
+def build_resource(output_folder, resource_file_name="resources"):
     """
     Builds a qrc file and writes it to the specified folder.
 
