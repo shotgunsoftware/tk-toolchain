@@ -24,7 +24,7 @@ setup(
     long_description=read('README.rst'),
     py_modules=['pytest_tk_build', 'tx_build'],
     python_requires='~=2.7.0',
-    install_requires=['pytest>=3.5.0', 'memoize2~=0.1.1', "mock", "coverage", "unittest2"],
+    install_requires=['pytest>=3.5.0', 'memoize2~=0.1.1', "mock", "coverage", "unittest2", "docopt"],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Pytest',
@@ -44,7 +44,10 @@ setup(
     ],
     entry_points={
         'pytest11': [
-            'tk-build = pytest_tk_build',
+            'pytest_tk_build = pytest_tk_build',
         ],
+        'console_scripts': [
+            'sg_clone = tk_build.cmd_line_tools.sg_clone:sg_clone'
+        ]
     },
 )

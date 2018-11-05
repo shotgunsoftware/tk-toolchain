@@ -9,5 +9,7 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 from tk_build import ui
+from tk_build import ci
+from tk_build import git
 
-__all__ = ["ui"]
+__all__ = ["ui", "ci", "git"]
