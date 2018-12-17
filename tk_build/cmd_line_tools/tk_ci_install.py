@@ -35,26 +35,44 @@ def _install_qt(is_dry_run):
 
         if qt.is_pyside1_required():
             # PySide does not come with Qt, so we'll have to install it.
-            commands.append(["sudo", "apt-get", "install", "libqt4-dev"])
-
-        commands.append(
-            ["pip", "install", "{}=={}".format(qt_lib, qt_version),
-             "--no-index", "--find-links", "https://parkin.github.io/python-wheelhouse/"],
-        )
+            commands.append([
+                "sudo",
+                "apt-get",
+                "install",
+                "libqt4-dev"]
+            )
+            commands.append([
+                "pip",
+                "install",
+                "{}=={}".format(qt_lib, qt_version),
+                "--no-index",
+                "--find-links",
+                "https://parkin.github.io/python-wheelhouse/"
+            ])
+        else:
+            commands.append([
+                "pip",
+                "install",
+                "{}=={}".format(qt_lib, qt_version)
+            ])
 
         if qt.is_pyside1_required():
             # PySide needs to be patched after install so we need to finish the install by the following
             commands.append([
                 "python",
-                os.path.expandvars("~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py -install")
+                os.path.expandvars("~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py"),
+                "-install"
             ])
 
         # Now we need to start the X server...
         # Taken from:
         # https://github.com/colmap/colmap/commit/606d3cd09931d78a3272f99b5e7a2cb6894e243e
-        commands.append(
-            ["sh", "-e /etc/init.d/xvfb start"]
-        )
+        commands.append([
+            "sh",
+            "-e",
+            "/etc/init.d/xvfb",
+            "start"
+        ])
 
         # update the environment variables to be able to run Qt
         env = {}
