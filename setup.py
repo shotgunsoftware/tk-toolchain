@@ -35,7 +35,10 @@ setup(
 
         # Tests
         'pytest>=3.5.0',
-        "mock", "coverage", "unittest2",
+        "mock",
+        "coverage==4.4.1",
+        "unittest2",
+        "coveralls=1.1"
 
         # Doc generation
         "PyYAML",
