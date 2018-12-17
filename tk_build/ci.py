@@ -25,12 +25,12 @@ def get_ci_name():
 
 
 def is_travis():
-    return os.environ.get("CI", "").lower() == "travis"
+    return "TRAVIS" in os.environ
 
 
 def get_cloned_folder_root():
     """
-    Returns the folder into which the tested repository has been cloned it.
+    Returns the folder into which the tested repository has been cloned in.
     """
     if "TRAVIS" in os.environ:
         return os.environ["TRAVIS_BUILD_DIR"]
