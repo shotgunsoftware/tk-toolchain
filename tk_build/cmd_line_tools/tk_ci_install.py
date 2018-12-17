@@ -64,7 +64,7 @@ def _install_qt(is_dry_run):
         for cmd in commands:
             print("Running:", " ".join(cmd))
             if not is_dry_run:
-                subprocess.check_call(cmd, env)
+                subprocess.check_call(cmd, env=env)
 
         if not is_dry_run:
             # Let the x server time to start.
