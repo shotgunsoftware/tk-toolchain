@@ -22,7 +22,11 @@ setup(
     url='https://github.com/shotgunsoftware/tk-build',
     description='Build tools for Shotgun Toolkit.',
     long_description=read('README.rst'),
-    py_modules=['pytest_tk_build', 'tx_build'],
+    # package_dir={"tk_build": "tk_build"},
+    # py_modules=['pytest_tk_build'],
+    packages=["pytest_tk_build", "tk_build"],
+    package_data={'tk_build': ['cmd_line_tools/tk_docs/sphinx_data/*']},
+
     python_requires='~=2.7.0',
     install_requires=[
         # Framework
