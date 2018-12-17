@@ -19,15 +19,16 @@ def _install_qt():
 
         commands = []
 
-        if qt_lib == "PySide":
+        if qt.is_pyside1_required():
             # PySide does not come with Qt, so we'll have to install it.
             commands.append(["sudo", "apt-get", "install", "libqt4-dev"])
 
         commands.append(
-            ["pip", "install", "{}=={}".format(qt_lib, qt_version), "--no-index", "--find-links", "https://parkin.github.io/python-wheelhouse/"],
+            ["pip", "install", "{}=={}".format(qt_lib, qt_version),
+             "--no-index", "--find-links", "https://parkin.github.io/python-wheelhouse/"],
         )
 
-        if qt_lib == "PySide":
+        if qt.is_pyside1_required():
             # PySide needs to be patched after install so we need to finish the install by the following
             commands.append([
                 "python",

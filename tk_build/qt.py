@@ -19,7 +19,15 @@ def get_runtime_env_vars():
 
 
 def is_qt_required():
-    return get_qt_type() is not None
+    return is_pyside1_required() or is_pyside2_required()
+
+
+def is_pyside1_required():
+    return get_qt_type() == "PySide"
+
+
+def is_pyside2_required():
+    return get_qt_type() == "PySide"
 
 
 def get_qt_type():
