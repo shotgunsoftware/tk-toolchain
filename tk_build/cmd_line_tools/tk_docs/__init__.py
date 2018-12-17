@@ -12,6 +12,7 @@ import logging
 import webbrowser
 import optparse
 import sys
+from tk_build import ci
 
 # PREPEND python location to pythonpath
 python_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "python"))
@@ -70,8 +71,9 @@ def preview_docs(core_path, bundle_path):
     # build docs
     location = sphinx_processor.build_docs(doc_name, "vX.Y.Z")
 
-    # show in browser
-    webbrowser.open_new("file://%s" % os.path.join(location, "index.html"))
+    if not ci.is_in_ci_environment():
+        # show in browser
+        webbrowser.open_new("file://%s" % os.path.join(location, "index.html"))
 
     log.info("Doc generation done.")
 
