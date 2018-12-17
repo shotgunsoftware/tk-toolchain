@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tk_build import find_repo_root
+from tk_build.repo import find_repo_root
 import os
 import sys
 
