@@ -35,6 +35,7 @@ setup(
 
         # Tests
         'pytest>=3.5.0',
+        'pytest-cov==2.6.0',
         "mock",
         "coverage==4.4.1",
         "unittest2",
@@ -64,7 +65,8 @@ setup(
         ],
         'console_scripts': [
             'tk-clone = tk_build.cmd_line_tools.sg_clone:sg_clone',
-            'tk-docs = tk_build.cmd_line_tools.tk_docs:main'
+            'tk-docs = tk_build.cmd_line_tools.tk_docs:main',
+            'tk-ci-tests = tk_build.cmd_line_tools.tk_ci_tests:main'
         ]
-    },
+    }
 )
