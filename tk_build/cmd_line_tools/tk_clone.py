@@ -13,7 +13,7 @@
 """
 Shotgun Build Repository Clone Tool
 
-Usage: sg_clone.py <repo-name>...
+Usage: sg_clone.py <repo-name>... [--shallow]
 
 To make cloning easier, you can type in a single word as the repository name. In
 this case, the repository will be assumed to be under
@@ -59,24 +59,35 @@ def get_full_name(repo_name):
         return repo_name
 
 
-def sg_clone():
-
-    arguments = docopt(__doc__, version='Shotgun Build Repository Clone Tool 0.1')
+def tk_clone(repositories, shallow):
 
     if ci.is_in_ci_environment():
-        execution_folder = ci.get_cloned_folder_root()
+        execution_folder = os.path.dirname(ci.get_cloned_folder_root())
     else:
         execution_folder = os.curdir
 
     print("Git commands will be executed in '%s'..." % execution_folder)
 
-    for repo_name in arguments["<repo-name>"]:
+    for repo_name in repositories:
         repo_name = get_full_name(repo_name)
-        print("Shallow cloning of repository %s" % repo_name)
-        git.clone_repo(repo_name, execution_folder, 1, "master")
+        if shallow:
+            print("Shallow cloning of repository %s" % repo_name)
+        else:
+            print("Cloning of repository %s" % repo_name)
+        git.clone_repo(
+            repo_name,
+            execution_folder,
+            1 if shallow else None,
+            "master"
+        )
 
     return 0
 
 
+def main():
+    arguments = docopt(__doc__, version='Shotgun Build Repository Clone Tool 0.1')
+    tk_clone(arguments["<repo-name>"], arguments["--shallow"])
+
+
 if __name__ == "__main__":
-    sg_clone()
+    main

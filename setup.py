@@ -64,7 +64,7 @@ setup(
             'pytest_tk_build = pytest_tk_build',
         ],
         'console_scripts': [
-            'tk-clone = tk_build.cmd_line_tools.sg_clone:sg_clone',
+            'tk-clone = tk_build.cmd_line_tools.tk_clone:main',
             'tk-docs = tk_build.cmd_line_tools.tk_docs:main',
             'tk-ci-tests = tk_build.cmd_line_tools.tk_ci_tests:main',
             'tk-ci-install = tk_build.cmd_line_tools.tk_ci_install:main'

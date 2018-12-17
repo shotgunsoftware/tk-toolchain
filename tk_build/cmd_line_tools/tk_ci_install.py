@@ -13,6 +13,7 @@ from __future__ import print_function
 import subprocess
 import os
 import time
+import yaml
 
 from docopt import docopt
 
@@ -95,6 +96,19 @@ def _install_qt(is_dry_run):
         print("Qt will not be initialized for {}.".format(ci.get_ci_name()))
 
 
+def _install_toolkit_frameworks():
+
+    with open(os.path.join(os.getcwd(), "", "rt")) as fh:
+        info = yaml.safe_load(fh)
+
+    frameworks = info.get("frameworks", [])
+
+    for fw in frameworks:
+        cmd = ["tk-clone", fw["name"], "--shallow"]
+        print("Running:", " ".join(cmd))
+        subprocess.check_call(cmd)
+
+
 def main():
 
     arguments = docopt(__doc__, version='Shotgun Build Repository Clone Tool 0.1')
@@ -107,6 +121,9 @@ def main():
 
     if qt.is_qt_required():
         _install_qt(is_dry_run)
+
+    # if bundle.is_app() or bundle.is_framework() or bundle.is_engine():
+    #     _install_toolkit_frameworks()
 
 if __name__ == "__main__":
     main()

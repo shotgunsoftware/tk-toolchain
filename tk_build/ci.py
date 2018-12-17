@@ -21,20 +21,29 @@ def is_in_ci_environment():
 def get_ci_name():
     """
     """
-    return os.environ["CI"]
+    if is_travis():
+        return "Travis"
+    elif is_appveyor():
+        return "AppVeyor"
+    else:
+        raise RuntimeError("This CI service is not supported!")
 
 
 def is_travis():
     return "TRAVIS" in os.environ
 
 
+def is_appveyor():
+    return "APPVEYOR" in os.environ
+
+
 def get_cloned_folder_root():
     """
     Returns the folder into which the tested repository has been cloned in.
     """
-    if "TRAVIS" in os.environ:
+    if is_travis():
         return os.environ["TRAVIS_BUILD_DIR"]
-    elif "APPVEYOR" in os.environ:
+    elif is_appveyor():
         return os.environ["APPVEYOR_BUILD_FOLDER"]
     else:
         raise RuntimeError("This CI service is not supported!")
