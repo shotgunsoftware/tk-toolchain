@@ -27,9 +27,8 @@ def is_pyside1_required():
 
 
 def is_pyside2_required():
-    return get_qt_type() == "PySide"
+    return get_qt_type() == "PySide2"
 
 
 def get_qt_type():
     return os.environ.get("SG_QT_LIBRARY")
-

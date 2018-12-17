@@ -1,11 +1,25 @@
+
+"""
+Shotgun Build Repository Clone Tool
+
+Usage: tk-ci-install.py [--dry-run]
+
+This script will setup Qt and clone any repos needed to run tests on the CI
+server.
+"""
+
+from __future__ import print_function
+
 import subprocess
 import os
 import time
 
+from docopt import docopt
+
 from tk_build import ci, qt
 
 
-def _install_qt():
+def _install_qt(is_dry_run):
 
     qt_versions = {
         "PySide": "1.2.2",
@@ -44,23 +58,31 @@ def _install_qt():
 
         # update the environment variables to be able to run Qt
         env = {}
-        env.merge(os.environ)
-        env.merge(qt.get_runtime_env_vars())
+        env.update(os.environ)
+        env.update(qt.get_runtime_env_vars())
 
         for cmd in commands:
-            subprocess.check_call(cmd, env)
-        # Let the x server time to start.
-        time.sleep(3)
+            print("Running:", " ".join(cmd))
+            if not is_dry_run:
+                subprocess.check_call(cmd, env)
+
+        if not is_dry_run:
+            # Let the x server time to start.
+            time.sleep(3)
 
 
 def main():
 
+    arguments = docopt(__doc__, version='Shotgun Build Repository Clone Tool 0.1')
+
+    is_dry_run = arguments["--dry-run"]
+
     if not ci.is_in_ci_environment():
-        print "This script should be run only on a CI server."
+        print("This script should be run only on a CI server.")
         return
 
     if qt.is_qt_required():
-        _install_qt()
+        _install_qt(is_dry_run)
 
 if __name__ == "__main__":
     main()

@@ -58,7 +58,7 @@ def pytest_configure(config):
     # Extra work needs to be done for CI environments. We need to make sure Qt
     # is available if it was specified.
     if ci.is_in_ci_environment() and qt.is_qt_required():
-        os.environ.merge(qt.get_runtime_env_vars())
+        os.environ.update(qt.get_runtime_env_vars())
 
 
 # Ignore unit tests found inside tk-core.

@@ -66,7 +66,8 @@ setup(
         'console_scripts': [
             'tk-clone = tk_build.cmd_line_tools.sg_clone:sg_clone',
             'tk-docs = tk_build.cmd_line_tools.tk_docs:main',
-            'tk-ci-tests = tk_build.cmd_line_tools.tk_ci_tests:main'
+            'tk-ci-tests = tk_build.cmd_line_tools.tk_ci_tests:main',
+            'tk-ci-install = tk_build.cmd_line_tools.tk_ci_install:main'
         ]
     }
 )

@@ -19,7 +19,7 @@ def is_in_ci_environment():
 
 
 def is_travis():
-    return os.environ["CI"].lower() == "travis"
+    return os.environ.get("CI", "").lower() == "travis"
 
 
 def get_cloned_folder_root():

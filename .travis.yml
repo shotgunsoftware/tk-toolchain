@@ -16,4 +16,4 @@ install:
   - tk-ci-install
 
 script:
-  - python -c "import $SG_QT_LIBRARY"
+  - pytest
