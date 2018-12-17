@@ -38,7 +38,7 @@ setup(
         "mock",
         "coverage==4.4.1",
         "unittest2",
-        "coveralls=1.1"
+        "coveralls==1.1",
 
         # Doc generation
         "PyYAML",
