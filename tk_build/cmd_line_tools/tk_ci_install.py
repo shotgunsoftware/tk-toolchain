@@ -60,7 +60,11 @@ def _install_qt(is_dry_run):
             # PySide needs to be patched after install so we need to finish the install by the following
             commands.append([
                 "python",
-                os.path.expandvars("~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py"),
+                os.path.expanduser(
+                    os.path.expandvars(
+                        "~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py"
+                    )
+                ),
                 "-install"
             ])
 
