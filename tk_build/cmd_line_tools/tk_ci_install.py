@@ -17,7 +17,7 @@ import yaml
 
 from docopt import docopt
 
-from tk_build import ci, qt, bundle
+from tk_build import ci, qt
 
 
 def _install_qt(is_dry_run):
@@ -78,6 +78,9 @@ def _install_qt(is_dry_run):
             "/etc/init.d/xvfb",
             "start"
         ])
+
+        # Ensures that everything worked.
+        commands.append(["python", "-c", "import {}".format(qt.get_qt_type())])
 
         # update the environment variables to be able to run Qt
         env = {}
