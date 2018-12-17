@@ -11,24 +11,17 @@
 import os
 
 
-def is_in_ci_environment():
+def get_runtime_env_vars():
     """
     Returns ``True`` if in a CI environment, ``False`` otherwise.
     """
-    return "CI" in os.environ
+    return {"DISPLAY": ":99.0"}
 
 
-def is_travis():
-    return os.environ["CI"].lower() == "travis"
+def is_qt_required():
+    return get_qt_type() is not None
 
 
-def get_cloned_folder_root():
-    """
-    Returns the folder into which the tested repository has been cloned it.
-    """
-    if "TRAVIS" in os.environ:
-        return os.environ["TRAVIS_BUILD_DIR"]
-    elif "APPVEYOR" in os.environ:
-        return os.environ["APPVEYOR_BUILD_FOLDER"]
-    else:
-        raise RuntimeError("This CI service is not supported!")
+def get_qt_type():
+    return os.environ.get("SG_QT_LIBRARY")
+

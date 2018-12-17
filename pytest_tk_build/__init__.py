@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tk_build.repo import find_repo_root
+from tk_build import ci, qt, repo
 import os
 import sys
 
@@ -24,10 +24,11 @@ def _initialize_logging(config):
 
 
 def pytest_configure(config):
+
     # FIXME: Should look at where pytest is picking tests from?
     cur_dir = os.path.abspath(os.curdir)
 
-    repo_root = find_repo_root(cur_dir)
+    repo_root = repo.find_repo_root(cur_dir)
 
     # If we're not in the tk-core repo, we should add the current repo's python folder since it may
     # have custom tools.
@@ -53,6 +54,11 @@ def pytest_configure(config):
     )
 
     os.environ["TK_TEST_FIXTURES"] = os.path.join(repo_root, "tests", "fixtures")
+
+    # Extra work needs to be done for CI environments. We need to make sure Qt
+    # is available if it was specified.
+    if ci.is_in_ci_environment() and qt.is_qt_required():
+        os.environ.merge(qt.get_runtime_env_vars())
 
 
 # Ignore unit tests found inside tk-core.
