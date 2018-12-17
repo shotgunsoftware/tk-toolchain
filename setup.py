@@ -24,18 +24,27 @@ setup(
     long_description=read('README.rst'),
     py_modules=['pytest_tk_build', 'tx_build'],
     python_requires='~=2.7.0',
-    install_requires=['pytest>=3.5.0', 'memoize2~=0.1.1', "mock", "coverage", "unittest2", "docopt"],
+    install_requires=[
+        # Framework
+        'memoize2~=0.1.1',
+        "docopt",
+
+        # Tests
+        'pytest>=3.5.0',
+        "mock", "coverage", "unittest2",
+
+        # Doc generation
+        "PyYAML",
+        "sphinx",
+        "sphinx_rtd_theme"
+    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Pytest',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Testing',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
@@ -47,7 +56,8 @@ setup(
             'pytest_tk_build = pytest_tk_build',
         ],
         'console_scripts': [
-            'sg_clone = tk_build.cmd_line_tools.sg_clone:sg_clone'
+            'tk-clone = tk_build.cmd_line_tools.sg_clone:sg_clone',
+            'tk-docs = tk_build.cmd_line_tools.tk_docs:main'
         ]
     },
 )

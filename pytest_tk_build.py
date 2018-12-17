@@ -1,23 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
+from tk_build import find_repo_root
 import os
 import sys
-
-
-def _is_repo_root(path):
-    files = os.listdir(path)
-    for repo in [".git", ".svn", ".hg"]:
-        if repo in files:
-            return True
-    return False
-
-
-def _find_repo_root(path):
-    while path and not _is_repo_root(path):
-        path = os.path.dirname(path)
-
-    return path
 
 
 def _update_sys_path(reason, path):
@@ -42,7 +27,7 @@ def pytest_configure(config):
     # FIXME: Should look at where pytest is picking tests from?
     cur_dir = os.path.abspath(os.curdir)
 
-    repo_root = _find_repo_root(cur_dir)
+    repo_root = find_repo_root(cur_dir)
 
     # If we're not in the tk-core repo, we should add the current repo's python folder since it may
     # have custom tools.
