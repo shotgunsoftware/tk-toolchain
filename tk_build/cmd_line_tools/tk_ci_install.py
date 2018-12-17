@@ -17,7 +17,7 @@ import yaml
 
 from docopt import docopt
 
-from tk_build import ci, qt
+from tk_build import ci, qt, bundle
 
 
 def _install_qt(is_dry_run):
@@ -96,17 +96,30 @@ def _install_qt(is_dry_run):
         print("Qt will not be initialized for {}.".format(ci.get_ci_name()))
 
 
-def _install_toolkit_frameworks():
+def _install_toolkit_frameworks(is_dry_run):
 
-    with open(os.path.join(os.getcwd(), "", "rt")) as fh:
+    # Check if the info.yml exists.
+    info_yml_path = os.path.join(ci.get_cloned_folder_root(), "info.yml")
+    if not os.path.exists(info_yml_path):
+        print("info.yml is missing. No Toolkit frameworks will be installed.")
+        return False
+
+    # Read all the data.
+    with open(info_yml_path, "rt") as fh:
         info = yaml.safe_load(fh)
 
-    frameworks = info.get("frameworks", [])
-
-    for fw in frameworks:
+    # If there is a frameworks section, iterate on the items and clone the
+    # repos.
+    # FIXME: This assumes everything is under our org. This needs to be
+    # expandable so clients can use their own org and repo location.
+    # Maybe this can be a pluggy hook that allows to resolve a framework
+    # url based on a name?
+    # FIXME: This needs to work recursively.
+    for fw in info.get("frameworks", []):
         cmd = ["tk-clone", fw["name"], "--shallow"]
         print("Running:", " ".join(cmd))
-        subprocess.check_call(cmd)
+        if is_dry_run:
+            subprocess.check_call(cmd)
 
 
 def main():
@@ -122,8 +135,7 @@ def main():
     if qt.is_qt_required():
         _install_qt(is_dry_run)
 
-    # if bundle.is_app() or bundle.is_framework() or bundle.is_engine():
-    #     _install_toolkit_frameworks()
+    _install_toolkit_frameworks(is_dry_run)
 
 if __name__ == "__main__":
     main()
