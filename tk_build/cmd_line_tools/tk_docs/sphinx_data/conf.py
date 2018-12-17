@@ -140,7 +140,6 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.viewcode',
     'sphinx.ext.graphviz',
-    'sphinx.ext.autosectionlabel',
     'sphinx.ext.intersphinx'
 ]
 
