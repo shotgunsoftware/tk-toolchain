@@ -69,6 +69,8 @@ def _install_qt(is_dry_run):
         if not is_dry_run:
             # Let the x server time to start.
             time.sleep(3)
+    else:
+        print("Qt will not be initialized for {}.".format(ci.get_ci_name()))
 
 
 def main():

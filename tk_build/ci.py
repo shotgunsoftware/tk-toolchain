@@ -18,6 +18,12 @@ def is_in_ci_environment():
     return "CI" in os.environ
 
 
+def get_ci_name():
+    """
+    """
+    return os.environ["CI"]
+
+
 def is_travis():
     return os.environ.get("CI", "").lower() == "travis"
 

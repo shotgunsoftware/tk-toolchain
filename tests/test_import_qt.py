@@ -11,6 +11,8 @@ def test_import_qt():
         from PySide2 import QtWidgets, QtCore
         QApplication = QtWidgets.QApplication
         QDialog = QtWidgets.QDialog
+    else:
+        return
 
     QTimer = QtCore.QTimer
 
