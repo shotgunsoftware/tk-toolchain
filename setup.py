@@ -3,7 +3,7 @@
 
 import os
 import codecs
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -24,7 +24,7 @@ setup(
     long_description=read('README.rst'),
     # package_dir={"tk_build": "tk_build"},
     # py_modules=['pytest_tk_build'],
-    packages=["pytest_tk_build", "tk_build"],
+    packages=find_packages(),
     package_data={'tk_build': ['cmd_line_tools/tk_docs/sphinx_data/*']},
 
     python_requires='~=2.7.0',
