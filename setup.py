@@ -44,6 +44,7 @@ setup(
         "coverage==4.4.1",
         "unittest2",
         "coveralls==1.1",
+        "flake8==3.6.0",
 
         # Doc generation
         "PyYAML",
