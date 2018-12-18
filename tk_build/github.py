@@ -16,6 +16,7 @@ def get_pull_request_base_commit(repo_slug, pull_request_id):
     Retrieves the base of a pull request, i.e. what the Github diff is made
     against for a given repo's pull request.
     """
+    print repo_slug, pull_request_id
     return requests.get(
         "https://api.github.com/repos/{}/pulls/{}".format(
             repo_slug, pull_request_id
