@@ -16,7 +16,7 @@ import subprocess
 from docopt import docopt
 
 
-from tk_build import ci, github, repo
+from tk_build import repo
 
 
 def tk_flake8(commit=None, flake8_args=None):
@@ -29,13 +29,9 @@ def tk_flake8(commit=None, flake8_args=None):
         # a branch other than origin/master.
         # "origin/master"
         commit = "origin/master"
-        # When we're in a CI environment, we want to diff against
-        # what the a request is using as the base for the diff.
-        if ci.is_in_ci_environment():
-            # FIXME: Possible parameter injection?
-            subprocess.check_call(["git", "fetch", "origin", "master"])
 
     flake8_cmd = ["flake8"]
+
     if commit is not None:
         # TODO: We could do so much better here and ask for a diff against only
         # the files that flake8 will be validating. For now we'll diff the
