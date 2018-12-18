@@ -12,7 +12,8 @@ matrix:
         env: SG_QT_LIBRARY=PySide2
 
 install:
-  - pip install -e .
+  # Pip install the current commit. This allows us to test the setup.py file. :)
+  - pip install https://github.com/shotgunsoftware/tk-build/archive/${TRAVIS_COMMIT}.zip
   - tk-ci-install
 
 script:
