@@ -36,3 +36,8 @@ def is_config(folder):
 def is_app(folder):
     root = find_repo_root(folder)
     return os.path.basename(root).startswith("app.py")
+
+
+def is_tk_build(folder):
+    root = find_repo_root(folder)
+    return os.path.exists(os.path.join(root, "pytest_tk_build"))

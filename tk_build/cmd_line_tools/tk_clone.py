@@ -59,7 +59,7 @@ def get_full_name(repo_name):
         return repo_name
 
 
-def tk_clone(repositories, shallow):
+def tk_clone(repository, shallow):
 
     if ci.is_in_ci_environment():
         execution_folder = os.path.dirname(ci.get_cloned_folder_root())
@@ -68,25 +68,25 @@ def tk_clone(repositories, shallow):
 
     print("Git commands will be executed in '%s'..." % execution_folder)
 
-    for repo_name in repositories:
-        repo_name = get_full_name(repo_name)
-        if shallow:
-            print("Shallow cloning of repository %s" % repo_name)
-        else:
-            print("Cloning of repository %s" % repo_name)
-        git.clone_repo(
-            repo_name,
-            execution_folder,
-            1 if shallow else None,
-            "master"
-        )
+    repository = get_full_name(repository)
+    if shallow:
+        print("Shallow cloning of repository %s" % repository)
+    else:
+        print("Cloning of repository %s" % repository)
+    git.clone_repo(
+        repository,
+        execution_folder,
+        1 if shallow else None,
+        "master"
+    )
 
     return 0
 
 
 def main():
     arguments = docopt(__doc__, version='Shotgun Build Repository Clone Tool 0.1')
-    tk_clone(arguments["<repo-name>"], arguments["--shallow"])
+    for repository in arguments["<repo-name>"]:
+        tk_clone(repository, arguments["--shallow"])
 
 
 if __name__ == "__main__":

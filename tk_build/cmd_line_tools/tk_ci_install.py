@@ -17,7 +17,8 @@ import yaml
 
 from docopt import docopt
 
-from tk_build import ci, qt
+from tk_build import ci, qt, bundle
+from tk_build.cmd_line_tools.tk_clone import tk_clone
 
 
 def _install_qt(is_dry_run):
@@ -99,17 +100,34 @@ def _install_qt(is_dry_run):
         print("Qt will not be initialized for {}.".format(ci.get_ci_name()))
 
 
+def _install_tk_core(is_dry_run):
+
+    root_folder = ci.get_cloned_folder_root()
+    if bundle.is_tk_build(root_folder) or bundle.is_tk_core(root_folder):
+        print("Skipping tk-core cloning...")
+    else:
+        print("Cloning tk-core...")
+        if not is_dry_run:
+            tk_clone("tk-core", shallow=True)
+
+
 def _install_toolkit_frameworks(is_dry_run):
 
     # Check if the info.yml exists.
     info_yml_path = os.path.join(ci.get_cloned_folder_root(), "info.yml")
     if not os.path.exists(info_yml_path):
-        print("info.yml is missing. No Toolkit frameworks will be installed.")
+        print("info.yml is missing.")
         return False
 
     # Read all the data.
     with open(info_yml_path, "rt") as fh:
         info = yaml.safe_load(fh)
+
+    frameworks = info.get("frameworks", [])
+
+    if not frameworks:
+        print("No frameworks were found inside info.yml.")
+        return
 
     # If there is a frameworks section, iterate on the items and clone the
     # repos.
@@ -118,11 +136,10 @@ def _install_toolkit_frameworks(is_dry_run):
     # Maybe this can be a pluggy hook that allows to resolve a framework
     # url based on a name?
     # FIXME: This needs to work recursively.
-    for fw in info.get("frameworks", []):
-        cmd = ["tk-clone", fw["name"], "--shallow"]
-        print("Running:", " ".join(cmd))
-        if is_dry_run:
-            subprocess.check_call(cmd)
+    for fw in frameworks:
+        print("Cloning {}...".format(fw["name"]))
+        if not is_dry_run:
+            tk_clone(fw["name"], shallow=True)
 
 
 def main():
@@ -138,7 +155,9 @@ def main():
     if qt.is_qt_required():
         _install_qt(is_dry_run)
 
+    _install_tk_core(is_dry_run)
     _install_toolkit_frameworks(is_dry_run)
+
 
 if __name__ == "__main__":
     main()
