@@ -17,8 +17,10 @@ def get_pull_request_base_commit(repo_slug, pull_request_id):
     against for a given repo's pull request.
     """
     print repo_slug, pull_request_id
-    return requests.get(
+    reply = requests.get(
         "https://api.github.com/repos/{}/pulls/{}".format(
             repo_slug, pull_request_id
         )
-    ).json()["base"]["sha"]
+    )
+    print reply.text
+    return reply.json()["base"]["sha"]
