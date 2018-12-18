@@ -17,6 +17,7 @@ install:
   - tk-ci-install
 
 script:
+  - git diff origin/master
   - tk-ci-tests
 
 # FIXME: Coverage is all wrong because our pytest-plugin loads the tk_build module, which breaks the
