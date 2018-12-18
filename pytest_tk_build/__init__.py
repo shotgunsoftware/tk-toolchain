@@ -71,7 +71,7 @@ def pytest_configure(config):
     )
 
 
-# Ignore unit tests found inside tk-core.
+# Ignore unit tests for third parties found inside tk-core.
 def pytest_ignore_collect(path, config):
     return (
         os.path.join("tests", "python", "third_party") in str(path) or
