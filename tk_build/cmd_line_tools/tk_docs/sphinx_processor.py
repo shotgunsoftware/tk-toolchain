@@ -89,12 +89,12 @@ class SphinxProcessor(object):
 
         :param path: The path to add
         """
-        pythonpath = os.environ.get("PYTHONPATH", "").split(":")
+        pythonpath = os.environ.get("PYTHONPATH", "").split(os.path.pathsep)
         path = os.path.expanduser(os.path.expandvars(path))
         pythonpath.insert(0, path)
         sys.path.insert(0, path)
         self._log.debug("Added to PYTHONPATH: %s" % path)
-        os.environ["PYTHONPATH"] = ":".join(pythonpath)
+        os.environ["PYTHONPATH"] = os.path.pathsep.join(pythonpath)
 
     def build_docs(self, name, version):
         """
