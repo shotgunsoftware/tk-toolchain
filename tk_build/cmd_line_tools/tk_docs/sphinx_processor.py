@@ -122,7 +122,10 @@ class SphinxProcessor(object):
         # make sure there is a .nojekyll file in the github repo, otherwise
         # folders beginning with an _ will be ignored
         no_jekyll = os.path.join(self._sphinx_build_dir, ".nojekyll")
-        execute_command(self._log, "touch '%s'" % no_jekyll)
+
+        # Creating .nojekyll file. This is cross platform. os.touch is not.
+        with open(no_jekyll, "wt"):
+            pass
 
         return self._sphinx_build_dir
 
