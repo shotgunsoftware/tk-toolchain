@@ -15,7 +15,7 @@ from .repo import find_repo_root
 
 def is_tk_core(folder):
     root = find_repo_root(folder)
-    return os.path.basename(root) == "tk-core"
+    return os.path.exists(os.path.join(root, "_core_upgrader.py"))
 
 
 def is_engine(folder):
