@@ -13,9 +13,11 @@ matrix:
 
 install:
   - pip install -e .
-  - coverage run -m tk_build.cmd_line_tools.tk_ci_install
+  - tk-ci-install
 
 script:
-  - coverage run --append -m tk_build.cmd_line_tools.tk_ci_tests
+  - tk-ci-tests
 
+# FIXME: Coverage is all wrong because our pytest-plugin loads the tk_build module, which breaks the
+# coverage since the file has already been imported.
 after_success: coveralls
