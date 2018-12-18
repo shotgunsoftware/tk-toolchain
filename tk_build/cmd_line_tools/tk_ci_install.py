@@ -17,7 +17,7 @@ import yaml
 
 from docopt import docopt
 
-from tk_build import ci, qt, bundle
+from tk_build import ci, qt, bundle, repo
 from tk_build.cmd_line_tools.tk_clone import tk_clone
 
 
@@ -102,7 +102,7 @@ def _install_qt(is_dry_run):
 
 def _install_tk_core(is_dry_run):
 
-    root_folder = ci.get_cloned_folder_root()
+    root_folder = repo.find_repo_root()
     if bundle.is_tk_build(root_folder) or bundle.is_tk_core(root_folder):
         print("Skipping tk-core cloning...")
     else:
@@ -114,7 +114,7 @@ def _install_tk_core(is_dry_run):
 def _install_toolkit_frameworks(is_dry_run):
 
     # Check if the info.yml exists.
-    info_yml_path = os.path.join(ci.get_cloned_folder_root(), "info.yml")
+    info_yml_path = os.path.join(repo.find_repo_root(), "info.yml")
     if not os.path.exists(info_yml_path):
         print("info.yml is missing.")
         return False
@@ -148,7 +148,7 @@ def main():
 
     is_dry_run = arguments["--dry-run"]
 
-    if not ci.is_in_ci_environment():
+    if not is_dry_run and not ci.is_in_ci_environment():
         print("This script should be run only on a CI server.")
         return
 
