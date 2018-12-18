@@ -13,7 +13,9 @@ matrix:
 
 install:
   - pip install -e .
-  - tk-ci-install
+  - coverage run -m tk_build.cmd_line_tools.tk_ci_install
 
 script:
-  - pytest
+  - coverage run --append -m tk_build.cmd_line_tools.tk_ci_tests
+
+after_success: coveralls
