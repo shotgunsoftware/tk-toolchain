@@ -9,16 +9,20 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 import os
+import sys
 
 
 def get_runtime_env_vars():
     """
     Returns ``True`` if in a CI environment, ``False`` otherwise.
     """
-    return {
-        "DISPLAY": ":99.0",
-        "QT_QPA_PLATFORM": "offscreen"
-    }
+    if sys.platform.startswith("linux"):
+        return {
+            "DISPLAY": ":99.0",
+            "QT_QPA_PLATFORM": "offscreen"
+        }
+    else:
+        return {}
 
 
 def is_qt_required():
