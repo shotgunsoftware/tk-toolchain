@@ -80,7 +80,7 @@ def preview_docs(core_path, bundle_path):
 
 def _is_not_core():
     cwd = os.getcwd()
-    return bundle.is_engine(cwd) or bundle.is_framework(cwd) or bundle.is_config(cwd) or bundle.is_app(cwd)
+    return bundle.is_tk_core(cwd) is False
 
 
 ####################################################################################
@@ -94,6 +94,12 @@ def main():
     formatter = logging.Formatter("%(levelname)s %(message)s")
     ch.setFormatter(formatter)
     log.addHandler(ch)
+
+    try:
+        import PySide # noqa
+    except ImportError:
+        log.info("Documentation can only be built using PySide.")
+        return
 
     exit_code = 1
     try:

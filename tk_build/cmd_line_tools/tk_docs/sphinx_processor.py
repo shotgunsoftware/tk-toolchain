@@ -74,16 +74,6 @@ class SphinxProcessor(object):
             except ImportError:
                 raise Exception("Cannot import sgtk. Please add to pythonpath")
 
-        try:
-            import PySide # noqa
-        except ImportError:
-            self._log.warning("Cannot find Pyside. This is needed for Sphinx processing.")
-
-        try:
-            import sphinx # noqa
-        except ImportError:
-            raise Exception("Cannot import sphinx. Please install with pip install -U Sphinx")
-
         # make a temp folder for building docs
         self._sphinx_build_dir = os.path.join(tempfile.gettempdir(), "sphinx-build", os.path.basename(path))
         self._log.debug("Sphinx will build into %s..." % self._sphinx_build_dir)
@@ -92,10 +82,6 @@ class SphinxProcessor(object):
         this_folder = os.path.abspath(os.path.dirname(__file__))
         self._sphinx_conf_py_location = os.path.join(this_folder, "sphinx_data")
         self._log.debug("Sphinx will use configuration from %s..." % self._sphinx_conf_py_location)
-
-        # insert target bundle into pythonpath
-        pythonpath = os.environ.get("PYTHONPATH", "").split(":")
-        os.environ["PYTHONPATH"] = ":".join(pythonpath)
 
     def _add_to_pythonpath(self, path):
         """
@@ -121,7 +107,7 @@ class SphinxProcessor(object):
         self._log.debug("Building docs with name %s and version %s" % (name, version))
 
         # run build command
-        cmd = "sphinx-build -c '%s' -D project='%s' -D release='%s' -D version='%s' '%s' '%s'" % (
+        cmd = "sphinx-build -c '%s' -W -D project='%s' -D release='%s' -D version='%s' '%s' '%s'" % (
             self._sphinx_conf_py_location,
             name,
             version,
