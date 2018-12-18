@@ -107,7 +107,8 @@ class SphinxProcessor(object):
         self._log.debug("Building docs with name %s and version %s" % (name, version))
 
         # run build command
-        cmd = "sphinx-build -c '%s' -W -D project='%s' -D release='%s' -D version='%s' '%s' '%s'" % (
+        # Use double quotes to make sure it works on Windows and Unix.
+        cmd = "sphinx-build -c \"%s\" -W -D project=\"%s\" -D release=\"%s\" -D version=\"%s\" \"%s\" \"%s\"" % (
             self._sphinx_conf_py_location,
             name,
             version,
