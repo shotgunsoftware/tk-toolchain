@@ -24,11 +24,6 @@ def main():
         # TODO: Our builds do not run in parallel on appveyor so keep simple for now.
         suffix = "app_veyor"
 
-    env = {}
-    env.update(os.environ)
-    if suffix is not None:
-        env["SHOTGUN_TEST_ENTITY_SUFFIX"] = suffix
-
     _print_header("Running tests...")
 
     subprocess.check_call(["pytest", "--cov"], env=env)
@@ -47,9 +42,12 @@ def main():
         with open(tk_build_path, "rt") as fh:
             data = yaml.safe_load(fh)
 
+        if suffix is not None:
+            os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"] = suffix
+
         for command in data.get("script") or []:
             print(command)
-            subprocess.check_call(command, shell=True, env=env)
+            os.system(command)
 
 
 if __name__ == "__main__":

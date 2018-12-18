@@ -22,7 +22,7 @@ matrix:
       env: SG_QT_LIBRARY=PySide2
 
 install:
-  - pip install https://github.com/shotgunsoftware/tk-build/archive/${TRAVIS_COMMIT}.zip
+  - pip install .
   - tk-ci-install
 
 script:
