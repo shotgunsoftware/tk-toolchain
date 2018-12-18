@@ -25,7 +25,10 @@ setup(
     # package_dir={"tk_build": "tk_build"},
     # py_modules=['pytest_tk_build'],
     packages=find_packages(),
-    package_data={'tk_build': ['cmd_line_tools/tk_docs/sphinx_data/*']},
+    package_data={
+        'tk_build': ['cmd_line_tools/tk_docs/sphinx_data/*'],
+        'pytest_tk_build': ['tk-testengine/*']
+    },
 
     python_requires='~=2.7.0',
     install_requires=[

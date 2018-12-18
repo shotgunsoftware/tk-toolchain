@@ -2,6 +2,7 @@
 
 from tk_build import ci, qt, repo
 import os
+import inspect
 import sys
 
 
@@ -59,6 +60,11 @@ def pytest_configure(config):
     # is available if it was specified.
     if ci.is_in_ci_environment() and qt.is_qt_required():
         os.environ.update(qt.get_runtime_env_vars())
+
+    os.environ["SHOTGUN_TEST_ENGINE"] = os.path.join(
+        os.path.dirname(inspect.getsourcefile(pytest_configure)),
+        "tk-testengine"
+    )
 
 
 # Ignore unit tests found inside tk-core.
