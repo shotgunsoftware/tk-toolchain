@@ -65,7 +65,9 @@ def _get_pyside_scripts_folder():
     if sys.platform == "win32":
         desktop_path = "C:\\Program Files\\Shotgun\\Python\\Scripts\\"
     elif sys.platform == "darwin":
-        desktop_path = "/Applications/Shotgun.app/Contents/Resources/Python/bin"
+        desktop_path = (
+            "/Applications/Shotgun.app/Contents/Resources/Python/bin"
+        )
     elif sys.platform.startswith("linux"):
         desktop_path = "/opt/Shotgun/Python/bin"
 
@@ -76,8 +78,9 @@ def _get_pyside_scripts_folder():
             from PySide import QtGui # noqa
         except ImportError:
             raise RuntimeError(
-                "Couldn't find a copy of Python which has PySide. You can solve "
-                "this problem by installing the Shotgun Desktop in the default location."
+                "Couldn't find a copy of Python which has PySide. You can "
+                "solve this problem by installing the Shotgun Desktop in the "
+                "default location."
             )
         else:
             return os.path.dirname(sys.executable)
@@ -93,7 +96,9 @@ def _build_file(command_line, execution_folder):
     :returns: The text output of the tool.
     """
     # Prepend the path to the python interpreter
-    command_line[0] = os.path.join(_get_pyside_scripts_folder(), command_line[0])
+    command_line[0] = os.path.join(
+        _get_pyside_scripts_folder(), command_line[0]
+    )
     return subprocess.check_output(command_line, cwd=execution_folder)
 
 
@@ -134,7 +139,10 @@ def _build_qt(command_line, output_folder, output_file, execution_folder):
     text_output = _filter_output(text_output)
 
     output_path = os.path.join(output_folder, os.path.basename(output_file))
-    with open("%s.py" % os.path.join(execution_folder, output_path), "w") as fd:
+    with open(
+        "%s.py" % os.path.join(execution_folder, output_path),
+        "wt"
+    ) as fd:
         fd.write(text_output)
 
 
@@ -153,7 +161,11 @@ def build_ui(output_folder, ui_files):
 
     for ui_file in ui_files:
         _build_qt(
-            [_get_pyside_uic_name(), "--from-imports", "{0}.ui".format(ui_file)],
+            [
+                _get_pyside_uic_name(),
+                "--from-imports",
+                "{0}.ui".format(ui_file)
+            ],
             output_folder,
             ui_file,
             execution_folder
@@ -174,7 +186,8 @@ def build_resource(output_folder, resource_file_name="resources"):
     Builds a qrc file and writes it to the specified folder.
 
     :param str output_folder: Folder in which to output the file.
-    :param str resource_file_name: File that needs to be converted, without the qrc extension. Defaults to resources.
+    :param str resource_file_name: File that needs to be converted, without the
+                                   qrc extension. Defaults to resources.
     """
     execution_folder = _get_caller_folder()
     _mogrify_pngs(execution_folder)

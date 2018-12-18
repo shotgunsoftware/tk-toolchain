@@ -15,11 +15,12 @@ import os
 
 def _can_hide_terminal():
     """
-    Returns ``True`` if this version of Python can hide the terminal of a subprocess
-    launched with the subprocess module, ``False`` otherwise.
+    Returns ``True`` if this version of Python can hide the terminal of a
+    subprocess launched with the subprocess module, ``False`` otherwise.
     """
     try:
-        # These values are not defined between Python 2.6.6 and 2.7.1 inclusively.
+        # These values are not defined between Python 2.6.6 and 2.7.1
+        # inclusively.
         subprocess.STARTF_USESHOWWINDOW
         subprocess.SW_HIDE
         return True
@@ -35,8 +36,9 @@ def clone_repo(repo_path, execution_folder, depth=None, branch_name=None):
     :param str execution_folder: Folder in which the git command will be run.
     :param optional(int) depth: If set, indicates how many commits to clone.
         Defaults to complete clone.
-    :param optional(str) branch_name: if set, indicates which branch to checkout
-        after the clone. Defaults to ``master``.
+    :param optional(str) branch_name: if set, indicates which branch to
+                                      checkout after the clone. Defaults to
+                                      ``master``.
     """
 
     # Do not allow dialog to pop on Windows.

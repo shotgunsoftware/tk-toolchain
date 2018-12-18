@@ -14,7 +14,8 @@ def _update_sys_path(reason, path):
 
 def _initialize_logging(config):
     """
-    Sets up a log file for the unit tests and optionally logs everything to the console.
+    Sets up a log file for the unit tests and optionally logs everything to the
+    console.
     """
     import tank
     tank.LogManager().initialize_base_file_handler("run_tests")
@@ -31,11 +32,12 @@ def pytest_configure(config):
 
     repo_root = repo.find_repo_root(cur_dir)
 
-    # If we're not in the tk-core repo, we should add the current repo's python folder since it may
-    # have custom tools.
+    # If we're not in the tk-core repo, we should add the current repo's python
+    # folder since it may have custom tools.
     if os.path.basename(repo_root).lower() != "tk-core":
         _update_sys_path(
-            "Adding repository tests/python folder", os.path.join(repo_root, "tests", "python")
+            "Adding repository tests/python folder",
+            os.path.join(repo_root, "tests", "python")
         )
 
     repos_root = os.path.dirname(repo_root)
@@ -54,7 +56,9 @@ def pytest_configure(config):
         os.path.join(tk_core_repo_root, "tests", "python")
     )
 
-    os.environ["TK_TEST_FIXTURES"] = os.path.join(repo_root, "tests", "fixtures")
+    os.environ["TK_TEST_FIXTURES"] = os.path.join(
+        repo_root, "tests", "fixtures"
+    )
 
     # Extra work needs to be done for CI environments. We need to make sure Qt
     # is available if it was specified.

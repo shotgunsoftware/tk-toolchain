@@ -47,3 +47,19 @@ def get_cloned_folder_root():
         return os.environ["APPVEYOR_BUILD_FOLDER"]
     else:
         raise RuntimeError("This CI service is not supported!")
+
+
+def is_pull_request():
+    return os.environ.get("TRAVIS_PULL_REQUEST", "false") != "false"
+
+
+def get_pull_request_id():
+    """
+    Returns the current pull request id or None if this is not a pull
+    request build.
+    """
+    return int(os.environ["TRAVIS_PULL_REQUEST"])
+
+
+def get_pull_request_slug():
+    return os.environ["TRAVIS_REPO_SLUG"]

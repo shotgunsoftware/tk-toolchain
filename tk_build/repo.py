@@ -20,14 +20,16 @@ def _is_repo_root(path):
     return False
 
 
-def find_repo_root(path):
+def find_repo_root(path=None):
     """
     Finds the root of the repo given a given path to a file inside it.
 
-    :param str path: Path to a file inside the repo.
+    :param str path: Path to a file inside the repo. Defaults to the
+                     current working directory.
 
     :returns: Path to the repo.
     """
+    path = path or os.getcwd()
     while path and not _is_repo_root(path):
         path = os.path.dirname(path)
 
