@@ -40,8 +40,6 @@ setup(
         "coverage==4.4.1",
         "unittest2",
         "coveralls==1.1",
-        "pytest-warnings",
-
 
         # Doc generation
         "PyYAML",
