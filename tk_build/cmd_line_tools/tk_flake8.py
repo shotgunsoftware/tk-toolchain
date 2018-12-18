@@ -24,22 +24,16 @@ def tk_flake8(commit=None, flake8_args=None):
 
     # If the user didn't pass in a commit.
     if commit is None:
+        # TODO: This should probably be read from a configuration file
+        # in case we're working for a long time against
+        # a branch other than origin/master.
+        # "origin/master"
+        commit = "origin/master"
         # When we're in a CI environment, we want to diff against
         # what the a request is using as the base for the diff.
         if ci.is_in_ci_environment():
-            slug = ci.get_pull_request_slug()
-            pr_id = ci.get_pull_request_id()
-            commit = github.get_pull_request_base_commit(slug, pr_id)
-            # Ensures we can diff against the base.
-            # TODO: Add a check that the commit is already local to speed up
-            # the script.
-            subprocess.check_call(["git", "fetch", "origin", commit])
-        else:
-            # TODO: This should probably be read from a configuration file
-            # in case we're working for a long time against
-            # a branch other than origin/master.
-            # "origin/master"
-            commit = None
+            # FIXME: Possible parameter injection?
+            subprocess.check_call(["git", "fetch", "origin", "master"])
 
     flake8_cmd = ["flake8"]
     if commit is not None:
