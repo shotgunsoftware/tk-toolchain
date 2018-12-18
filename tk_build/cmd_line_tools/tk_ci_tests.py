@@ -15,15 +15,19 @@ def _print_header(text):
 
 def main():
 
+    suffix = None
     if ci.is_travis():
-        suffix = os.path.expandvars("travis_${TRAVIS_EVENT_TYPE}_${TRAVIS_PYTHON_VERSION}")
-    else:
+        suffix = os.path.expandvars(
+            "travis_${TRAVIS_EVENT_TYPE}_${SHOTGUN_QT_LIBRARY}"
+        )
+    elif ci.is_appveyor:
         # TODO: Our builds do not run in parallel on appveyor so keep simple for now.
         suffix = "app_veyor"
 
     env = {}
     env.update(os.environ)
-    env["SHOTGUN_TEST_ENTITY_SUFFIX"] = suffix
+    if suffix is not None:
+        env["SHOTGUN_TEST_ENTITY_SUFFIX"] = suffix
 
     _print_header("Running tests...")
 
