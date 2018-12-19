@@ -142,7 +142,7 @@ def main():
 
     is_dry_run = arguments["--dry-run"]
 
-    if ci.is_in_ci_environment():
+    if not ci.is_in_ci_environment():
         print("Forcing --dry-run since this is not run from a ci environment.")
         is_dry_run = True
 
