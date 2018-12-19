@@ -48,7 +48,8 @@ def main():
 
         for command in data.get("script") or []:
             print(command)
-            os.system(command)
+            if os.system(command) != 0:
+                raise RuntimeError("Test failed!")
 
 
 if __name__ == "__main__":
