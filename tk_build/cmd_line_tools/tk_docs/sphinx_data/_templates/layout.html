@@ -1,0 +1,95 @@
+{# 
+ # Copyright (c) 2015 Shotgun Software Inc.
+ # 
+ # CONFIDENTIAL AND PROPRIETARY
+ # 
+ # This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit 
+ # Source Code License included in this distribution package. See LICENSE.
+ # By accessing, using, copying or modifying this work you indicate your 
+ # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights 
+ # not expressly granted therein are reserved by Shotgun Software Inc.
+ #
+ #
+ # This extends the sphinx_rtd_theme to include a header with a logo
+ # and a footer with some links to toolkit resources.
+ #
+ # For information, see:
+ #
+ # - https://github.com/snide/sphinx_rtd_theme
+ # - http://sphinx-doc.org/templating.html
+ # 
+ #}
+
+{% extends "!layout.html" %}
+
+{% block sidebartitle %}
+    <a href='http://developer.shotgunsoftware.com'>
+    {% if project.startswith('tk-') %}
+        <img style='width: 191px;
+                height: 60px; 
+                margin: 2px;
+                border-radius: 0px; 
+                padding: 0px;' 
+            src='{{ pathto('_static/logo@2x.png', 1) }}'/>
+    {% else %}
+        <img style='width: 191px;
+                height: 60px;
+                margin: 2px;
+                border-radius: 0px;
+                padding: 0px;'
+            src='{{ pathto('_static/logo_sg@2x.png', 1) }}'/>
+    {% endif %}
+    </a>
+    {{ super() }}
+{% endblock %}
+
+{% block menu %}
+    {{ super() }}
+
+    <a href='genindex.html'>Alphabetic Index</a>
+
+    <div style='margin-top: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
+                padding: 10px; 
+                color: #b3b3b3; 
+                font-size: 70%;
+                border-radius: 3px;
+                background-color: #444;
+                line-height: 18px;
+                '>    
+    <style>
+        a.custom_post_menu { display: inline; 
+                             padding: 0px; 
+                             text-decoration: underline; }
+    </style>
+
+    <b>{{project}}</b> {{release}}.<br>
+    {% if project.startswith('tk-') %}
+        This documentation is part of the Shotgun Pipeline Toolkit.
+    {% endif %}
+    For more information, please visit
+    <a class=custom_post_menu href='https://support.shotgunsoftware.com/home'>Shotgun Support</a>.
+    The code associated with this documentation can be found 
+    <a class=custom_post_menu href='https://github.com/shotgunsoftware/{{project}}'>here</a>.
+
+    </div>
+
+
+{% endblock %}
+
+{% block footer %}
+{{ super() }}
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-2114792-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+{% endblock %}
+
+
