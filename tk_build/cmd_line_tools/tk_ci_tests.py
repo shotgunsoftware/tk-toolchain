@@ -26,7 +26,7 @@ def main():
 
     _print_header("Running tests...")
 
-    subprocess.check_call(["pytest", "--cov"], env=env)
+    subprocess.check_call(["pytest", "--cov"])
 
     repo_root = repo.find_repo_root()
 
@@ -42,6 +42,7 @@ def main():
         with open(tk_build_path, "rt") as fh:
             data = yaml.safe_load(fh)
 
+        # FIXME: This needs to be done in a cleaner way.
         if suffix is not None:
             os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"] = suffix
 
