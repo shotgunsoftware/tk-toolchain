@@ -95,37 +95,33 @@ def main():
     ch.setFormatter(formatter)
     log.addHandler(ch)
 
-    try:
-        import PySide  # noqa
-    except ImportError:
-        pass
-
-    try:
-        import PySide2
-    except ImportError:
-        log.info("Documentation can only be built using PySide/PySide")
-        return
-
     exit_code = 1
     try:
         usage = "%prog OPTIONS (run with --help for more options)"
 
-        desc = "Preview sphinx documentation for an app/engine/framework. "
-        desc += "This script generates sphinx doc for an app/engine/fw you have "
-        desc += "locally on disk somewhere. This is useful for in-progress doc "
-        desc += "generation and when you want a quick turnaround. When you "
-        desc += "are ready to release your docs, use the api_docs_to_github script. "
-        desc += "For info, see https://wiki.autodesk.com/display/SHOT/Managing+API+Reference+Documentation"
+        desc = (
+            "This tool previews sphinx documentation for a Toolkit bundle or the "
+            "Shotgun Python API. It script generates sphinx doc for a repository you "
+            "have locally on disk. This is useful for in-progress doc generation and "
+            "when you want a quick turnaround."
+        )
 
         epilog = """
-    Examples:
+Examples:
 
-    Shotgun API:       python api_docs_preview.py --bundle=/path/to/shotgun/python-api
-    Toolkit Core API:  python api_docs_preview.py --bundle=/path/to/tk-core
-    Toolkit Framework: python api_docs_preview.py --bundle=/path/to/tk-framework-xyz --core=/path/to/tk-core
+Shotgun API:       tk-docs-preview --bundle=/path/to/shotgun/python-api
+Toolkit Core API:  tk-docs-preview --bundle=/path/to/tk-core
+Toolkit Framework: tk-docs-preview --bundle=/path/to/tk-framework-xyz --core=/path/to/tk-core
 
+For all of these examples, if your folder hierarchy is similar to
 
-    """
+    /home/you/gitrepos/tk-core
+    /home/you/gitrepos/python-api
+    /home/you/gitrepos/tk-multi-toolkitapp
+
+then the tool will find all the required folders on it's own and you will only need
+to type "tk-docs-preview" to preview the documentation.
+"""
 
         parser = OptionParserLineBreakingEpilog(
             usage=usage, description=desc, epilog=epilog
@@ -143,14 +139,17 @@ def main():
             "-c",
             "--core",
             default=None,
-            help="Path to Toolkit Core. Only needed for apps, engines and frameworks",
+            help=(
+                "Path to Toolkit Core. Only needed for apps, engines and frameworks. Defaults to the folder "
+                "next to the current repository."
+            ),
         )
 
         parser.add_option(
             "-b",
             "--bundle",
             default=None,
-            help="Path to the app/engine/fw you want to process.",
+            help="Path to the app/engine/fw you want to process. Defaults to the current repository location.",
         )
 
         # parse cmd line
@@ -158,6 +157,19 @@ def main():
 
         # Unless bundle is overridden, we'll assume the current repo root is the bundle
         repo = Repository(options.bundle or os.getcwd())
+
+        # Make sure Qt is available if we're dealing with Toolkit repos.
+        if not repo.is_python_api():
+            try:
+                import PySide  # noqa
+            except ImportError:
+                try:
+                    import PySide2
+                except ImportError:
+                    log.error(
+                        "PySide or PySide2 are required to build the documentation."
+                    )
+                    return
 
         # If the specified the core path, we'll use it.
         if options.core:

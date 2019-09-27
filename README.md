@@ -98,4 +98,40 @@ tk-testengine:
 
 # `tk-docs-preview`
 
-This tools allows to build the documentation for a Toolkit bundle. It assumes there is a
+This tools allows to build the documentation for a Toolkit of the Python API repository. Just like the `pytest` plugin, it [assumes](#pre-requisites) the folder structure on disk to make it as simple as typing `tk-docs-preview` on the command line to build the documentation and get a preview in the browser.
+
+Here's the `--help` output.
+
+```
+Usage: tk-docs-preview OPTIONS (run with --help for more options)
+
+This tool previews sphinx documentation for a Toolkit bundle or the Shotgun
+Python API. It script generates sphinx doc for a repository you have locally
+on disk. This is useful for in-progress doc generation and when you want a
+quick turnaround.
+
+Options:
+  -h, --help            show this help message and exit
+  -v, --verbose         Enable verbose logging
+  -c CORE, --core=CORE  Path to Toolkit Core. Only needed for apps, engines
+                        and frameworks. Defaults to the folder next to the
+                        current repository.
+  -b BUNDLE, --bundle=BUNDLE
+                        Path to the app/engine/fw you want to process.
+                        Defaults to the current repository location.
+
+Examples:
+
+Shotgun API:       tk-docs-preview --bundle=/path/to/shotgun/python-api
+Toolkit Core API:  tk-docs-preview --bundle=/path/to/tk-core
+Toolkit Framework: tk-docs-preview --bundle=/path/to/tk-framework-xyz --core=/path/to/tk-core
+
+For all of these examples, if your folder hierarchy is similar to
+
+    /home/you/gitrepos/tk-core
+    /home/you/gitrepos/python-api
+    /home/you/gitrepos/tk-multi-toolkitapp
+
+then the tool will find all the required folders on it's own and you will only need
+to type "tk-docs-preview" to preview the documentation
+```
