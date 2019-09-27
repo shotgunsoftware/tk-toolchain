@@ -1,11 +1,13 @@
-"""
-
-Copyright (c) 2015 Shotgun Software, Inc
-----------------------------------------------------
-
-Contains methods for generating sphinx based documentation
-
-"""
+# -*- coding: utf-8 -*-
+# Copyright (c) 2019 Shotgun Software Inc.
+#
+# CONFIDENTIAL AND PROPRIETARY
+#
+# This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit
+# Source Code License included in this distribution package. See LICENSE.
+# By accessing, using, copying or modifying this work you indicate your
+# agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
+# not expressly granted therein are reserved by Shotgun Software Inc.
 
 import os
 import sys
@@ -70,18 +72,22 @@ class SphinxProcessor(object):
         # check that Sphinx and PySide are available
         if core_path:
             try:
-                import sgtk # noqa
+                import sgtk  # noqa
             except ImportError:
                 raise Exception("Cannot import sgtk. Please add to pythonpath")
 
         # make a temp folder for building docs
-        self._sphinx_build_dir = os.path.join(tempfile.gettempdir(), "sphinx-build", os.path.basename(path))
+        self._sphinx_build_dir = os.path.join(
+            tempfile.gettempdir(), "sphinx-build", os.path.basename(path)
+        )
         self._log.debug("Sphinx will build into %s..." % self._sphinx_build_dir)
 
         # get a path to conf.py
         this_folder = os.path.abspath(os.path.dirname(__file__))
         self._sphinx_conf_py_location = os.path.join(this_folder, "sphinx_data")
-        self._log.debug("Sphinx will use configuration from %s..." % self._sphinx_conf_py_location)
+        self._log.debug(
+            "Sphinx will use configuration from %s..." % self._sphinx_conf_py_location
+        )
 
     def _add_to_pythonpath(self, path):
         """
@@ -108,13 +114,16 @@ class SphinxProcessor(object):
 
         # run build command
         # Use double quotes to make sure it works on Windows and Unix.
-        cmd = "sphinx-build -c \"%s\" -W -D project=\"%s\" -D release=\"%s\" -D version=\"%s\" \"%s\" \"%s\"" % (
-            self._sphinx_conf_py_location,
-            name,
-            version,
-            version,
-            self._docs_path,
-            self._sphinx_build_dir
+        cmd = (
+            'sphinx-build -c "%s" -W -D project="%s" -D release="%s" -D version="%s" "%s" "%s"'
+            % (
+                self._sphinx_conf_py_location,
+                name,
+                version,
+                version,
+                self._docs_path,
+                self._sphinx_build_dir,
+            )
         )
 
         execute_command(self._log, cmd)
@@ -140,7 +149,7 @@ class SphinxProcessor(object):
         """
         if not os.path.exists(dst):
             log.debug("mkdir 0777 %s" % dst)
-            os.mkdir(dst, 0777)
+            os.mkdir(dst, 0o777)
 
         names = os.listdir(src)
         for name in names:
@@ -154,5 +163,5 @@ class SphinxProcessor(object):
                 else:
                     shutil.copy(srcname, dstname)
                     log.debug("Copy %s -> %s" % (srcname, dstname))
-            except Exception, e:
+            except Exception as e:
                 log.error("Can't copy %s to %s: %s" % (srcname, dstname, e))
