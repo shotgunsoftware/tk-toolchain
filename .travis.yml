@@ -10,22 +10,17 @@
 
 # travis-ci.org CI unit tests integration configuration file.
 
-sudo: true
+sudo: required
+
 language: python
 
 matrix:
   include:
     - python: 2.7
-    - python: 2.7
-      env: SG_QT_LIBRARY=PySide
-    - python: 2.7
-      env: SG_QT_LIBRARY=PySide2
-
-install:
-  - pip install tk-toolchain
-  - tk-ci-install
+    - python: 3.7
 
 script:
-  - tk-ci-tests
-
-after_success: coveralls
+  # Build the tool
+  - python setup.py sdist
+  # Try to pip install it.
+  - python -m pip install dist/tk-toolchain-*.tar.gz
