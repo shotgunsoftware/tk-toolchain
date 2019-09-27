@@ -8,8 +8,7 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from tk_build import ui
 from tk_build import ci
-from tk_build import git
+from tk_build import bundle
 
-__all__ = ["ui", "ci", "git"]
+__all__ = "ci", "bundle"
