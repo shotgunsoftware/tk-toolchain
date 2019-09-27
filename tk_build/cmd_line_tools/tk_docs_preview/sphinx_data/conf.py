@@ -24,76 +24,118 @@
 from __future__ import print_function
 import logging
 
-try:
-    # run toolkit init. The doc generation scripts bootstrap script have already
-    # set the PYTHONPATH so both the app we are documenting and core should be
-    # available at this point.
-    import tank
-except:
-    # not every documentable environment needs sgtk
-    print("WARNING: unable to import toolkit")
-    pass
 
-try:
-    # components also use PySide, so make sure  we have this loaded up correctly
-    # before starting auto-doc.
-    from PySide import QtCore, QtGui
+def setup_toolkit():
+    try:
+        # run toolkit init. The doc generation scripts bootstrap script have already
+        # set the PYTHONPATH so both the app we are documenting and core should be
+        # available at this point.
+        toolkit_available = True
+        import tank
+    except:
+        # not every documentable environment needs sgtk
+        print(
+            "WARNING: Unable to import Toolkit. This is fine if you're only "
+            "building the Python API documentation."
+        )
+        return
 
-    tank.platform.qt.QtCore = QtCore
-    tank.platform.qt.QtGui = QtGui
-except:
-    # not every documentable environment needs Qt
-    pass
+    try:
+        # components also use PySide, so make sure  we have this loaded up correctly
+        # before starting auto-doc.
+        from PySide import QtCore, QtGui
 
-# some frameworks import other frameworks and this means that they have
-# an import_framework method call that executes right at load time.
-# this method requires a running sgtk platform and will prevent
-# sphinx to run its introspection, so we need to replace these import
-# methods with proxy
+        tank.platform.qt.QtCore = QtCore
+        tank.platform.qt.QtGui = QtGui
+    except:
+        print("WARNING: PySide was not found in the current environment.")
+        pass
 
+    # some frameworks import other frameworks and this means that they have
+    # an import_framework method call that executes right at load time.
+    # this method requires a running sgtk platform and will prevent
+    # sphinx to run its introspection, so we need to replace these import
+    # methods with proxy
 
-class ModuleImportProxy(object):
-    """
-    Proxy class that returns None for any attribute request.
-    This so that the code that is being documented can
-    execute this type of code at import time without
-    erroring out:
+    class ModuleImportProxy(object):
+        """
+        Proxy class that returns None for any attribute request.
+        This so that the code that is being documented can
+        execute this type of code at import time without
+        erroring out:
 
-    version_label = sgtk.platform.current_bundle().import_module("version_label")
-    VersionLabel = version_label.VersionLabel
-    """
+        version_label = sgtk.platform.current_bundle().import_module("version_label")
+        VersionLabel = version_label.VersionLabel
+        """
 
-    def __getattr__(self, name):
-        return object
+        def __getattr__(self, name):
+            return object
 
+    class BundleProxy(object):
+        """
+        Proxy object representing a tank bundle object.
+        This is primarily so we can implement a proxy wrapper for
+        the import_module method and use that to return a module
+        proxy object above.
+        """
 
-class BundleProxy(object):
-    """
-    Proxy object representing a tank bundle object.
-    This is primarily so we can implement a proxy wrapper for
-    the import_module method and use that to return a module
-    proxy object above.
-    """
+        def import_module(*args, **kwargs):
+            return ModuleImportProxy()
 
-    def import_module(*args, **kwargs):
+    def make_module_proxy(*args, **kwargs):
+        """
+        Override method that returns a module proxy object
+        """
         return ModuleImportProxy()
 
+    def make_bundle_proxy(*args, **kwargs):
+        """
+        Override method that returns a bundle proxy object
+        """
+        return BundleProxy()
 
-def make_module_proxy(*args, **kwargs):
-    """
-    Override method that returns a module proxy object
-    """
-    return ModuleImportProxy()
+    # Monkey patch Toolkit so Toolkit bundles can be loaded for documentation
+    # purpose.
+    try:
+        import sys
+
+        sys.setrecursionlimit(1500)
+
+        # make sure we patch our proxy methods with doc strings
+        # otherwise we can never generate documentation for them :-)
+        from tank.platform import import_framework as real_import_framework
+        from tank.platform import current_bundle as real_current_bundle
+        from tank import get_hook_baseclass as real_get_hook_baseclass
+
+        make_module_proxy.__doc__ = real_import_framework.__doc__
+        make_bundle_proxy.__doc__ = real_current_bundle.__doc__
+
+        # now patch toolkit
+        tank.platform.import_framework = make_module_proxy
+        tank.platform.import_framework = make_module_proxy
+
+        tank.platform.current_bundle = make_bundle_proxy
+        tank.platform.current_bundle = make_bundle_proxy
+
+        tank.platform.get_logger = lambda x: logging.getLogger(x)
+
+        # patch hook baseclass to return Hook (it doesn't have a default value)
+        get_hook_baseclass_proxy = lambda: tank.Hook
+        get_hook_baseclass_proxy.__doc__ = real_get_hook_baseclass.__doc__
+
+        tank.get_hook_baseclass = get_hook_baseclass_proxy
+
+    except Exception as e:
+        import traceback
+
+        traceback.print_exc()
 
 
-def make_bundle_proxy(*args, **kwargs):
-    """
-    Override method that returns a bundle proxy object
-    """
-    return BundleProxy()
+setup_toolkit()
 
 
-# -- Shotgun Modifications ------------------------------------------------
+################################
+# Python API 3 specific options
 
 
 def remove_module_docstring(app, what, name, obj, options, lines):
@@ -106,43 +148,8 @@ def setup(app):
     app.connect("autodoc-process-docstring", remove_module_docstring)
 
 
-try:
-    import sys
-
-    sys.setrecursionlimit(1500)
-
-    # make sure we patch our proxy methods with doc strings
-    # otherwise we can never generate documentation for them :-)
-    from tank.platform import import_framework as real_import_framework
-    from tank.platform import current_bundle as real_current_bundle
-    from tank import get_hook_baseclass as real_get_hook_baseclass
-
-    make_module_proxy.__doc__ = real_import_framework.__doc__
-    make_bundle_proxy.__doc__ = real_current_bundle.__doc__
-
-    # now patch toolkit
-    tank.platform.import_framework = make_module_proxy
-    tank.platform.import_framework = make_module_proxy
-
-    tank.platform.current_bundle = make_bundle_proxy
-    tank.platform.current_bundle = make_bundle_proxy
-
-    tank.platform.get_logger = lambda x: logging.getLogger(x)
-
-    # patch hook baseclass to return Hook (it doesn't have a default value)
-    get_hook_baseclass_proxy = lambda: tank.Hook
-    get_hook_baseclass_proxy.__doc__ = real_get_hook_baseclass.__doc__
-
-    tank.get_hook_baseclass = get_hook_baseclass_proxy
-
-except Exception as e:
-    import traceback
-
-    traceback.print_exc()
-    pass
-
-
-# -- General configuration ------------------------------------------------
+########################
+# General configuration
 
 # If your documentation needs a minimal Sphinx version, state it here.
 # needs_sphinx = '1.0'
@@ -357,10 +364,9 @@ intersphinx_mapping = {
         "http://developer.shotgunsoftware.com/tk-framework-shotgunutils/",
         None,
     ),
-    # "tk-framework-login": ("http://developer.shotgunsoftware.com/tk-framework-login/", None),
-    # "tk-framework-adminui": ("http://developer.shotgunsoftware.com/tk-framework-adminui/", None),
-    # "tk-framework-perforce": ("http://developer.shotgunsoftware.com/tk-framework-perforce/", None),
     "shotgun-api3": ("http://developer.shotgunsoftware.com/python-api", None),
 }
 
 autodoc_member_order = "bysource"
+
+suppress_warnings = ["image.nonlocal_uri"]

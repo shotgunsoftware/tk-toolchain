@@ -1,3 +1,8 @@
+[![VFX Platform](https://img.shields.io/badge/vfxplatform-2020-blue.svg)](http://www.vfxplatform.com/)
+[![Python 2.6 2.7 3.7](https://img.shields.io/badge/python-2.6%20%7C%202.7%20%7C%203.7-blue.svg)](https://www.python.org/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+
 # Toolkit Build tools
 
 The Toolkit Build tools will help developers of Toolkit-based applications in their day to day development tasks. It is meant
@@ -90,3 +95,7 @@ tk-testengine:
         type: dev
         path: $SHOTGUN_TEST_ENGINE
 ```
+
+# `tk-docs-preview`
+
+This tools allows to build the documentation for a Toolkit bundle. It assumes there is a

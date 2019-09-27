@@ -9,7 +9,7 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from tk_build import ci, qt, repo
+from tk_build import repo
 import os
 import inspect
 import sys
@@ -46,8 +46,6 @@ def pytest_configure(config):
     - write to a Toolkit log file
     """
 
-    _initialize_logging(config)
-
     cur_dir = os.path.abspath(os.curdir)
 
     # The path to the current repo root
@@ -60,6 +58,9 @@ def pytest_configure(config):
 
     # Adds the tk-core/python folder to the PYTHONPATH so we can import Toolkit
     _update_sys_path("Adding Toolkit folder", os.path.join(tk_core_repo_root, "python"))
+
+    # Now that Toolkit has been added to the PYTHONPATH, we can set up logging.
+    _initialize_logging(config)
 
     # Adds the tk-core/tests/python folder to the PYTHONPATH so TanTestBase
     # is available.

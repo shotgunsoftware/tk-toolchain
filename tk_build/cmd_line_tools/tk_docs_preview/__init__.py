@@ -20,13 +20,9 @@ import optparse
 import sys
 from tk_build import ci
 
-# PREPEND python location to pythonpath
-python_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "python"))
-sys.path.insert(0, python_path)
-
 from .sphinx_processor import SphinxProcessor
 
-from tk_build import bundle, repo
+from tk_build.repo import Repository
 
 # set up logging channel for this script
 log = logging.getLogger("sgtk.sphinx")
@@ -85,11 +81,6 @@ def preview_docs(core_path, bundle_path):
         webbrowser.open_new("file://%s" % os.path.join(location, "index.html"))
 
     log.info("Doc generation done.")
-
-
-def _is_not_core():
-    cwd = os.getcwd()
-    return bundle.is_tk_core(cwd) is False
 
 
 ####################################################################################
@@ -161,20 +152,17 @@ def main():
         (options, _) = parser.parse_args()
 
         # Unless bundle is overridden, we'll assume the current repo root is the bundle
-        if options.bundle:
-            bundle_path = options.bundle
-        else:
-            bundle_path = repo.find_repo_root(os.getcwd())
+        repo = Repository(options.bundle or os.getcwd())
 
-        # Unless bundle the core location is overridden...
+        # If the specified the core path, we'll use it.
         if options.core:
             core_path = options.core
-        # ... and we're dealing with docs for anything but a core, we'll assume tk-core is a sibling
-        # of this folder.
-        elif _is_not_core():
-            repo_root = repo.find_repo_root(os.getcwd())
-            core_path = os.path.join(os.path.dirname(repo_root), "tk-core")
+        # If the user didn't specify the core location, then we'll guess the tk-core repo
+        # and use it, but only if the repo is for a Toolkit bundle.
+        elif repo.is_bundle():
+            core_path = os.path.join(os.path.dirname(repo.root), "tk-core")
         else:
+            # No need to specify where the core is
             core_path = None
 
         if options.verbose:
@@ -184,11 +172,9 @@ def main():
         core_path = (
             os.path.expandvars(os.path.expanduser(core_path)) if core_path else None
         )
-        bundle_path = (
-            os.path.expandvars(os.path.expanduser(bundle_path)) if bundle_path else None
-        )
+        bundle_path = os.path.expandvars(os.path.expanduser(repo.root))
 
-        preview_docs(core_path, bundle_path)
+        preview_docs(core_path, repo.root)
         exit_code = 0
     except Exception as e:
         log.exception("An exception was raised: %s" % e)
