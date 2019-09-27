@@ -22,8 +22,6 @@ setup(
     url='https://github.com/shotgunsoftware/tk-build',
     description='Build tools for Shotgun Toolkit.',
     long_description=read('README.rst'),
-    # package_dir={"tk_build": "tk_build"},
-    # py_modules=['pytest_tk_build'],
     packages=find_packages(),
     package_data={
         'tk_build': [
@@ -35,18 +33,12 @@ setup(
 
     python_requires='~=2.7.0',
     install_requires=[
-        # Framework
-        'memoize2~=0.1.1',
-        "docopt",
-
         # Tests
         'pytest>=3.5.0',
         'pytest-cov==2.6.0',
         "mock",
         "coverage==4.4.1",
         "unittest2",
-        "coveralls==1.1",
-        "flake8==3.6.0",
 
         # Doc generation
         "PyYAML",
@@ -71,11 +63,7 @@ setup(
             'pytest_tk_build = pytest_tk_build',
         ],
         'console_scripts': [
-            'tk-clone = tk_build.cmd_line_tools.tk_clone:main',
-            'tk-docs = tk_build.cmd_line_tools.tk_docs:main',
-            'tk-ci-tests = tk_build.cmd_line_tools.tk_ci_tests:main',
-            'tk-ci-install = tk_build.cmd_line_tools.tk_ci_install:main',
-            'tk-flake8 = tk_build.cmd_line_tools.tk_flake8:main'
+            'tk-docs-preview = tk_build.cmd_line_tools.tk_docs_preview:main',
         ]
     }
 )
