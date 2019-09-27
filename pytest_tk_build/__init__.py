@@ -65,6 +65,8 @@ def pytest_configure(config):
     if ci.is_in_ci_environment() and qt.is_qt_required():
         os.environ.update(qt.get_runtime_env_vars())
 
+    _initialize_logging(config)
+
     os.environ["SHOTGUN_TEST_ENGINE"] = os.path.join(
         os.path.dirname(inspect.getsourcefile(pytest_configure)),
         "tk-testengine"

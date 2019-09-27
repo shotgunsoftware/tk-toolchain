@@ -27,7 +27,6 @@ try:
     # run toolkit init. The doc generation scripts bootstrap script have already
     # set the PYTHONPATH so both the app we are documenting and core should be
     # available at this point.
-    import sgtk
     import tank
 except:
     # not every documentable environment needs sgtk
@@ -38,8 +37,8 @@ try:
     # components also use PySide, so make sure  we have this loaded up correctly
     # before starting auto-doc.
     from PySide import QtCore, QtGui
-    sgtk.platform.qt.QtCore = QtCore
-    sgtk.platform.qt.QtGui = QtGui
+    tank.platform.qt.QtCore = QtCore
+    tank.platform.qt.QtGui = QtGui
 except:
     # not every documentable environment needs Qt
     pass
@@ -96,30 +95,31 @@ def setup(app):
     app.connect("autodoc-process-docstring", remove_module_docstring)
 
 try:
+    import sys; sys.setrecursionlimit(1500)
 
     # make sure we patch our proxy methods with doc strings
     # otherwise we can never generate documentation for them :-)
-    from sgtk.platform import import_framework as real_import_framework
-    from sgtk.platform import current_bundle as real_current_bundle
-    from sgtk import get_hook_baseclass as real_get_hook_baseclass
+    from tank.platform import import_framework as real_import_framework
+    from tank.platform import current_bundle as real_current_bundle
+    from tank import get_hook_baseclass as real_get_hook_baseclass
 
     make_module_proxy.__doc__ = real_import_framework.__doc__
     make_bundle_proxy.__doc__ = real_current_bundle.__doc__
 
     # now patch toolkit
     tank.platform.import_framework = make_module_proxy
-    sgtk.platform.import_framework = make_module_proxy
+    tank.platform.import_framework = make_module_proxy
     
     tank.platform.current_bundle = make_bundle_proxy
-    sgtk.platform.current_bundle = make_bundle_proxy
+    tank.platform.current_bundle = make_bundle_proxy
 
-    sgtk.platform.get_logger = lambda x: logging.getLogger(x)
+    tank.platform.get_logger = lambda x: logging.getLogger(x)
 
     # patch hook baseclass to return Hook (it doesn't have a default value)
-    get_hook_baseclass_proxy = lambda: sgtk.Hook
+    get_hook_baseclass_proxy = lambda: tank.Hook
     get_hook_baseclass_proxy.__doc__ = real_get_hook_baseclass.__doc__
 
-    sgtk.get_hook_baseclass = get_hook_baseclass_proxy
+    tank.get_hook_baseclass = get_hook_baseclass_proxy
 
 except Exception, e:
     import traceback

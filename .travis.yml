@@ -22,7 +22,7 @@ matrix:
       env: SG_QT_LIBRARY=PySide2
 
 install:
-  - pip install https://github.com/shotgunsoftware/tk-build/archive/proof_of_concept.zip
+  - pip install tk-build
   - tk-ci-install
 
 script:
