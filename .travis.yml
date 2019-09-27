@@ -22,7 +22,7 @@ matrix:
       env: SG_QT_LIBRARY=PySide2
 
 install:
-  - pip install tk-build
+  - pip install tk-toolchain
   - tk-ci-install
 
 script:

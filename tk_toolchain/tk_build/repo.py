@@ -28,7 +28,7 @@ class Repository(object):
         # Ensure the repository object is pointing to a valid repo type.
         if (
             self.is_tk_core()
-            or self.is_tk_build()
+            or self.is_tk_toolchain()
             or self.is_python_api()
             or self.is_bundle()
         ):
@@ -59,8 +59,8 @@ class Repository(object):
             self.is_engine() or self.is_framework() or self.is_app() or self.is_config()
         )
 
-    def is_tk_build(self):
-        return self._folder_contains("pytest_tk_build")
+    def is_tk_toolchain(self):
+        return self._folder_contains("pytest_tk_toolchain")
 
     def is_python_api(self):
         return self._folder_contains("shotgun_api3")

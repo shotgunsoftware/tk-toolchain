@@ -9,7 +9,7 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from tk_build.repo import Repository
+from tk_toolchain.repo import Repository
 import os
 import inspect
 import sys
@@ -31,7 +31,7 @@ def _initialize_logging(config):
     """
     import tank
 
-    tank.LogManager().initialize_base_file_handler("tk-build-test-log")
+    tank.LogManager().initialize_base_file_handler("tk-toolchain-test-log")
     tank.LogManager().initialize_custom_handler()
     tank.LogManager().global_debug = True
 

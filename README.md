@@ -13,7 +13,7 @@ and documentation.
 
 Here are the tools that the library offers:
 
-`pytest_tk_build`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`
+`pytest_tk_toolchain`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`
 regardless of the repository. It also provides a collection of environment variables and a test engine to help application
 developers to write tests.
 
@@ -34,11 +34,11 @@ This allows the tools to quickly find other repositories they might need to run.
 
 # How can I run these tools?
 
-First, you need to install them. Simply type `python -m pip install https://github.com/shotgunsoftware/tk-build.git` and all the required modules will be installed for you.
+First, you need to install them. Simply type `python -m pip install https://github.com/shotgunsoftware/tk-toolchain.git` and all the required modules will be installed for you.
 
 Then, type `pytest` to run the unit tests inside a Toolkit repository or `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
 
-# `pytest_tk_build`
+# `pytest_tk_toolchain`
 
 This `pytest` plugins offers a collection of services that will help a Toolkit developer to write tests and run them with `pytest`. It removes the need for custom shell scripts that use the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of it's test runner.
 
@@ -75,13 +75,13 @@ allows your tests modules to share common building blocks.
 
 ##### Configures a Toolkit log file for your tests
 
-The Toolkit log for your tests will be written out in the standard Toolkit log file location under the name `tk-build-test.log`. Unless `SHOTGUN_HOME` [has been set](http://developer.shotgunsoftware.com/tk-core/utils.html?highlight=logmanager#sgtk.util.LocalFileStorageManager), the logs will be found under
+The Toolkit log for your tests will be written out in the standard Toolkit log file location under the name `tk-toolchain-test.log`. Unless `SHOTGUN_HOME` [has been set](http://developer.shotgunsoftware.com/tk-core/utils.html?highlight=logmanager#sgtk.util.LocalFileStorageManager), the logs will be found under
 
 | Platform | Location                                             |
 | -------- | ---------------------------------------------------- |
-| macOs    | `~/Library/Logs/Shotgun/tk-build-test.log`           |
-| Windows  | `%APPDATA%\Roaming\Shotgun\Logs\tk-build-test.log`   |
-| Linux    | `~/.shotgun/logs/tk-build-test.log`                  |
+| macOs    | `~/Library/Logs/Shotgun/tk-toolchain-test.log`           |
+| Windows  | `%APPDATA%\Roaming\Shotgun\Logs\tk-toolchain-test.log`   |
+| Linux    | `~/.shotgun/logs/tk-toolchain-test.log`                  |
 
 ##### Provides a test engine
 

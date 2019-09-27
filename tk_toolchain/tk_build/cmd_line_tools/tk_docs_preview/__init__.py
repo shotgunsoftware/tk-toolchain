@@ -18,11 +18,11 @@ import logging
 import webbrowser
 import optparse
 import sys
-from tk_build import ci
+from tk_toolchain import ci
 
 from .sphinx_processor import SphinxProcessor
 
-from tk_build.repo import Repository
+from tk_toolchain.repo import Repository
 
 # set up logging channel for this script
 log = logging.getLogger("sgtk.sphinx")

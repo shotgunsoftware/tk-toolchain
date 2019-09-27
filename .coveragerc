@@ -13,8 +13,8 @@
 #
 [run]
 source=
-    tk_build
-    pytest_tk_build
+    tk_toolchain
+    pytest_tk_toolchain
 
 [report]
 exclude_lines =

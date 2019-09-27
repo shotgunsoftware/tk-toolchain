@@ -23,23 +23,25 @@ def read(fname):
 
 
 setup(
-    name="tk-build",
+    name="tk-toolchain",
     version="0.1.0",
     author="Shotgun Software",
     author_email="support@shotgunsoftware.com",
     maintainer="Shotgun Software",
     maintainer_email="support@shotgunsoftware.com",
     license="MIT",
-    url="https://github.com/shotgunsoftware/tk-build",
+    url="https://github.com/shotgunsoftware/tk-toolchain",
     description="Build tools for Shotgun Toolkit.",
     long_description=read("README.MD"),
     packages=find_packages(),
     package_data={
-        "tk_build": [
-            os.path.join("cmd_line_tools", "tk_docs", "sphinx_data", "*"),
-            os.path.join("cmd_line_tools", "tk_docs", "sphinx_data", "_static", "*"),
+        "tk_toolchain": [
+            os.path.join("cmd_line_tools", "tk_docs_preview", "sphinx_data", "*"),
+            os.path.join(
+                "cmd_line_tools", "tk_docs_preview", "sphinx_data", "_static", "*"
+            ),
         ],
-        "pytest_tk_build": [os.path.join("tk-testengine", "*")],
+        "pytest_tk_toolchain": [os.path.join("tk-testengine", "*")],
     },
     python_requires=">=2.7.0",
     install_requires=[
@@ -68,9 +70,9 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     entry_points={
-        "pytest11": ["pytest_tk_build = pytest_tk_build"],
+        "pytest11": ["pytest_tk_toolchain = pytest_tk_toolchain"],
         "console_scripts": [
-            "tk-docs-preview = tk_build.cmd_line_tools.tk_docs_preview:main"
+            "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_preview:main"
         ],
     },
 )
