@@ -43,10 +43,12 @@ def setup_toolkit():
     try:
         # components also use PySide, so make sure  we have this loaded up correctly
         # before starting auto-doc.
-        from PySide import QtCore, QtGui
+        from tank.util.qt_importer import QtImporter
 
-        tank.platform.qt.QtCore = QtCore
-        tank.platform.qt.QtGui = QtGui
+        importer = QtImporter()
+
+        tank.platform.qt.QtCore = importer.QtCore
+        tank.platform.qt.QtGui = importer.QtGui
     except:
         print("WARNING: PySide was not found in the current environment.")
         pass
@@ -355,6 +357,7 @@ htmlhelp_basename = "tkdoc"
 intersphinx_mapping = {
     "python": ("https://docs.python.org/2", None),
     "PySide": ("http://pyside.github.io/docs/pyside/", None),
+    "PySide2": ("https://doc.qt.io/qtforpython", None),
     "sgtk": ("http://developer.shotgunsoftware.com/tk-core/", None),
     "tk-framework-qtwidgets": (
         "http://developer.shotgunsoftware.com/tk-framework-qtwidgets/",

@@ -41,7 +41,7 @@ setup(
         ],
         "pytest_tk_build": [os.path.join("tk-testengine", "*")],
     },
-    python_requires="~=2.7.0",
+    python_requires=">=2.7.0",
     install_requires=[
         # Tests
         "pytest>=3.5.0",

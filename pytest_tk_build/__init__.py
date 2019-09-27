@@ -9,7 +9,7 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from tk_build import repo
+from tk_build.repo import Repository
 import os
 import inspect
 import sys
@@ -49,7 +49,7 @@ def pytest_configure(config):
     cur_dir = os.path.abspath(os.curdir)
 
     # The path to the current repo root
-    repo_root = repo.find_repo_root(cur_dir)
+    repo_root = Repository.find_root(cur_dir)
     # The path to the repo above the current repo root where we expect other
     # Toolkit repositories to be.
     repos_root = os.path.dirname(repo_root)

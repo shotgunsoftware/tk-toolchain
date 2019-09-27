@@ -98,7 +98,12 @@ def main():
     try:
         import PySide  # noqa
     except ImportError:
-        log.info("Documentation can only be built using PySide.")
+        pass
+
+    try:
+        import PySide2
+    except ImportError:
+        log.info("Documentation can only be built using PySide/PySide")
         return
 
     exit_code = 1
