@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright (c) 2019 Shotgun Software Inc.
+#
+# CONFIDENTIAL AND PROPRIETARY
+#
+# This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit
+# Source Code License included in this distribution package. See LICENSE.
+# By accessing, using, copying or modifying this work you indicate your
+# agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
+# not expressly granted therein are reserved by Shotgun Software Inc.
+# -*- coding: utf-8 -*-
 
 import os
 import codecs
@@ -8,74 +18,61 @@ from setuptools import setup, find_packages
 
 def read(fname):
     file_path = os.path.join(os.path.dirname(__file__), fname)
-    return codecs.open(file_path, encoding='utf-8').read()
+    with codecs.open(file_path, encoding="utf-8") as fh:
+        return fh.read()
 
 
 setup(
-    name='tk-build',
-    version='0.1.0',
-    author='Shotgun Software',
-    author_email='support@shotgunsoftware.com',
-    maintainer='Shotgun Software',
-    maintainer_email='support@shotgunsoftware.com',
-    license='MIT',
-    url='https://github.com/shotgunsoftware/tk-build',
-    description='Build tools for Shotgun Toolkit.',
-    long_description=read('README.rst'),
-    # package_dir={"tk_build": "tk_build"},
-    # py_modules=['pytest_tk_build'],
+    name="tk-toolchain",
+    version="0.1.0",
+    author="Shotgun Software",
+    author_email="support@shotgunsoftware.com",
+    maintainer="Shotgun Software",
+    maintainer_email="support@shotgunsoftware.com",
+    license="MIT",
+    url="https://github.com/shotgunsoftware/tk-toolchain",
+    description="Build tools for Shotgun Toolkit.",
+    long_description=read("README.MD"),
     packages=find_packages(),
     package_data={
-        'tk_build': [
-            os.path.join('cmd_line_tools', 'tk_docs', 'sphinx_data', '*'),
-            os.path.join('cmd_line_tools', 'tk_docs', 'sphinx_data', '_static', '*')
+        "tk_toolchain": [
+            os.path.join("cmd_line_tools", "tk_docs_preview", "sphinx_data", "*"),
+            os.path.join(
+                "cmd_line_tools", "tk_docs_preview", "sphinx_data", "_static", "*"
+            ),
         ],
-        'pytest_tk_build': [os.path.join('tk-testengine', '*')]
+        "pytest_tank_test": [os.path.join("tk-testengine", "*")],
     },
-
-    python_requires='~=2.7.0',
+    python_requires=">=2.7.0",
     install_requires=[
-        # Framework
-        'memoize2~=0.1.1',
-        "docopt",
-
         # Tests
-        'pytest>=3.5.0',
-        'pytest-cov==2.6.0',
+        "pytest>=3.5.0",
+        "pytest-cov==2.6.0",
         "mock",
         "coverage==4.4.1",
         "unittest2",
-        "coveralls==1.1",
-        "flake8==3.6.0",
-
         # Doc generation
         "PyYAML",
         "sphinx",
-        "sphinx_rtd_theme"
+        "sphinx_rtd_theme",
     ],
     classifiers=[
-        'Development Status :: 4 - Beta',
-        'Framework :: Pytest',
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Testing',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
-        'Operating System :: OS Independent',
-        'License :: OSI Approved :: MIT License',
+        "Development Status :: 4 - Beta",
+        "Framework :: Pytest",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Testing",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+        "Operating System :: OS Independent",
+        "License :: OSI Approved :: MIT License",
     ],
     entry_points={
-        'pytest11': [
-            'pytest_tk_build = pytest_tk_build',
+        "pytest11": ["pytest_tank_test = pytest_tank_test"],
+        "console_scripts": [
+            "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_preview:main"
         ],
-        'console_scripts': [
-            'tk-clone = tk_build.cmd_line_tools.tk_clone:main',
-            'tk-docs = tk_build.cmd_line_tools.tk_docs:main',
-            'tk-ci-tests = tk_build.cmd_line_tools.tk_ci_tests:main',
-            'tk-ci-install = tk_build.cmd_line_tools.tk_ci_install:main',
-            'tk-flake8 = tk_build.cmd_line_tools.tk_flake8:main'
-        ]
-    }
+    },
 )

@@ -1,4 +1,4 @@
-# Copyright (c) 2017 Shotgun Software Inc.
+# Copyright (c) 2019 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
 #
@@ -13,10 +13,9 @@
 #
 [run]
 source=
-    tk_build
-    pytest_tk_build
+    tk_toolchain
+    pytest_tk_toolchain
 
 [report]
 exclude_lines =
     raise NotImplementedError
-

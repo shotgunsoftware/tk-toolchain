@@ -1,4 +1,5 @@
-# Copyright (c) 2018 Shotgun Software Inc.
+# -*- coding: utf-8 -*-
+# Copyright (c) 2019 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
 #
@@ -8,8 +9,9 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from tk_build import ui
-from tk_build import ci
-from tk_build import git
+from sgtk.platform import Engine
 
-__all__ = ["ui", "ci", "git"]
+
+class TestEngine(Engine):
+    def _emit_log_message(self, handler, record):
+        print(handler.format(record))

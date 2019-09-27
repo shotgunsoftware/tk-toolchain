@@ -1,4 +1,0 @@
-[flake8]
-
-exclude=
-    tk_build/cmd_line_tools/tk_docs/sphinx_data/*

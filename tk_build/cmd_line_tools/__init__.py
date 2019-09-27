@@ -1,1 +1,0 @@
-from . import tk_clone # noqa

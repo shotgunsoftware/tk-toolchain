@@ -1,4 +1,5 @@
-# Copyright (c) 2018 Shotgun Software Inc.
+# -*- coding: utf-8 -*-
+# Copyright (c) 2019 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
 #
@@ -8,19 +9,7 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-# travis-ci.org CI unit tests integration configuration file.
+from tk_toolchain import ci
+from tk_toolchain import bundle
 
-sudo: required
-
-language: python
-
-matrix:
-  include:
-    - python: 2.7
-    - python: 3.7
-
-script:
-  # Build the tool
-  - python setup.py sdist
-  # Try to pip install it.
-  - python -m pip install dist/tk-toolchain-*.tar.gz
+__all__ = "ci", "bundle"

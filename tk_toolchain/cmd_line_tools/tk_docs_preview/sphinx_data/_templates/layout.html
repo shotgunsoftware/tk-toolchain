@@ -1,12 +1,12 @@
-{# 
- # Copyright (c) 2015 Shotgun Software Inc.
- # 
+{#
+ # Copyright (c) 2019 Shotgun Software Inc.
+ #
  # CONFIDENTIAL AND PROPRIETARY
- # 
- # This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit 
+ #
+ # This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit
  # Source Code License included in this distribution package. See LICENSE.
- # By accessing, using, copying or modifying this work you indicate your 
- # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights 
+ # By accessing, using, copying or modifying this work you indicate your
+ # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
  # not expressly granted therein are reserved by Shotgun Software Inc.
  #
  #
@@ -17,7 +17,7 @@
  #
  # - https://github.com/snide/sphinx_rtd_theme
  # - http://sphinx-doc.org/templating.html
- # 
+ #
  #}
 
 {% extends "!layout.html" %}
@@ -26,10 +26,10 @@
     <a href='http://developer.shotgunsoftware.com'>
     {% if project.startswith('tk-') %}
         <img style='width: 191px;
-                height: 60px; 
+                height: 60px;
                 margin: 2px;
-                border-radius: 0px; 
-                padding: 0px;' 
+                border-radius: 0px;
+                padding: 0px;'
             src='{{ pathto('_static/logo@2x.png', 1) }}'/>
     {% else %}
         <img style='width: 191px;
@@ -51,16 +51,16 @@
     <div style='margin-top: 50px;
                 margin-left: 10px;
                 margin-right: 10px;
-                padding: 10px; 
-                color: #b3b3b3; 
+                padding: 10px;
+                color: #b3b3b3;
                 font-size: 70%;
                 border-radius: 3px;
                 background-color: #444;
                 line-height: 18px;
-                '>    
+                '>
     <style>
-        a.custom_post_menu { display: inline; 
-                             padding: 0px; 
+        a.custom_post_menu { display: inline;
+                             padding: 0px;
                              text-decoration: underline; }
     </style>
 
@@ -70,7 +70,7 @@
     {% endif %}
     For more information, please visit
     <a class=custom_post_menu href='https://support.shotgunsoftware.com/home'>Shotgun Support</a>.
-    The code associated with this documentation can be found 
+    The code associated with this documentation can be found
     <a class=custom_post_menu href='https://github.com/shotgunsoftware/{{project}}'>here</a>.
 
     </div>
@@ -91,5 +91,3 @@
 </script>
 
 {% endblock %}
-
-
