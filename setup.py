@@ -41,7 +41,7 @@ setup(
                 "cmd_line_tools", "tk_docs_preview", "sphinx_data", "_static", "*"
             ),
         ],
-        "pytest_tk_toolchain": [os.path.join("tk-testengine", "*")],
+        "pytest_tank_test": [os.path.join("tk-testengine", "*")],
     },
     python_requires=">=2.7.0",
     install_requires=[
@@ -70,7 +70,7 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     entry_points={
-        "pytest11": ["pytest_tk_toolchain = pytest_tk_toolchain"],
+        "pytest11": ["pytest_tank_test = pytest_tank_test"],
         "console_scripts": [
             "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_preview:main"
         ],
