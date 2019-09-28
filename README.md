@@ -1,5 +1,5 @@
 [![VFX Platform](https://img.shields.io/badge/vfxplatform-2020-blue.svg)](http://www.vfxplatform.com/)
-[![Python 2.6 2.7 3.7](https://img.shields.io/badge/python-2.6%20%7C%202.7%20%7C%203.7-blue.svg)](https://www.python.org/)
+[![Python 2.7 3.7](https://img.shields.io/badge/python-2.7%20%7C%203.7-blue.svg)](https://www.python.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
@@ -13,7 +13,7 @@ and documentation.
 
 Here are the tools that the library offers:
 
-`pytest_tk_toolchain`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`
+`pytest_tank_test`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`
 regardless of the repository. It also provides a collection of environment variables and a test engine to help application
 developers to write tests.
 
@@ -38,7 +38,7 @@ First, you need to install them. Simply type `python -m pip install https://gith
 
 Then, type `pytest` to run the unit tests inside a Toolkit repository or `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
 
-# `pytest_tk_toolchain`
+# `pytest_tank_test`
 
 This `pytest` plugins offers a collection of services that will help a Toolkit developer to write tests and run them with `pytest`. It removes the need for custom shell scripts that use the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of it's test runner.
 
@@ -75,13 +75,13 @@ allows your tests modules to share common building blocks.
 
 ##### Configures a Toolkit log file for your tests
 
-The Toolkit log for your tests will be written out in the standard Toolkit log file location under the name `tk-toolchain-test.log`. Unless `SHOTGUN_HOME` [has been set](http://developer.shotgunsoftware.com/tk-core/utils.html?highlight=logmanager#sgtk.util.LocalFileStorageManager), the logs will be found under
+The Toolkit log for your tests will be written out in the standard Toolkit log file location under the name `tk-test.log`. Unless `SHOTGUN_HOME` [has been set](http://developer.shotgunsoftware.com/tk-core/utils.html?highlight=logmanager#sgtk.util.LocalFileStorageManager), the logs will be found under
 
-| Platform | Location                                             |
-| -------- | ---------------------------------------------------- |
-| macOs    | `~/Library/Logs/Shotgun/tk-toolchain-test.log`           |
-| Windows  | `%APPDATA%\Roaming\Shotgun\Logs\tk-toolchain-test.log`   |
-| Linux    | `~/.shotgun/logs/tk-toolchain-test.log`                  |
+| Platform | Location                                     |
+| -------- | -------------------------------------------- |
+| macOs    | `~/Library/Logs/Shotgun/tk-test.log`         |
+| Windows  | `%APPDATA%\Roaming\Shotgun\Logs\tk-test.log` |
+| Linux    | `~/.shotgun/logs/tk-test.log`                |
 
 ##### Provides a test engine
 

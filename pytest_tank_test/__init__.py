@@ -31,7 +31,7 @@ def _initialize_logging(config):
     """
     import tank
 
-    tank.LogManager().initialize_base_file_handler("tk-test-log")
+    tank.LogManager().initialize_base_file_handler("tk-test")
     tank.LogManager().initialize_custom_handler()
     tank.LogManager().global_debug = True
 
