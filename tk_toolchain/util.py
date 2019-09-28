@@ -1,4 +1,5 @@
-# Copyright (c) 2019 Shotgun Software Inc.
+# -*- coding: utf-8 -*-
+# Copyright (c) 2018 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
 #
@@ -7,15 +8,17 @@
 # By accessing, using, copying or modifying this work you indicate your
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
-#
-# coverage configuration - used by https://coveralls.io/ integration
-#
-#
-[run]
-source=
-    tk_toolchain
-    pytest_tk_toolchain
 
-[report]
-exclude_lines =
-    raise NotImplementedError
+import os
+
+
+def expand_path(path):
+    """
+    Expand a path's environment variables and ``~``.
+
+    :param str path: Path to expand.
+
+    :returns: The expanded path.
+    """
+    # TODO: What is an env var contains an env var?
+    return os.path.expanduser(os.path.expandvars(path))

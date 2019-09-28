@@ -16,7 +16,12 @@ import codecs
 from setuptools import setup, find_packages
 
 
-def read(fname):
+def read_file(fname):
+    """
+    Reads the specified text file and returns it's contents.
+
+    :returns: The text content.
+    """
     file_path = os.path.join(os.path.dirname(__file__), fname)
     with codecs.open(file_path, encoding="utf-8") as fh:
         return fh.read()
@@ -32,7 +37,7 @@ setup(
     license="MIT",
     url="https://github.com/shotgunsoftware/tk-toolchain",
     description="Build tools for Shotgun Toolkit.",
-    long_description=read("README.MD"),
+    long_description=read_file("README.MD"),
     packages=find_packages(),
     package_data={
         "tk_toolchain": [
@@ -55,6 +60,8 @@ setup(
         "PyYAML",
         "sphinx",
         "sphinx_rtd_theme",
+        # Other tools used by devs that are useful to have.
+        "pre-commit",
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
