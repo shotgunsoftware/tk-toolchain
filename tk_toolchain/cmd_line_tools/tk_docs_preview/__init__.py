@@ -23,6 +23,7 @@ from tk_toolchain import ci
 from .sphinx_processor import SphinxProcessor
 
 from tk_toolchain.repo import Repository
+from tk_toolchain import util
 
 # set up logging channel for this script
 log = logging.getLogger("sgtk.sphinx")
@@ -156,7 +157,7 @@ to type "tk-docs-preview" to preview the documentation.
         (options, _) = parser.parse_args()
 
         # Unless bundle is overridden, we'll assume the current repo root is the bundle
-        repo = Repository(options.bundle or os.getcwd())
+        repo = Repository(util.expand_path(options.bundle or os.getcwd()))
 
         # Make sure Qt is available if we're dealing with Toolkit repos.
         if not repo.is_python_api():
@@ -173,28 +174,25 @@ to type "tk-docs-preview" to preview the documentation.
 
         # If the specified the core path, we'll use it.
         if options.core:
-            core_path = options.core
-        # If the user didn't specify the core location, then we'll guess the tk-core repo
-        # and use it, but only if the repo is for a Toolkit bundle.
-        elif repo.is_bundle():
-            core_path = os.path.join(os.path.dirname(repo.root), "tk-core")
-        else:
-            # No need to specify where the core is
+            core_path = util.expand_path(options.core)
+        # The Python API, tk-toolchain and tk-core do not require the core path to be set.
+        elif repo.is_python_api() or repo.is_tk_toolchain() or repo.is_tk_core():
             core_path = None
+        # The user didn't specify the core location, so we'll have to guess it.
+        else:
+            core_path = os.path.join(repo.parent, "tk-core")
 
         if options.verbose:
             log.setLevel(logging.DEBUG)
             log.debug("Enabling verbose logging.")
 
-        core_path = (
-            os.path.expandvars(os.path.expanduser(core_path)) if core_path else None
-        )
-        bundle_path = os.path.expandvars(os.path.expanduser(repo.root))
-
         preview_docs(core_path, repo.root)
         exit_code = 0
     except Exception as e:
-        log.exception("An exception was raised: %s" % e)
+        if options.verbose:
+            log.exception("An exception was raised: %s" % e)
+        else:
+            log.error("An exception was raised: %s" % e)
 
     log.info("Exiting with code %d. Sayonara." % exit_code)
     sys.exit(exit_code)
