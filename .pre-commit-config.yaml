@@ -3,18 +3,17 @@
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v2.2.3
   hooks:
-  # Ensures the code is real Python code
+  # Ensures the code is syntaxically correct
   - id: check-ast
+    language_version: python3
   # Ensures a file name will resolve on all platform
   - id: check-case-conflict
-  # Checks files with x bit have #!/usr/env python3
+  # Checks files with the execute bit set have shebangs
   - id: check-executables-have-shebangs
-  # Ensure there's <<<<< >>>>> from incomplete merges
+  # Ensure there's no incomplete merges
   - id: check-merge-conflict
   # Adds an empty line if missing at the end of a file.
   - id: end-of-file-fixer
-  # Ensures files contain the # -*- coding: utf-8 -*- at the beginning
-  - id: fix-encoding-pragma
   # Makes sure requirements.txt is properly formatted
   - id: requirements-txt-fixer
   # Removes trailing whitespaces.
@@ -24,4 +23,4 @@
   rev: stable
   hooks:
   - id: black
-    language_version: python3.7
+    language_version: python3
