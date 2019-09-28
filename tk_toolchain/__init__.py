@@ -8,8 +8,3 @@
 # By accessing, using, copying or modifying this work you indicate your
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
-
-from tk_toolchain import ci
-from tk_toolchain import bundle
-
-__all__ = "ci", "bundle"

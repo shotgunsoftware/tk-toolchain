@@ -70,7 +70,7 @@ class Repository(object):
         """
         Parent folder of this repo.
         """
-        return os.path.dirname(repo.root)
+        return os.path.dirname(self.root)
 
     def is_tk_core(self):
         """
