@@ -79,7 +79,8 @@ setup(
     entry_points={
         "pytest11": ["pytest_tank_test = pytest_tank_test"],
         "console_scripts": [
-            "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_preview:main"
+            "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_preview:main",
+            "tk-run-app = tk_toolchain.cmd_line_tools.tk_run_app:main",
         ],
     },
 )

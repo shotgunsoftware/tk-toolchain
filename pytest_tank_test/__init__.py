@@ -78,7 +78,11 @@ def pytest_configure(config):
         )
 
     # Exposes the root of all Toolkit reposiroties.
-    os.environ["SHOTGUN_REPOS_ROOT"] = repos_root
+    if "SHOTGUN_REPOS_ROOT" not in os.environ:
+        os.environ["SHOTGUN_REPOS_ROOT"] = repos_root
+
+    # Exposes the root of all Toolkit reposiroties.
+    os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repos_root
 
     # Exposes the location of the test engine bundle.
     os.environ["SHOTGUN_TEST_ENGINE"] = os.path.join(
