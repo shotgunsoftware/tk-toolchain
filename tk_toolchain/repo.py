@@ -67,7 +67,7 @@ class Repository(object):
 
     @property
     def name(self):
-        return os.path.dirname(self._root)
+        return os.path.basename(self._root)
 
     @property
     def parent(self):
