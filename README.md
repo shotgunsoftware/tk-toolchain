@@ -19,6 +19,8 @@ developers to write tests.
 
 `tk_docs_preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
 
+`tk_run_app`: This tool allows you to run most Toolkit application from the command line and launch it's GUI.
+
 # Pre-requisites
 
 These tools assume that all your Toolkit-based repositories are in the same folder. For example:
@@ -135,3 +137,12 @@ For all of these examples, if your folder hierarchy is similar to
 then the tool will find all the required folders on it's own and you will only need
 to type "tk-docs-preview" to preview the documentation
 ```
+
+# `tk-run-test`
+
+This tool allows you to launch apps like the Toolkit Publisher, Loader or Panel straight from the command line. Simply type `tk-run-app` from the repository of an application and the tool will launch all the registered actions.
+
+Known limitations:
+
+- Only works with applications that do not depend on DCC specific code.
+- The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`
