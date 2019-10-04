@@ -19,6 +19,7 @@ import webbrowser
 import optparse
 import sys
 from pprint import pprint
+import itertools
 
 from tk_toolchain.repo import Repository
 
@@ -47,7 +48,8 @@ def _start_toolkit(repo):
         os.path.dirname(__file__)
     )
     engine = mgr.bootstrap_engine(
-        "tk-shell", user.create_sg_connection().find_one("Project", [])
+        "tk-shell",
+        user.create_sg_connection().find_one("Project", [["is_template", "is", False]]),
     )
     engine._initialize_dark_look_and_feel()
     return engine
@@ -84,16 +86,10 @@ def main():
     #                                      'prefix': None,
     #                                      'short_name': 'work_area_info',
     #                                      'type': 'context_menu'}}}
-    for name, info in engine.commands.items():
+    for name, info in itertools.chain(engine.commands.items(), engine.panels.items()):
         if "app" not in info["properties"]:
             continue
-        if info["properties"]["app"].name == repo.name:
-            info["callback"]()
-
-    for name, info in engine.panels.items():
-        if "app" not in info["properties"]:
-            continue
-        if info["properties"]["app"].name == repo.name:
+        if info["properties"]["app"].instance_name == "tk-multi-run-this-app":
             info["callback"]()
 
     app.exec_()
