@@ -21,6 +21,9 @@ developers to write tests.
 
 `tk-run-app`: This tool allows you to run most Toolkit application from the command line and launch it's GUI.
 
+The packages also installs the `pre-commit` python package, which allows to run a pre-commit hook on a repository
+in order to avoid bad commits in source control.
+
 # Pre-requisites
 
 These tools assume that all your Toolkit-based repositories are in the same folder. For example:
@@ -33,6 +36,8 @@ These tools assume that all your Toolkit-based repositories are in the same fold
 ```
 
 This allows the tools to quickly find other repositories they might need to run.
+
+You also need to have a copy of the Python 3 interpreter available or the `black` code formatter won't be able to run. If you are using macOS or Linux, we highly recommend you use `pyenv`. You can install it on macOS via `brew` or your favorite package manager on Linux.
 
 # How can I run these tools?
 
@@ -147,3 +152,11 @@ Known limitations:
 - Only works with applications that do not depend on DCC specific code.
 - The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`
 - You cannot select the context. It will always use the first non-template project it finds on the Shotgun server as the context.
+
+# `pre-commit`
+
+The pre-commit hook should be run on all Toolkit repositories in order to keep code quality as high as possible. The most important of the pre-commit hooks is the `black` code formatter, which will take care of formatting your code according to PEP8 so you don't have to think about it. Only the files that have been modified will be reformatted.
+
+In you've just cloned a repository, type `pre-commit install` so that the hook is executed every single time you commit to `git`.
+
+If you're setting up a new repository, or if the repository you're about to work into does not have a file named `.pre-commit-config.yaml`, you can take the one at the root of this repository, copy it into your new repository and the commit it. Then, run `pre-commit install`. If you package third-party modules, you should update the `exclude` regular expression in that file so your third parties are not reformatted. Once you've properly set the exclusion list, it's also a good idea to run `pre-commit run --all` so that all files in the repository are reformatted.

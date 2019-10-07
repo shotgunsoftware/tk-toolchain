@@ -1,26 +1,29 @@
 # Styles the code properly
+# Exclude the UI files, as they are auto-generated.
+exclude: "ui\/.*py$"
 # List of super useful formatters.
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v2.2.3
-  hooks:
-  # Ensures the code is syntaxically correct
-  - id: check-ast
-    language_version: python3
-  # Ensures a file name will resolve on all platform
-  - id: check-case-conflict
-  # Checks files with the execute bit set have shebangs
-  - id: check-executables-have-shebangs
-  # Ensure there's no incomplete merges
-  - id: check-merge-conflict
-  # Adds an empty line if missing at the end of a file.
-  - id: end-of-file-fixer
-  # Makes sure requirements.txt is properly formatted
-  - id: requirements-txt-fixer
-  # Removes trailing whitespaces.
-  - id: trailing-whitespace
-# Leave black at the bottom so all touchups are done before it is run.
-- repo: https://github.com/ambv/black
-  rev: stable
-  hooks:
-  - id: black
-    language_version: python3
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.2.3
+    hooks:
+    # Ensures the code is syntaxically correct
+    - id: check-ast
+      language_version: python3
+    # Ensures a file name will resolve on all platform
+    - id: check-case-conflict
+    # Checks files with the execute bit set have shebangs
+    - id: check-executables-have-shebangs
+    # Ensure there's no incomplete merges
+    - id: check-merge-conflict
+    # Adds an empty line if missing at the end of a file.
+    - id: end-of-file-fixer
+    # Makes sure requirements.txt is properly formatted
+    - id: requirements-txt-fixer
+    # Removes trailing whitespaces.
+    - id: trailing-whitespace
+  # Leave black at the bottom so all touchups are done before it is run.
+  - repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+    - id: black
+      language_version: python3
