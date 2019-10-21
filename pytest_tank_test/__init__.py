@@ -82,7 +82,7 @@ def pytest_configure(config):
         os.environ["SHOTGUN_REPOS_ROOT"] = repos_root
 
     # Exposes the root of the current Toolkit repository.
-    os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repos_root
+    os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo_root
 
     # Exposes the location of the test engine bundle.
     os.environ["SHOTGUN_TEST_ENGINE"] = os.path.join(
