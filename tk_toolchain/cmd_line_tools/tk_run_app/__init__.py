@@ -21,6 +21,7 @@ import sys
 from pprint import pprint
 
 from tk_toolchain.repo import Repository
+from tk_toolchain.tk_testengine import get_test_engine_enviroment
 
 
 def progress_callback(value, message):
@@ -56,6 +57,8 @@ def _start_engine(repo):
     # The config assumes the app is in the current repo.
     os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo.root
 
+    os.environ.update(get_test_engine_enviroment())
+    # import pdb;pdb.set_trace()
     # Standard Toolkit bootstrap code.
     sa = sgtk.authentication.ShotgunAuthenticator()
     user = sa.get_user()
@@ -70,7 +73,7 @@ def _start_engine(repo):
     # Find the first non-template project and use it.
     # In the future we could have command-line arguments that allow to specify that.
     engine = mgr.bootstrap_engine(
-        "tk-shell",
+        "tk-testengine",
         user.create_sg_connection().find_one("Project", [["is_template", "is", False]]),
     )
     engine._initialize_dark_look_and_feel()

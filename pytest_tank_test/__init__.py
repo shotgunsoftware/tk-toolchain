@@ -10,6 +10,7 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 from tk_toolchain.repo import Repository
+from tk_toolchain.tk_testengine import get_test_engine_enviroment
 import os
 import inspect
 import sys
@@ -52,7 +53,7 @@ def pytest_configure(config):
     repo_root = Repository.find_root(cur_dir)
     # The path to the repo above the current repo root where we expect other
     # Toolkit repositories to be.
-    repos_root = os.path.dirname(repo_root)
+    repos_root = repo_root.parent
     # The path to the Toolkit core repo.
     tk_core_repo_root = os.path.join(repos_root, "tk-core")
 
@@ -85,9 +86,7 @@ def pytest_configure(config):
     os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo_root
 
     # Exposes the location of the test engine bundle.
-    os.environ["SHOTGUN_TEST_ENGINE"] = os.path.join(
-        os.path.dirname(inspect.getsourcefile(pytest_configure)), "tk-testengine"
-    )
+    os.environ.update(get_test_engine_enviroment())
 
     # FIXME: This won't be documented (or renamed) as we're not super comfortable
     # supporting TankTestBase at the moment for clients to write tests with.

@@ -14,10 +14,10 @@
 # on dev machines.
 
 engines:
-  tk-shell:
+  tk-testengine:
     location:
       type: path
-      path: $SHOTGUN_REPOS_ROOT/tk-shell
+      path: $SHOTGUN_TEST_ENGINE
     apps:
       tk-multi-run-this-app:
         location:
