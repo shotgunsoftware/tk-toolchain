@@ -52,7 +52,7 @@ setup(
     install_requires=[
         # Tests
         "pytest>=3.5.0",
-        "pytest-cov==2.6.0",
+        "pytest-cov==2.6.1",
         "mock",
         "coverage==4.4.1",
         "unittest2",
