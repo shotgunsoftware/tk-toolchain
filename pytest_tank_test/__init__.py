@@ -77,15 +77,18 @@ def pytest_configure(config):
             os.path.join(repo_root, "tests", "python"),
         )
 
-    # Exposes the root of all Toolkit reposiroties.
+    # Exposes the root of all Toolkit repositories.
     os.environ["SHOTGUN_REPOS_ROOT"] = repos_root
+
+    # Expose the current repository root.
+    os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo_root
 
     # Exposes the location of the test engine bundle.
     os.environ["SHOTGUN_TEST_ENGINE"] = os.path.join(
         os.path.dirname(inspect.getsourcefile(pytest_configure)), "tk-testengine"
     )
 
-    # FIXME: This won't be documented (or renamed) as we're not super comfortable
+    # Note: This won't be documented (or renamed) as we're not super comfortable
     # supporting TankTestBase at the moment for clients to write tests with.
     os.environ["TK_TEST_FIXTURES"] = os.path.join(repo_root, "tests", "fixtures")
 
