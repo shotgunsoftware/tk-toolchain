@@ -34,12 +34,13 @@ setup(
     author_email="support@shotgunsoftware.com",
     maintainer="Shotgun Software",
     maintainer_email="support@shotgunsoftware.com",
-    license="MIT",
+    license=read_file("LICENSE"),
     url="https://github.com/shotgunsoftware/tk-toolchain",
     description="Build tools for Shotgun Toolkit.",
-    long_description=read_file("README.MD"),
+    long_description=read_file("README.md"),
     packages=find_packages(),
     package_data={
+        "": ["README.md", "LICENSE"],
         "tk_toolchain": [
             os.path.join("cmd_line_tools", "tk_docs_preview", "sphinx_data", "*"),
             os.path.join(
