@@ -30,7 +30,7 @@ def read_file(fname):
 
 setup(
     name="tk-toolchain",
-    version="0.1.0",
+    version="0.1.0.dev",
     author="Shotgun Software",
     author_email="support@shotgunsoftware.com",
     maintainer="Shotgun Software",
