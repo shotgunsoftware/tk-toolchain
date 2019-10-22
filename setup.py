@@ -12,6 +12,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import codecs
 from setuptools import setup, find_packages
 
@@ -59,7 +60,9 @@ setup(
         "unittest2",
         # Doc generation
         "PyYAML",
-        "sphinx",
+        # sphinx 2.0 is Python 3 only, so we have to cap out the version
+        # we use on Python 2.
+        "sphinx<=1.8.5" if sys.version_info[0] == 2 else "sphinx",
         "sphinx_rtd_theme",
         # Other tools used by devs that are useful to have.
         "pre-commit",
