@@ -53,7 +53,7 @@ setup(
     python_requires=">=2.7.0",
     install_requires=[
         # Tests
-        "pytest>=3.5.0",
+        "pytest==4.6.6",
         "pytest-cov==2.6.1",
         "mock",
         "coverage==4.4.1",
