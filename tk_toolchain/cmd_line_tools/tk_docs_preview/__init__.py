@@ -88,7 +88,9 @@ def preview_docs(core_path, bundle_path):
 # script entry point
 
 
-def main():
+def main(arguments=None):
+
+    arguments = arguments or sys.argv
 
     log.setLevel(logging.INFO)
     ch = logging.StreamHandler()
@@ -154,7 +156,7 @@ to type "tk-docs-preview" to preview the documentation.
         )
 
         # parse cmd line
-        (options, _) = parser.parse_args()
+        (options, _) = parser.parse_args(arguments)
 
         # Unless bundle is overridden, we'll assume the current repo root is the bundle
         repo = Repository(util.expand_path(options.bundle or os.getcwd()))
@@ -195,4 +197,4 @@ to type "tk-docs-preview" to preview the documentation.
             log.error("An exception was raised: %s" % e)
 
     log.info("Exiting with code %d. Sayonara." % exit_code)
-    sys.exit(exit_code)
+    return exit_code
