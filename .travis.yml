@@ -35,7 +35,7 @@ script:
   # Pip install the module in dev mode so we can get coverage metrics.
   - pip install -e .
   # Run the tests for the toolchain.
-  - pytest --cov
+  - pytest --cov --verbose
   # Build the distribution.
   - python setup.py sdist
   # Try to pip install it.
