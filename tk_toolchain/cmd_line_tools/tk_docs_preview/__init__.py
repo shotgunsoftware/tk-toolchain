@@ -39,7 +39,7 @@ class OptionParserLineBreakingEpilog(optparse.OptionParser):
         return self.epilog
 
 
-def preview_docs(core_path, bundle_path):
+def preview_docs(core_path, bundle_path, is_build_only):
     """
     Generate doc preview in a temp folder and show it in
     a web browser.
@@ -77,7 +77,7 @@ def preview_docs(core_path, bundle_path):
     # build docs
     location = sphinx_processor.build_docs(doc_name, "vX.Y.Z")
 
-    if not ci.is_in_ci_environment():
+    if not is_build_only:
         # show in browser
         webbrowser.open_new("file://%s" % os.path.join(location, "index.html"))
 
@@ -155,6 +155,13 @@ to type "tk-docs-preview" to preview the documentation.
             help="Path to the app/engine/fw you want to process. Defaults to the current repository location.",
         )
 
+        parser.add_option(
+            "--build-only",
+            default=False,
+            action="store_true",
+            help="Build the documentation but do not open a browser to display it.",
+        )
+
         # parse cmd line
         (options, _) = parser.parse_args(arguments)
 
@@ -188,7 +195,7 @@ to type "tk-docs-preview" to preview the documentation.
             log.setLevel(logging.DEBUG)
             log.debug("Enabling verbose logging.")
 
-        preview_docs(core_path, repo.root)
+        preview_docs(core_path, repo.root, options.build_only)
         exit_code = 0
     except Exception as e:
         if options.verbose:
