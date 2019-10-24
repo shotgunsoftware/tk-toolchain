@@ -1,5 +1,5 @@
-[![VFX Platform](https://img.shields.io/badge/vfxplatform-2020-blue.svg)](http://www.vfxplatform.com/)
 [![Python 2.7 3.7](https://img.shields.io/badge/python-2.7%20%7C%203.7-blue.svg)](https://www.python.org/)
+[![codecov](https://codecov.io/gh/shotgunsoftware/tk-toolchain/branch/master/graph/badge.svg)](https://codecov.io/gh/shotgunsoftware/tk-toolchain)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
