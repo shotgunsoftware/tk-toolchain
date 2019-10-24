@@ -22,7 +22,7 @@ matrix:
 # Clone all repos that will be required for testing the Repository class.
 install:
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-core ../tk-core
-    - git clone --depth 1 https://github.com/shotgunsoftware/tk-qtwidgets ../tk-framework-qtwidgets
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-framework-qtwidgets ../tk-framework-qtwidgets
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-multi-publish2 ../tk-multi-publish2
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-maya ../tk-framework-maya
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-config-basic ../tk-config-basic
