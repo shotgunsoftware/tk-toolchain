@@ -40,8 +40,8 @@ setup(
     description="Build tools for Shotgun Toolkit.",
     long_description=read_file("README.md"),
     packages=find_packages(),
+    data_files=[("", ["LICENSE"])],
     package_data={
-        "": ["README.md", "LICENSE"],
         "tk_toolchain": [
             os.path.join("cmd_line_tools", "tk_docs_preview", "sphinx_data", "*"),
             os.path.join(
