@@ -30,12 +30,12 @@ install:
     - pip install pytest pytest-cov
 
 script:
-  # Run the tests for the toolchain.
-  - pytest --cov
   # Build the tool pip package
   - python setup.py sdist
   # Try to pip install it.
   - python -m pip install dist/tk-toolchain-*.tar.gz
+  # Run the tests for the toolchain.
+  - pytest --cov
 
 # Push our coverage to codecov
 after_success: bash <(curl -s https://codecov.io/bash)
