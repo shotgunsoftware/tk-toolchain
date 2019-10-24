@@ -21,6 +21,10 @@ TK_FRAMEWORK_ROOT = os.path.join(REPOS_ROOT, "tk-framework-shotgunutils")
 PYTHON_API_ROOT = os.path.join(REPOS_ROOT, "python-api")
 
 
+# Note: These tests are likely to introduce side effects because they monkey patch toolkit.
+# For now we're running the in-process because it makes coverage more easier to retrieve
+
+
 def test_generate_doc_without_any_parameters():
     """
     Make sure we can generate documentation from inside a repo without any arguments.

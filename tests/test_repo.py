@@ -19,7 +19,7 @@ CURRENT_REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
 REPOS_ROOT = os.path.dirname(CURRENT_REPO_ROOT)
 
 TK_CORE_ROOT = os.path.join(REPOS_ROOT, "tk-core")
-TK_FRAMEWORK_ROOT = os.path.join(REPOS_ROOT, "tk-framework-qtwidgets")
+TK_FRAMEWORK_ROOT = os.path.join(REPOS_ROOT, "tk-framework-shotgunutils")
 TK_APP_ROOT = os.path.join(REPOS_ROOT, "tk-multi-publish2")
 TK_ENGINE_ROOT = os.path.join(REPOS_ROOT, "tk-maya")
 TK_CONFIG_ROOT = os.path.join(REPOS_ROOT, "tk-config-basic")
