@@ -19,8 +19,20 @@ matrix:
     - python: 2.7
     - python: 3.7
 
+# Clone all repos that will be required for testing the Repository class.
+install:
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-core ../tk-core
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-qtwidgets ../tk-framework-qtwidgets
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-multi-publish2 ../tk-multi-publish2
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-maya ../tk-framework-maya
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-config-basic ../tk-config-basic
+    - git clone --depth 1 https://github.com/shotgunsoftware/python-api ../python-api
+    - pip install pytest pytest-cov
+
 script:
   # Build the tool
   - python setup.py sdist
   # Try to pip install it.
   - python -m pip install dist/tk-toolchain-*.tar.gz
+  - pytest --cov
+  - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"

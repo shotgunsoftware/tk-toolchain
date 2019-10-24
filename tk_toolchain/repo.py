@@ -58,6 +58,14 @@ class Repository(object):
         # Repo didn't match anything, abort.
         raise RuntimeError("Unexpected repository layout at {0}".format(self._root))
 
+    def __repr__(self):
+        """
+        Representation of this object.
+        """
+        return "<{}.{} for {}>".format(
+            self.__class__.__module__, self.__class__.__name__, self._root
+        )
+
     @property
     def root(self):
         """
