@@ -13,5 +13,16 @@ from sgtk.platform import Engine
 
 
 class TestEngine(Engine):
+    """
+    Simple test engines that will just run any app you throw at it.
+    """
+
+    def pre_app_init(self):
+        """
+        Sets the dark theme
+        """
+        self._initialize_dark_look_and_feel()
+        super(TestEngine, self).pre_app_init()
+
     def _emit_log_message(self, handler, record):
         print(handler.format(record))

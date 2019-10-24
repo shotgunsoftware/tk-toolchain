@@ -21,9 +21,6 @@ developers to write tests.
 
 `tk-run-app`: This tool allows you to run most Toolkit application from the command line and launch it's GUI.
 
-The packages also installs the `pre-commit` python package, which allows to run a pre-commit hook on a repository
-in order to avoid bad commits in source control.
-
 # Pre-requisites
 
 These tools assume that all your Toolkit-based repositories are in the same folder. For example:
@@ -37,7 +34,7 @@ These tools assume that all your Toolkit-based repositories are in the same fold
 
 This allows the tools to quickly find other repositories they might need to run.
 
-You also need to have a copy of the Python 3 interpreter available or the `black` code formatter won't be able to run. If you are using macOS or Linux, we highly recommend you use `pyenv`. You can install it on macOS via `brew` or your favorite package manager on Linux.
+You also need to have a copy of the Python 3 interpreter available or the `black` code formatter won't be able to run. If you are using macOS or Linux, we highly recommend you use `pyenv`. You can install it on macOS via `brew` or your favorite package manager on Linux. On Windows, download it from [python.org](https://www.python.org)
 
 # How can I run these tools?
 
@@ -159,4 +156,4 @@ The pre-commit hook should be run on all Toolkit repositories in order to keep c
 
 In you've just cloned a repository, type `pre-commit install` so that the hook is executed every single time you commit to `git`.
 
-If you're setting up a new repository, or if the repository you're about to work into does not have a file named `.pre-commit-config.yaml`, you can take the one at the root of this repository, copy it into your new repository and the commit it. Then, run `pre-commit install`. If you package third-party modules, you should update the `exclude` regular expression in that file so your third parties are not reformatted. Once you've properly set the exclusion list, it's also a good idea to run `pre-commit run --all` so that all files in the repository are reformatted.
+If you're setting up a new repository, or if the repository you're about to work into does not have a file named `.pre-commit-config.yaml`, you can take the one at the root of this repository, copy it into your new repository andn the commit it. Then, run `pre-commit install`. If you've committed third-party modules inside your repo, you should update the `exclude` regular expression in that file so your third-parties are not reformatted. Once you've properly set the exclusion list, it's also a good idea to run `pre-commit run --all` so that all files in the repository are reformatted.

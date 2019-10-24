@@ -76,7 +76,6 @@ def _start_engine(repo):
         "tk-testengine",
         user.create_sg_connection().find_one("Project", [["is_template", "is", False]]),
     )
-    engine._initialize_dark_look_and_feel()
     return engine
 
 
