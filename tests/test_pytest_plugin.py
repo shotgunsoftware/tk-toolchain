@@ -36,5 +36,5 @@ def test_shotgun_test_engine_env_var():
     Ensure SHOTGUN_TEST_ENGINE is set.
     """
     assert os.environ.get("SHOTGUN_TEST_ENGINE") == os.path.join(
-        os.path.dirname(pytest_tank_test.__file__), "tk-testengine"
+        os.path.join(CURRENT_REPO_ROOT, "tk_toolchain", "tk_testengine")
     )
