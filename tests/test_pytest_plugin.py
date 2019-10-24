@@ -18,14 +18,23 @@ REPOS_ROOT = os.path.dirname(CURRENT_REPO_ROOT)
 
 
 def test_shotgun_repos_root():
+    """
+    Ensure SHOTGUN_REPOS_ROOT is set.
+    """
     assert os.environ.get("SHOTGUN_REPOS_ROOT") == REPOS_ROOT
 
 
 def test_shotgun_current_repo_root():
+    """
+    Ensure SHOTGUN_CURRENT_REPO_ROOT is set.
+    """
     assert os.environ.get("SHOTGUN_CURRENT_REPO_ROOT") == CURRENT_REPO_ROOT
 
 
 def test_shotgun_test_engine_env_var():
+    """
+    Ensure SHOTGUN_TEST_ENGINE is set.
+    """
     assert os.environ.get("SHOTGUN_TEST_ENGINE") == os.path.join(
         os.path.dirname(pytest_tank_test.__file__), "tk-testengine"
     )
