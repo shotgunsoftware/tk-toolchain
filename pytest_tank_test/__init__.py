@@ -80,7 +80,7 @@ def pytest_configure(config):
 
     # Exposes the root of all Toolkit repositories.
     if "SHOTGUN_REPOS_ROOT" not in os.environ:
-        os.environ["SHOTGUN_REPOS_ROOT"] = repos_root
+        os.environ["SHOTGUN_REPOS_ROOT"] = repo.parent
 
     # Exposes the root of the current Toolkit repository.
     os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo.root
