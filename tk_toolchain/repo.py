@@ -43,7 +43,7 @@ class Repository(object):
 
         return child_path
 
-    def __init__(self, path):
+    def __init__(self, path=None):
         """
         :param str path: Path inside a repository.
         """
@@ -58,6 +58,14 @@ class Repository(object):
         # Repo didn't match anything, abort.
         raise RuntimeError("Unexpected repository layout at {0}".format(self._root))
 
+    def __repr__(self):
+        """
+        Representation of this object.
+        """
+        return "<{}.{} for {}>".format(
+            self.__class__.__module__, self.__class__.__name__, self._root
+        )
+
     @property
     def root(self):
         """
@@ -71,6 +79,13 @@ class Repository(object):
         Parent folder of this repo.
         """
         return os.path.dirname(self.root)
+
+    @property
+    def name(self):
+        """
+        Name of this repo.
+        """
+        return os.path.basename(self.root)
 
     def is_tk_core(self):
         """
@@ -110,7 +125,7 @@ class Repository(object):
 
         :returns: ``True`` is the repository is for a configuration, ``False`` otherwise.
         """
-        return os.path.basename(self._root).startswith("tk-config")
+        return self.name.startswith("tk-config")
 
     def is_toolkit_component(self):
         """

@@ -19,8 +19,27 @@ matrix:
     - python: 2.7
     - python: 3.7
 
+# Clone all repos that will be required for testing the Repository class.
+install:
+    # These first two are currently being ported to Python and will be loaded during the
+    # tests, so they need to actually be usable.
+    - git clone --depth 1 --branch SG-13264-python-3-compat https://github.com/shotgunsoftware/tk-core ../tk-core
+    - git clone --depth 1 --branch SG-13267_python3_part_two https://github.com/shotgunsoftware/tk-framework-shotgunutils ../tk-framework-shotgunutils
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-multi-publish2 ../tk-multi-publish2
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-maya ../tk-maya
+    - git clone --depth 1 https://github.com/shotgunsoftware/tk-config-basic ../tk-config-basic
+    - git clone --depth 1 https://github.com/shotgunsoftware/python-api ../python-api
+    - pip install pytest pytest-cov PySide2
+
 script:
-  # Build the tool
+  # Pip install the module in dev mode so we can get coverage metrics.
+  - pip install -e .
+  # Run the tests for the toolchain.
+  - pytest --cov --verbose
+  # Build the distribution.
   - python setup.py sdist
   # Try to pip install it.
-  - python -m pip install dist/tk-toolchain-*.tar.gz
+  - python -m pip install -U dist/tk-toolchain-*.tar.gz
+
+# Push our coverage to codecov
+after_success: bash <(curl -s https://codecov.io/bash)

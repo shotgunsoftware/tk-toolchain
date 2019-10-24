@@ -39,7 +39,7 @@ class OptionParserLineBreakingEpilog(optparse.OptionParser):
         return self.epilog
 
 
-def preview_docs(core_path, bundle_path):
+def preview_docs(core_path, bundle_path, is_build_only):
     """
     Generate doc preview in a temp folder and show it in
     a web browser.
@@ -77,7 +77,7 @@ def preview_docs(core_path, bundle_path):
     # build docs
     location = sphinx_processor.build_docs(doc_name, "vX.Y.Z")
 
-    if not ci.is_in_ci_environment():
+    if not is_build_only:
         # show in browser
         webbrowser.open_new("file://%s" % os.path.join(location, "index.html"))
 
@@ -88,7 +88,9 @@ def preview_docs(core_path, bundle_path):
 # script entry point
 
 
-def main():
+def main(arguments=None):
+
+    arguments = arguments or sys.argv
 
     log.setLevel(logging.INFO)
     ch = logging.StreamHandler()
@@ -153,8 +155,15 @@ to type "tk-docs-preview" to preview the documentation.
             help="Path to the app/engine/fw you want to process. Defaults to the current repository location.",
         )
 
+        parser.add_option(
+            "--build-only",
+            default=False,
+            action="store_true",
+            help="Build the documentation but do not open a browser to display it.",
+        )
+
         # parse cmd line
-        (options, _) = parser.parse_args()
+        (options, _) = parser.parse_args(arguments)
 
         # Unless bundle is overridden, we'll assume the current repo root is the bundle
         repo = Repository(util.expand_path(options.bundle or os.getcwd()))
@@ -170,7 +179,7 @@ to type "tk-docs-preview" to preview the documentation.
                     log.error(
                         "PySide or PySide2 are required to build the documentation."
                     )
-                    return
+                    return 1
 
         # If the specified the core path, we'll use it.
         if options.core:
@@ -186,7 +195,7 @@ to type "tk-docs-preview" to preview the documentation.
             log.setLevel(logging.DEBUG)
             log.debug("Enabling verbose logging.")
 
-        preview_docs(core_path, repo.root)
+        preview_docs(core_path, repo.root, options.build_only)
         exit_code = 0
     except Exception as e:
         if options.verbose:
@@ -195,4 +204,4 @@ to type "tk-docs-preview" to preview the documentation.
             log.error("An exception was raised: %s" % e)
 
     log.info("Exiting with code %d. Sayonara." % exit_code)
-    sys.exit(exit_code)
+    return exit_code

@@ -24,7 +24,7 @@ def _update_sys_path(reason, path):
         sys.path.insert(0, path)
 
 
-def _initialize_logging(config):
+def _initialize_logging():
     """
     Sets up a log file for the unit tests and optionally logs everything to the
     console.
@@ -49,18 +49,18 @@ def pytest_configure(config):
     cur_dir = os.path.abspath(os.curdir)
 
     # The path to the current repo root
-    repo_root = Repository.find_root(cur_dir)
-    # The path to the repo above the current repo root where we expect other
-    # Toolkit repositories to be.
-    repos_root = os.path.dirname(repo_root)
+    repo = Repository(cur_dir)
+
+    print("Repository found at {}".format(repo.root))
+
     # The path to the Toolkit core repo.
-    tk_core_repo_root = os.path.join(repos_root, "tk-core")
+    tk_core_repo_root = os.path.join(repo.parent, "tk-core")
 
     # Adds the tk-core/python folder to the PYTHONPATH so we can import Toolkit
     _update_sys_path("Adding Toolkit folder", os.path.join(tk_core_repo_root, "python"))
 
     # Now that Toolkit has been added to the PYTHONPATH, we can set up logging.
-    _initialize_logging(config)
+    _initialize_logging()
 
     # Adds the tk-core/tests/python folder to the PYTHONPATH so TanTestBase
     # is available.
@@ -71,17 +71,17 @@ def pytest_configure(config):
 
     # Add the <current-repo>/tests/python folder to the PYTHONPATH so custom
     # python modules from it can be used in the tests.
-    if os.path.basename(repo_root).lower() != "tk-core":
+    if os.path.basename(repo.name).lower() != "tk-core":
         _update_sys_path(
             "Adding repository tests/python folder",
-            os.path.join(repo_root, "tests", "python"),
+            os.path.join(repo.root, "tests", "python"),
         )
 
     # Exposes the root of all Toolkit repositories.
-    os.environ["SHOTGUN_REPOS_ROOT"] = repos_root
+    os.environ["SHOTGUN_REPOS_ROOT"] = repo.parent
 
     # Expose the current repository root.
-    os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo_root
+    os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo.root
 
     # Exposes the location of the test engine bundle.
     os.environ["SHOTGUN_TEST_ENGINE"] = os.path.join(
@@ -90,7 +90,7 @@ def pytest_configure(config):
 
     # Note: This won't be documented (or renamed) as we're not super comfortable
     # supporting TankTestBase at the moment for clients to write tests with.
-    os.environ["TK_TEST_FIXTURES"] = os.path.join(repo_root, "tests", "fixtures")
+    os.environ["TK_TEST_FIXTURES"] = os.path.join(repo.root, "tests", "fixtures")
 
 
 def pytest_ignore_collect(path, config):
