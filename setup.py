@@ -12,6 +12,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import codecs
 from setuptools import setup, find_packages
 
@@ -29,16 +30,17 @@ def read_file(fname):
 
 setup(
     name="tk-toolchain",
-    version="0.1.0",
+    version="0.1.0.dev",
     author="Shotgun Software",
     author_email="support@shotgunsoftware.com",
     maintainer="Shotgun Software",
     maintainer_email="support@shotgunsoftware.com",
-    license="MIT",
+    license=read_file("LICENSE"),
     url="https://github.com/shotgunsoftware/tk-toolchain",
     description="Build tools for Shotgun Toolkit.",
-    long_description=read_file("README.MD"),
+    long_description=read_file("README.md"),
     packages=find_packages(),
+    data_files=[("", ["LICENSE"])],
     package_data={
         "tk_toolchain": [
             os.path.join("cmd_line_tools", "tk_docs_preview", "sphinx_data", "*"),
@@ -51,14 +53,16 @@ setup(
     python_requires=">=2.7.0",
     install_requires=[
         # Tests
-        "pytest>=3.5.0",
+        "pytest==4.6.6",
         "pytest-cov==2.6.1",
         "mock",
         "coverage==4.4.1",
         "unittest2",
         # Doc generation
         "PyYAML",
-        "sphinx",
+        # sphinx 2.0 is Python 3 only, so we have to cap out the version
+        # we use on Python 2.
+        "sphinx<=1.8.5" if sys.version_info[0] == 2 else "sphinx",
         "sphinx_rtd_theme",
         # Other tools used by devs that are useful to have.
         "pre-commit",
