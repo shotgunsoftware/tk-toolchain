@@ -38,4 +38,4 @@ script:
   - python -m pip install dist/tk-toolchain-*.tar.gz
 
 # Push our coverage to codecov
-after_sucess: bash <(curl -s https://codecov.io/bash)
+after_success: bash <(curl -s https://codecov.io/bash)
