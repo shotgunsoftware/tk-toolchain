@@ -29,7 +29,7 @@ install:
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-maya ../tk-maya
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-config-basic ../tk-config-basic
     - git clone --depth 1 https://github.com/shotgunsoftware/python-api ../python-api
-    - pip install pytest pytest-cov
+    - pip install pytest pytest-cov PySide2
 
 script:
   # Pip install the module in dev mode so we can get coverage metrics.

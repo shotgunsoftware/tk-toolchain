@@ -179,7 +179,7 @@ to type "tk-docs-preview" to preview the documentation.
                     log.error(
                         "PySide or PySide2 are required to build the documentation."
                     )
-                    return
+                    return 1
 
         # If the specified the core path, we'll use it.
         if options.core:
