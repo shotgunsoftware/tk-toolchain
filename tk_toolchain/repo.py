@@ -55,8 +55,6 @@ class Repository(object):
             or self.is_toolkit_component()
         ):
             return
-        # Repo didn't match anything, abort.
-        raise RuntimeError("Unexpected repository layout at {0}".format(self._root))
 
     def __repr__(self):
         """
