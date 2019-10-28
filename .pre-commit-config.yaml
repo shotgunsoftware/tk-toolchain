@@ -1,3 +1,13 @@
+# Copyright (c) 2019 Shotgun Software Inc.
+#
+# CONFIDENTIAL AND PROPRIETARY
+#
+# This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit
+# Source Code License included in this distribution package. See LICENSE.
+# By accessing, using, copying or modifying this work you indicate your
+# agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
+# not expressly granted therein are reserved by Shotgun Software Inc.
+
 # Styles the code properly
 # Exclude the UI files, as they are auto-generated.
 exclude: "ui\/.*py$"
@@ -21,6 +31,8 @@ repos:
     - id: requirements-txt-fixer
     # Removes trailing whitespaces.
     - id: trailing-whitespace
+    - id: flake8
+      args: [--select=F]
   # Leave black at the bottom so all touchups are done before it is run.
   - repo: https://github.com/ambv/black
     rev: stable

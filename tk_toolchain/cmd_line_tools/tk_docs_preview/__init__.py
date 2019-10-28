@@ -18,7 +18,6 @@ import logging
 import webbrowser
 import optparse
 import sys
-from tk_toolchain import ci
 
 from .sphinx_processor import SphinxProcessor
 
@@ -174,7 +173,7 @@ to type "tk-docs-preview" to preview the documentation.
                 import PySide  # noqa
             except ImportError:
                 try:
-                    import PySide2
+                    import PySide2  # noqa
                 except ImportError:
                     log.error(
                         "PySide or PySide2 are required to build the documentation."

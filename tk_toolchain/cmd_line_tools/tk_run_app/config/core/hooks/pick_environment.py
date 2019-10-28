@@ -9,7 +9,6 @@ Hook which chooses an environment file to use based on the current context.
 This file is almost always overridden by a standard config.
 """
 
-import os
 from sgtk import Hook
 
 

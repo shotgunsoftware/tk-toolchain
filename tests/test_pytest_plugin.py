@@ -11,8 +11,6 @@
 
 import os
 
-import pytest_tank_test
-
 CURRENT_REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
 REPOS_ROOT = os.path.dirname(CURRENT_REPO_ROOT)
 

@@ -14,9 +14,6 @@
 # imports and general setup
 
 import os
-import logging
-import webbrowser
-import optparse
 import sys
 from pprint import pprint
 

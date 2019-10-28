@@ -74,10 +74,6 @@ class Repository(object):
         return self._root
 
     @property
-    def name(self):
-        return os.path.basename(self._root)
-
-    @property
     def parent(self):
         """
         Parent folder of this repo.
