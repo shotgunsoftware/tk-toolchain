@@ -55,9 +55,9 @@ setup(
         # Tests
         "pytest==4.6.6",
         "pytest-cov==2.6.1",
-        "mock",
+        "mock==2.0.0",
         "coverage==4.4.1",
-        "unittest2",
+        "unittest2==1.1.0",
         # Doc generation
         "PyYAML",
         # sphinx 2.0 is Python 3 only, so we have to cap out the version
