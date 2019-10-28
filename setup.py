@@ -55,6 +55,8 @@ setup(
         # Tests
         "pytest==4.6.6",
         "pytest-cov==2.6.1",
+        # Locking down these 3 tools to these specific versions is important
+        # because we should use the same tools that tk-core ships with.
         "mock==2.0.0",
         "coverage==4.4.1",
         "unittest2==1.1.0",
