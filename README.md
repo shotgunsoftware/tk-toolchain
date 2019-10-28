@@ -21,6 +21,34 @@ developers to write tests.
 
 `tk-run-app`: This tool allows you to run most Toolkit application from the command line and launch it's GUI.
 
+# How can I install `tk-toolchain`?
+
+## Installing the `master` branch from GitHub
+
+If you wish to install the current `master` branch, use the following command:
+
+```
+pip install git+https://github.com/shotgunsoftware/tk-toolchain.git#egg=tk-toolchain
+```
+
+## Installing any branch from GitHub
+
+If you wish to install a development branch, use the following command:
+
+```
+pip install git+https://github.com/shotgunsoftware/tk-toolchain.git@development_branch#egg=tk-toolchain
+```
+
+## Installing for development or debugging
+
+If you want to add a feature or debug the package, first clone the repository and then use the following command inside it:
+
+```
+pip install -e .
+```
+
+Any changes you make will immediately be accessible from the package.
+
 # Pre-requisites
 
 These tools assume that all your Toolkit-based repositories are in the same folder. For example:
