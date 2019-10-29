@@ -18,7 +18,6 @@ import logging
 import webbrowser
 import optparse
 import sys
-from tk_toolchain import ci
 
 from .sphinx_processor import SphinxProcessor
 
@@ -166,11 +165,10 @@ to type "tk-docs-preview" to preview the documentation.
         (options, _) = parser.parse_args(arguments)
 
         # Unless bundle is overridden, we'll assume the current repo root is the bundle
-
         try:
             repo = Repository(util.expand_path(options.bundle or os.getcwd()))
         except RuntimeError:
-            log.info("This does not appear to be a Toolkit repository.")
+            log.info("This does not appear to be a known repository type.")
             return 0
 
         if not os.path.exists(os.path.join(repo.root, "docs")):

@@ -10,12 +10,14 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 import os
+import tempfile
 
 from tk_toolchain.cmd_line_tools import tk_docs_preview
 
 CURRENT_REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
 REPOS_ROOT = os.path.dirname(CURRENT_REPO_ROOT)
 
+TK_CONFIG_ROOT = os.path.join(REPOS_ROOT, "tk-config-basic")
 TK_CORE_ROOT = os.path.join(REPOS_ROOT, "tk-core")
 TK_FRAMEWORK_ROOT = os.path.join(REPOS_ROOT, "tk-framework-shotgunutils")
 PYTHON_API_ROOT = os.path.join(REPOS_ROOT, "python-api")
@@ -30,7 +32,7 @@ def test_generate_doc_without_any_parameters():
     Make sure we can generate documentation from inside a repo without any arguments.
     """
     cwd = os.getcwd()
-    os.chdir(os.path.join(REPOS_ROOT, "tk-core"))
+    os.chdir(TK_FRAMEWORK_ROOT)
     try:
         assert tk_docs_preview.main(["tk_docs_preview", "--build-only"]) == 0
     finally:
@@ -72,6 +74,40 @@ def test_generate_doc_with_tk_framework_shotgunutils():
                 "tk_docs_preview",
                 "--build-only",
                 "--bundle={}".format(TK_FRAMEWORK_ROOT),
+                "--core={}".format(TK_CORE_ROOT),
+            ]
+        )
+        == 0
+    )
+
+
+def test_generate_doc_with_repo_without_doc():
+    """
+    Make sure we can generate documentation for a bundle that uses tk-core
+    """
+    assert (
+        tk_docs_preview.main(
+            [
+                "tk_docs_preview",
+                "--build-only",
+                "--bundle={}".format(TK_CONFIG_ROOT),
+                "--core={}".format(TK_CORE_ROOT),
+            ]
+        )
+        == 0
+    )
+
+
+def test_generate_doc_with_unknown_folder():
+    """
+    Make sure we can generate documentation for a bundle that uses tk-core
+    """
+    assert (
+        tk_docs_preview.main(
+            [
+                "tk_docs_preview",
+                "--build-only",
+                "--bundle={}".format(tempfile.gettempdir()),
                 "--core={}".format(TK_CORE_ROOT),
             ]
         )

@@ -77,7 +77,9 @@ def pytest_configure(config):
 
     # Add the <current-repo>/tests/python folder to the PYTHONPATH so custom
     # python modules from it can be used in the tests.
-    if os.path.basename(repo.name).lower() != "tk-core":
+    # If we're running tests inside tk-core, we shouldn't add it as tk-toolchain
+    # includes everything we need.
+    if repo.is_tk_core() is False:
         _update_sys_path(
             "Adding repository tests/python folder",
             os.path.join(repo.root, "tests", "python"),
