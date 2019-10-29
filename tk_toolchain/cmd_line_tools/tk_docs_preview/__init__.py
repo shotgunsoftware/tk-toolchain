@@ -166,7 +166,16 @@ to type "tk-docs-preview" to preview the documentation.
         (options, _) = parser.parse_args(arguments)
 
         # Unless bundle is overridden, we'll assume the current repo root is the bundle
-        repo = Repository(util.expand_path(options.bundle or os.getcwd()))
+
+        try:
+            repo = Repository(util.expand_path(options.bundle or os.getcwd()))
+        except RuntimeError:
+            log.info("This does not appear to be a Toolkit repository.")
+            return 0
+
+        if not os.path.exists(os.path.join(repo.root, "docs")):
+            log.info("No documentation was found.")
+            return 0
 
         # Make sure Qt is available if we're dealing with Toolkit repos.
         if not repo.is_python_api():
