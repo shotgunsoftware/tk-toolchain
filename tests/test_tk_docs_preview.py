@@ -10,27 +10,33 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 import os
+import tempfile
 
 from tk_toolchain.cmd_line_tools import tk_docs_preview
 
 CURRENT_REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
 REPOS_ROOT = os.path.dirname(CURRENT_REPO_ROOT)
 
+TK_CONFIG_ROOT = os.path.join(REPOS_ROOT, "tk-config-basic")
 TK_CORE_ROOT = os.path.join(REPOS_ROOT, "tk-core")
 TK_FRAMEWORK_ROOT = os.path.join(REPOS_ROOT, "tk-framework-shotgunutils")
 PYTHON_API_ROOT = os.path.join(REPOS_ROOT, "python-api")
 
 
-# Note: These tests are likely to introduce side effects because they monkey patch toolkit.
-# For now we're running the in-process because it makes coverage more easier to retrieve
+# Note: These tests are likely to introduce side effects because they monkey
+# patch toolkit. For now we're running them in-process because it makes
+# coverage easier to retrieve
 
 
-def test_generate_doc_without_any_parameters():
+def test_without_any_parameters():
     """
-    Make sure we can generate documentation from inside a repo without any arguments.
+    Make sure we can generate documentation from inside a repository
+    without any arguments.
     """
     cwd = os.getcwd()
-    os.chdir(os.path.join(REPOS_ROOT, "tk-core"))
+    # Switch current folder to the framework so we can test both the core and
+    # framework detection code path.
+    os.chdir(TK_FRAMEWORK_ROOT)
     try:
         assert tk_docs_preview.main(["tk_docs_preview", "--build-only"]) == 0
     finally:
@@ -38,7 +44,7 @@ def test_generate_doc_without_any_parameters():
 
 
 # Disabling this test as the doc for the Python API is currently broken!
-def _test_generate_doc_with_python_api():
+def _test_with_python_api():
     """
     Make sure we can generate documentation for a non toolkit repo.
     """
@@ -50,7 +56,7 @@ def _test_generate_doc_with_python_api():
     )
 
 
-def test_generate_doc_with_tk_core():
+def test_with_tk_core():
     """
     Make sure we can generate documentation for tk-core
     """
@@ -62,7 +68,7 @@ def test_generate_doc_with_tk_core():
     )
 
 
-def test_generate_doc_with_tk_framework_shotgunutils():
+def test_with_tk_framework_shotgunutils():
     """
     Make sure we can generate documentation for a bundle that uses tk-core
     """
@@ -72,6 +78,41 @@ def test_generate_doc_with_tk_framework_shotgunutils():
                 "tk_docs_preview",
                 "--build-only",
                 "--bundle={}".format(TK_FRAMEWORK_ROOT),
+                "--core={}".format(TK_CORE_ROOT),
+            ]
+        )
+        == 0
+    )
+
+
+def test_with_repo_without_doc():
+    """
+    Make sure the doc generation tool exits gracefully when there is no docs folder.
+    """
+    assert (
+        tk_docs_preview.main(
+            [
+                "tk_docs_preview",
+                "--build-only",
+                "--bundle={}".format(TK_CONFIG_ROOT),
+                "--core={}".format(TK_CORE_ROOT),
+            ]
+        )
+        == 0
+    )
+
+
+def test_with_unknown_folder():
+    """
+    Make sure the doc generation tool exits gracefully when we're not in a Toolkit
+    repo
+    """
+    assert (
+        tk_docs_preview.main(
+            [
+                "tk_docs_preview",
+                "--build-only",
+                "--bundle={}".format(tempfile.gettempdir()),
                 "--core={}".format(TK_CORE_ROOT),
             ]
         )
