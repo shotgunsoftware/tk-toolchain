@@ -34,7 +34,7 @@ def test_without_any_parameters():
     without any arguments.
     """
     cwd = os.getcwd()
-    # Switch current folder to the framework do we can test both the core and
+    # Switch current folder to the framework so we can test both the core and
     # framework detection code path.
     os.chdir(TK_FRAMEWORK_ROOT)
     try:
