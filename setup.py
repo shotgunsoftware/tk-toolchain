@@ -66,6 +66,7 @@ setup(
         # we use on Python 2.
         "sphinx<=1.8.5" if sys.version_info[0] == 2 else "sphinx",
         "sphinx_rtd_theme",
+        "docopt",
         # Other tools used by devs that are useful to have.
         "pre-commit",
     ],

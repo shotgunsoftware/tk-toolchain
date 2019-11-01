@@ -10,12 +10,31 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-####################################################################################
-# imports and general setup
+"""
+Toolkit Application Runner
+
+Launch a Toolkit application from the command line by running this tool in any
+Toolkit repository.
+
+Usage:
+    tk-run-app [--project-id=<id>] [--location=<location>]
+
+Options:
+
+    --project-id=<id>  Specifies which project to use. If missing, the
+                       non-template project with the lowest id will be
+                       used.
+
+    --location=<location>  Specifies the location where the Toolkit app is. If missing,
+                           the application will assume it is run inside a repository
+                           and will search for the app there.
+"""
 
 import os
 import sys
 from pprint import pprint
+
+import docopt
 
 from tk_toolchain.repo import Repository
 from tk_toolchain import util
@@ -23,7 +42,17 @@ from tk_toolchain.tk_testengine import get_test_engine_enviroment
 
 
 def get_user():
+    """
+    Authenticate with a Shotgun site.
 
+    If SHOTGUN_HOST, SHOTGUN_USER_LOGIN and SHOGUN_USER_PASSWORD
+    are set, then they will be used for authentication. If not,
+    the user will be prompted for their credentials if they
+    are not already logged into Shotgun.
+
+    :returns: A Shotgun user.
+    :rtype: sgtk.authentication.ShotgunUser
+    """
     host = os.environ.get("SHOTGUN_HOST")
     login = os.environ.get("SHOTGUN_USER_LOGIN")
     password = os.environ.get("SHOTGUN_USER_PASSWORD")
@@ -31,19 +60,26 @@ def get_user():
     from sgtk.authentication import ShotgunAuthenticator
 
     sg_auth = ShotgunAuthenticator()
-    user = None
-    if all([host, user, password]):
-        user = sg_auth.create_session_user(login, password=password, host=host)
-    elif any([host, user, password]):
+
+    # If all the variables were set, we can authenticate.
+    if host and login and password:
+        print("Authenticating from environment variables.")
+        return sg_auth.create_session_user(login, password=password, host=host)
+    elif host or login or password:
+        # Something was set, but not everything.
         print(
             "Not all authentication environment variables were set. "
-            "Falling back to interactive authentication."
+            "Falling back to interactive authentication.\n"
+            "SHOTGUN_HOST: {}\n"
+            "SHOTGUN_USER_LOGIN: {}\n"
+            "SHOTGUN_USER_PASSWORD: {}\n".format(
+                "set" if host else "unset",
+                "set" if login else "unset",
+                "set" if password else "unset",
+            )
         )
 
-    if user is None:
-        user = sg_auth.get_user()
-
-    return user
+    return sg_auth.get_user()
 
 
 def progress_callback(value, message):
@@ -56,13 +92,13 @@ def progress_callback(value, message):
     print("[%s] %s" % (value, message))
 
 
-def _start_engine(repo):
+def _start_engine(repo, project_id):
     """
     Bootstraps Toolkit and uses the app in the current repo.
 
     :param tk_toolchain.repo.Repository: Repository for the current folder.
 
-    :returns: The tk-shell engine instance.
+    :returns: An engine instance.
     """
     import sgtk
 
@@ -89,7 +125,13 @@ def _start_engine(repo):
     # In the future we could have command-line arguments that allow to specify that.
     engine = mgr.bootstrap_engine(
         "tk-testengine",
-        user.create_sg_connection().find_one("Project", [["is_template", "is", False]]),
+        user.create_sg_connection().find_one(
+            "Project",
+            [["is_template", "is", False]],
+            order=[{"direction": "asc", "field_name": "id"}],
+        )
+        if project_id is None
+        else {"type": "Project", "id": project_id},
     )
     return engine
 
@@ -102,10 +144,16 @@ def main():
     and wait until all of them have been closed.
     """
 
+    options = docopt.docopt(__doc__)
+
     # Find the current repo and add Toolkit to the PYTHONPATH so we ca import it.
-    repo = Repository(os.getcwd())
+    repo = Repository(util.expand_path(options["--location"] or os.getcwd()))
     tk_core = os.path.join(repo.parent, "tk-core", "python")
     sys.path.insert(0, tk_core)
+
+    if repo.is_app() is False:
+        print("This location does not have a Toolkit application.")
+        return 1
 
     # We need to initialize QApplication before the engine is loaded or some
     # apps won't register themselves.
@@ -118,10 +166,13 @@ def main():
     else:
         app = QtGui.QApplication([])
 
-    engine = _start_engine(repo)
+    engine = _start_engine(
+        repo,
+        int(options["--project-id"]) if options["--project-id"] is not None else None,
+    )
 
     print("Available commands:")
-    pprint(engine.commands)
+    pprint(sorted(engine.commands))
 
     # Sample command:
     # 'Work Area Info...': {'callback': <function Engine.register_command.<locals>.callback_wrapper at 0x127affe18>,
@@ -133,6 +184,7 @@ def main():
     #                                      'prefix': None,
     #                                      'short_name': 'work_area_info',
     #                                      'type': 'context_menu'}}}
+    app_launched = False
     for name, info in engine.commands.items():
         # We'll iterate on every app and when we find the app instance that is inside the
         # configuration, we'll launch it.
@@ -141,8 +193,15 @@ def main():
             continue
         if info["properties"]["app"].instance_name == "tk-multi-run-this-app":
             info["callback"]()
+            app_launched = True
+
+    if app_launched is False:
+        print(
+            "No commands were found. It is possible the application failed to initialize?"
+        )
+        return 1
 
     # Loops until all dialogs are closed.
     app.exec_()
 
-    sys.exit(0)
+    return 0
