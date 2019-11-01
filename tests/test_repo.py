@@ -50,6 +50,16 @@ def test_repo_init():
         Repository("/var/tmp")
 
 
+def test_get_environment_variables():
+    """
+    Ensure environement variables are properly set.
+    """
+    assert Repository().get_roots_environment_variables() == {
+        "SHOTGUN_CURRENT_REPO_ROOT": CURRENT_REPO_ROOT,
+        "SHOTGUN_REPOS_ROOT": REPOS_ROOT,
+    }
+
+
 def test_repo_parent():
     """
     Ensure repo parent folder is detected properly.

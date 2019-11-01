@@ -18,7 +18,32 @@ import sys
 from pprint import pprint
 
 from tk_toolchain.repo import Repository
+from tk_toolchain import util
 from tk_toolchain.tk_testengine import get_test_engine_enviroment
+
+
+def get_user():
+
+    host = os.environ.get("SHOTGUN_HOST")
+    login = os.environ.get("SHOTGUN_USER_LOGIN")
+    password = os.environ.get("SHOTGUN_USER_PASSWORD")
+
+    from sgtk.authentication import ShotgunAuthenticator
+
+    sg_auth = ShotgunAuthenticator()
+    user = None
+    if all([host, user, password]):
+        user = sg_auth.create_session_user(login, password=password, host=host)
+    elif any([host, user, password]):
+        print(
+            "Not all authentication environment variables were set. "
+            "Falling back to interactive authentication."
+        )
+
+    if user is None:
+        user = sg_auth.get_user()
+
+    return user
 
 
 def progress_callback(value, message):
@@ -47,18 +72,11 @@ def _start_engine(repo):
     )
     sgtk.LogManager().initialize_custom_handler()
 
-    # The config assumes that the frameworks and shell engine are located relative
-    # to the SHOTGUN_REPOS_ROOT, which is in the parent folder of this repo.
-    os.environ["SHOTGUN_REPOS_ROOT"] = repo.parent
+    util.merge_into_environment_variables(repo.get_roots_environment_variables())
+    util.merge_into_environment_variables(get_test_engine_enviroment())
 
-    # The config assumes the app is in the current repo.
-    os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo.root
-
-    os.environ.update(get_test_engine_enviroment())
-    # import pdb;pdb.set_trace()
     # Standard Toolkit bootstrap code.
-    sa = sgtk.authentication.ShotgunAuthenticator()
-    user = sa.get_user()
+    user = get_user()
     mgr = sgtk.bootstrap.ToolkitManager(user)
     mgr.progress_callback = progress_callback
     # Do not look in Shotgun for a config to load, we absolutely want to
