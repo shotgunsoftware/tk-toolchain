@@ -70,9 +70,9 @@ def get_user():
         print(
             "Not all authentication environment variables were set. "
             "Falling back to interactive authentication.\n"
-            "SHOTGUN_HOST: {}\n"
-            "SHOTGUN_USER_LOGIN: {}\n"
-            "SHOTGUN_USER_PASSWORD: {}\n".format(
+            "SHOTGUN_HOST: {0}\n"
+            "SHOTGUN_USER_LOGIN: {1}\n"
+            "SHOTGUN_USER_PASSWORD: {2}\n".format(
                 "set" if host else "unset",
                 "set" if login else "unset",
                 "set" if password else "unset",

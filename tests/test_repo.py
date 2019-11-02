@@ -71,7 +71,7 @@ def test_repr():
     """
     Ensure __repr__ behaves correctly.
     """
-    assert repr(Repository()) == "<tk_toolchain.repo.Repository for {}>".format(
+    assert repr(Repository()) == "<tk_toolchain.repo.Repository for {0}>".format(
         CURRENT_REPO_ROOT
     )
 

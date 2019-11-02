@@ -28,6 +28,13 @@ def read_file(fname):
         return fh.read()
 
 
+python_version = sys.version_info[0:2]
+is_python_3 = python_version[0] == 3
+is_python_27_or_greater = python_version >= (2, 7)
+is_python_27 = python_version == (2, 7)
+is_python_2 = python_version[0] == 2
+
+
 setup(
     name="tk-toolchain",
     version="0.1.0.dev",
@@ -50,26 +57,28 @@ setup(
         ],
         "pytest_tank_test": [os.path.join("tk-testengine", "*")],
     },
-    python_requires=">=2.7.0",
+    python_requires=">=2.6.0",
     install_requires=[
         # Tests
-        "pytest==4.6.6",
-        "pytest-cov==2.6.1",
+        "pytest==4.6.6" if is_python_27_or_greater else "pytest<3.3",
+        "pytest-cov==2.6.1" if is_python_27_or_greater else "pytest-cov==2.5.1",
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==2.0.0",
         "coverage==4.4.1",
         "unittest2==1.1.0",
         # Doc generation
-        "PyYAML",
+        "PyYAML" if is_python_27_or_greater else "PyYAML==3.11",
         # sphinx 2.0 is Python 3 only, so we have to cap out the version
         # we use on Python 2.
-        "sphinx<=1.8.5" if sys.version_info[0] == 2 else "sphinx",
+        "sphinx"
+        if is_python_3
+        else ("sphinx<=1.8.5" if is_python_27 else "sphinx==1.4.9"),
         "sphinx_rtd_theme",
         "docopt",
-        # Other tools used by devs that are useful to have.
-        "pre-commit",
-    ],
+    ]
+    # Other tools used by devs that are useful to have.
+    + (["pre-commit"] if is_python_27_or_greater else []),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Pytest",

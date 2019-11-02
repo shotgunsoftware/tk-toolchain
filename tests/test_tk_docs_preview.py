@@ -44,7 +44,7 @@ def _test_generate_doc_with_python_api():
     """
     assert (
         tk_docs_preview.main(
-            ["tk_docs_preview", "--build-only", "--bundle={}".format(PYTHON_API_ROOT)]
+            ["tk_docs_preview", "--build-only", "--bundle={0}".format(PYTHON_API_ROOT)]
         )
         == 0
     )
@@ -56,7 +56,7 @@ def test_generate_doc_with_tk_core():
     """
     assert (
         tk_docs_preview.main(
-            ["tk_docs_preview", "--build-only", "--bundle={}".format(TK_CORE_ROOT)]
+            ["tk_docs_preview", "--build-only", "--bundle={0}".format(TK_CORE_ROOT)]
         )
         == 0
     )
@@ -71,8 +71,8 @@ def test_generate_doc_with_tk_framework_shotgunutils():
             [
                 "tk_docs_preview",
                 "--build-only",
-                "--bundle={}".format(TK_FRAMEWORK_ROOT),
-                "--core={}".format(TK_CORE_ROOT),
+                "--bundle={0}".format(TK_FRAMEWORK_ROOT),
+                "--core={0}".format(TK_CORE_ROOT),
             ]
         )
         == 0

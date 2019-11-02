@@ -52,7 +52,7 @@ def pytest_configure(config):
     # The path to the current repo root
     repo = Repository(cur_dir)
 
-    print("Repository found at {}".format(repo.root))
+    print("Repository found at {0}".format(repo.root))
 
     # The path to the Toolkit core repo.
     tk_core_repo_root = os.path.join(repo.parent, "tk-core")

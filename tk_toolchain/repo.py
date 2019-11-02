@@ -60,7 +60,7 @@ class Repository(object):
         """
         Representation of this object.
         """
-        return "<{}.{} for {}>".format(
+        return "<{0}.{0} for {0}>".format(
             self.__class__.__module__, self.__class__.__name__, self._root
         )
 
