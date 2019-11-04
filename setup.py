@@ -50,12 +50,17 @@ setup(
     data_files=[("", ["LICENSE"])],
     package_data={
         "tk_toolchain": [
+            os.path.join("tk_testengine", "*"),
             os.path.join("cmd_line_tools", "tk_docs_preview", "sphinx_data", "*"),
+            os.path.join("cmd_line_tools", "tk_run_app", "config", "env", "*"),
+            os.path.join("cmd_line_tools", "tk_run_app", "config", "core", "*"),
+            os.path.join(
+                "cmd_line_tools", "tk_run_app", "config", "core", "hooks", "*"
+            ),
             os.path.join(
                 "cmd_line_tools", "tk_docs_preview", "sphinx_data", "_static", "*"
             ),
-        ],
-        "pytest_tank_test": [os.path.join("tk-testengine", "*")],
+        ]
     },
     python_requires=">=2.6.0",
     install_requires=[
