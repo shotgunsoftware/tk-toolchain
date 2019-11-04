@@ -24,12 +24,20 @@ class TestEngine(sgtk.platform.Engine):
     def pre_app_init(self):
         try:
             app = sgtk.platform.qt.QtGui.QApplication.instance()
-            app = app or sgtk.platform.qt.QtGui.QApplication([])
+            self._app = app or sgtk.platform.qt.QtGui.QApplication([])
         except Exception:
-            app = None
+            # This will fail if Qt is not available.
+            self._app = None
 
-        if app:
+        if self._app:
             self._initialize_dark_look_and_feel()
+
+    @property
+    def app(self):
+        """
+        The QtGui.QApplication instance, if available.
+        """
+        return self._app
 
     def _emit_log_message(self, handler, record):
         """
