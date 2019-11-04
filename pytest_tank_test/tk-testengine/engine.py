@@ -9,9 +9,30 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from sgtk.platform import Engine
+import sgtk
 
 
-class TestEngine(Engine):
+class TestEngine(sgtk.platform.Engine):
+    """
+    Test engine.
+
+    The engine will initialize a QApplication if possible right before
+    applications start registering themselves so it looks as if they
+    are running within a GUI environment.
+    """
+
+    def pre_app_init(self):
+        try:
+            app = sgtk.platform.qt.QtGui.QApplication.instance()
+            app = app or sgtk.platform.qt.QtGui.QApplication([])
+        except Exception:
+            app = None
+
+        if app:
+            self._initialize_dark_look_and_feel()
+
     def _emit_log_message(self, handler, record):
+        """
+        Print any log message to the console.
+        """
         print(handler.format(record))
