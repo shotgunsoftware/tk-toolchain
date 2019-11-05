@@ -50,7 +50,13 @@ def pytest_configure(config):
     cur_dir = os.path.abspath(os.curdir)
 
     # The path to the current repo root
-    repo = Repository(cur_dir)
+    try:
+        repo = Repository(cur_dir)
+    except RuntimeError:
+        print(
+            "This does not appear to be a Toolkit repository. Skipping initialization of 'pytest_tank_test.'"
+        )
+        return
 
     print("Repository found at {0}".format(repo.root))
 
@@ -72,7 +78,9 @@ def pytest_configure(config):
 
     # Add the <current-repo>/tests/python folder to the PYTHONPATH so custom
     # python modules from it can be used in the tests.
-    if os.path.basename(repo.name).lower() != "tk-core":
+    # If we're running tests inside tk-core, we shouldn't add it as tk-toolchain
+    # includes everything we need.
+    if repo.is_tk_core() is False:
         _update_sys_path(
             "Adding repository tests/python folder",
             os.path.join(repo.root, "tests", "python"),

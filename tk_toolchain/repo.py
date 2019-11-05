@@ -133,7 +133,7 @@ class Repository(object):
 
         :returns: ``True`` is the repository is for a configuration, ``False`` otherwise.
         """
-        return self.name.startswith("tk-config")
+        return self._folder_contains("core") and self._folder_contains("env")
 
     def is_toolkit_component(self):
         """
