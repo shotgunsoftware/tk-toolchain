@@ -22,6 +22,13 @@ class TestEngine(sgtk.platform.Engine):
     """
 
     def pre_app_init(self):
+        """
+        Called before apps and loaded.
+        """
+        # Since this method is called after Qt has been setup, but before
+        # apps have been loaded, this makes it the perfect opportunity to
+        # initialize QApplication so that apps can call has_ui and get a
+        # positive answer back from the engine.
         try:
             q_app = sgtk.platform.qt.QtGui.QApplication.instance()
             self._q_app = q_app or sgtk.platform.qt.QtGui.QApplication([])
