@@ -33,7 +33,6 @@ def _initialize_logging():
 
     tank.LogManager().initialize_base_file_handler("tk-test")
     tank.LogManager().initialize_custom_handler()
-    tank.LogManager().global_debug = True
 
 
 def pytest_configure(config):
