@@ -139,13 +139,16 @@ def _start_engine(repo, project_id):
 
 ####################################################################################
 # script entry point
-def main():
+def main(arguments=None):
     """
     This will launch all the Toolkit applications and panels registered at app init
     and wait until all of them have been closed.
     """
+    arguments = arguments or sys.argv
 
-    options = docopt.docopt(__doc__)
+    # docopt does not care about the script name, so skip or we'll
+    # get an error.
+    options = docopt.docopt(__doc__, argv=arguments[1:])
 
     # Find the current repo and add Toolkit to the PYTHONPATH so we ca import it.
     repo = Repository(util.expand_path(options["--location"] or os.getcwd()))
