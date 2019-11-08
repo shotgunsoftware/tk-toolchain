@@ -155,17 +155,6 @@ def main():
         print("This location does not have a Toolkit application.")
         return 1
 
-    # We need to initialize QApplication before the engine is loaded or some
-    # apps won't register themselves.
-    try:
-        from PySide import QtGui
-    except ImportError:
-        from PySide2 import QtWidgets
-
-        app = QtWidgets.QApplication([])
-    else:
-        app = QtGui.QApplication([])
-
     engine = _start_engine(
         repo,
         int(options["--project-id"]) if options["--project-id"] is not None else None,
@@ -202,6 +191,6 @@ def main():
         return 1
 
     # Loops until all dialogs are closed.
-    app.exec_()
+    engine.q_app.exec_()
 
     return 0
