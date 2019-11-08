@@ -25,6 +25,9 @@ engines:
           path: $SHOTGUN_CURRENT_REPO_ROOT
 
 frameworks:
+  # We're enumerating all the frameworks here because it's easier to assume everything
+  # is required even if it might not be than doing introspection of what the actual
+  # dependencies are and generating the appropriate config on the fly.
   tk-framework-qtwidgets_v2.x.x:
     location:
       type: path

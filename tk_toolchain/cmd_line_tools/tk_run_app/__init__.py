@@ -67,6 +67,7 @@ def get_user():
         return sg_auth.create_session_user(login, password=password, host=host)
     elif host or login or password:
         # Something was set, but not everything.
+        # Do not print the values, as this can be used in CI.
         print(
             "Not all authentication environment variables were set. "
             "Falling back to interactive authentication.\n"
