@@ -37,7 +37,12 @@ def test_without_any_parameters(tk_framework_root):
         os.chdir(cwd)
 
 
-@pytest.mark.xfail(reason="Documentation is currently broken for this tool.")
+# Mark the test as expected to fail so it doesn't fail the test run, but if it passes,
+# then this is unexpected and is a sign someone fixed the doc, so we can stop
+# expecting the doc to fail.
+@pytest.mark.xfail(
+    reason="Documentation is currently broken for this tool.", strict=True
+)
 def test_with_python_api(python_api_root):
     """
     Make sure we can generate documentation for a non toolkit repo.

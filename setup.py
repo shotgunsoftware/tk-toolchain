@@ -70,7 +70,7 @@ setup(
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==2.0.0",
-        "coverage==4.4.1",
+        "coverage==4.5.4",
         "unittest2==1.1.0",
         # Doc generation
         "PyYAML" if is_python_27_or_greater else "PyYAML==3.11",
