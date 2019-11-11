@@ -58,12 +58,19 @@ def pytest_configure(config):
 
     print("Repository found at {}".format(repo.root))
 
+    # tk-toolchain assumes that the other repositories are clone alongside
+    # the current one with their real name. However, for the current repo,
+    # we can't make such an assumption.
+    #
+    # On Azure Pipeline for example, when testing an app we will clone alongside
+    # the repo all the dependencies, including tk-core, which means we'll have
+    # control over the folder names used for the repositories. However, when
+    # Azure runs a build for tk-core, it will clone it inside a folder not named
+    # after the repo. As such, we have to use whatever name we're given for
+    # tk-core.
     if repo.is_tk_core() is False:
-        # The path to the Toolkit core repo.
         tk_core_repo_root = os.path.join(repo.parent, "tk-core")
     else:
-        # Do not assume the folder tk-core was cloned into is named after the repo
-        # This is important because on Azure that is not the case.
         tk_core_repo_root = repo.root
 
     # Adds the tk-core/python folder to the PYTHONPATH so we can import Toolkit
