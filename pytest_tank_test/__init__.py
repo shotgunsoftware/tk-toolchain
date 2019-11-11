@@ -58,8 +58,13 @@ def pytest_configure(config):
 
     print("Repository found at {}".format(repo.root))
 
-    # The path to the Toolkit core repo.
-    tk_core_repo_root = os.path.join(repo.parent, "tk-core")
+    if repo.is_tk_core() is False:
+        # The path to the Toolkit core repo.
+        tk_core_repo_root = os.path.join(repo.parent, "tk-core")
+    else:
+        # Do not assume the folder tk-core was cloned into is named after the repo
+        # This is important because on Azure that is not the case.
+        tk_core_repo_root = repo.root
 
     # Adds the tk-core/python folder to the PYTHONPATH so we can import Toolkit
     _update_sys_path("Adding Toolkit folder", os.path.join(tk_core_repo_root, "python"))
