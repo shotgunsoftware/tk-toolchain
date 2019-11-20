@@ -67,9 +67,9 @@ You also need to have a copy of the Python 3 interpreter available or the `black
 
 # How can I run these tools?
 
-First, you need to install them. Simply type `python -m pip install https://github.com/shotgunsoftware/tk-toolchain.git` and all the required modules will be installed for you.
-
-Then, type `pytest` to run the unit tests inside a Toolkit repository or `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
+- Type `pytest` to run the unit tests inside a Toolkit repository
+- Type `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
+- Type `tk-run-app` to launch the application from the current repository.
 
 # `pytest_tank_test`
 
