@@ -22,7 +22,7 @@ engines:
       tk-multi-run-this-app:
         location:
           type: path
-          path: $SHOTGUN_CURRENT_REPO_ROOT
+          path: $SHOTGUN_TK_APP_LOCATION
 
 frameworks:
   # We're enumerating all the frameworks here because it's easier to assume everything

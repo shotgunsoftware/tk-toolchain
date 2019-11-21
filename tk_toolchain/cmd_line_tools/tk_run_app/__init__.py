@@ -17,17 +17,20 @@ Launch a Toolkit application from the command line by running this tool in any
 Toolkit repository.
 
 Usage:
-    tk-run-app [--project-id=<id>] [--location=<location>]
+    tk-run-app [--context-entity-type=<entity-type>] [--context-entity-id=<entity-id>] [--location=<location>]
 
 Options:
 
-    --project-id=<id>  Specifies which project to use. If missing, the
-                       non-template project with the lowest id will be
-                       used.
+    -e, --context-entity-type=<entity-type>
+                       Specifies the type of the entity of the context.
 
-    --location=<location>  Specifies the location where the Toolkit app is. If missing,
-                           the application will assume it is run inside a repository
-                           and will search for the app there.
+    -i, --context-entity-id=<entity-id>
+                       Specifies the id of the entity of the context.
+
+    --location=<location>
+                        Specifies the location where the Toolkit app is. If missing,
+                        the application will assume it is run inside a repository
+                        and will search for the app there.
 """
 
 import os
@@ -41,7 +44,14 @@ from tk_toolchain import util
 from tk_toolchain.tk_testengine import get_test_engine_enviroment
 
 
-def get_user():
+def get_config_location():
+    """
+    Return the location of the configuration tk-run-app uses.
+    """
+    return os.path.join(os.path.dirname(__file__), "config")
+
+
+def _get_user():
     """
     Authenticate with a Shotgun site.
 
@@ -83,7 +93,7 @@ def get_user():
     return sg_auth.get_user()
 
 
-def progress_callback(value, message):
+def _progress_callback(value, message):
     """
     Called by the ToolkitManager to report progress to the user.
 
@@ -93,7 +103,7 @@ def progress_callback(value, message):
     print("[%s] %s" % (value, message))
 
 
-def _start_engine(repo, project_id):
+def _start_engine(repo, entity_type, entity_id):
     """
     Bootstraps Toolkit and uses the app in the current repo.
 
@@ -111,29 +121,43 @@ def _start_engine(repo, project_id):
 
     util.merge_into_environment_variables(repo.get_roots_environment_variables())
     util.merge_into_environment_variables(get_test_engine_enviroment())
+    os.environ["SHOTGUN_TK_APP_LOCATION"] = repo.root
 
     # Standard Toolkit bootstrap code.
-    user = get_user()
+    user = _get_user()
     mgr = sgtk.bootstrap.ToolkitManager(user)
-    mgr.progress_callback = progress_callback
+    mgr.progress_callback = _progress_callback
     # Do not look in Shotgun for a config to load, we absolutely want to
     # use the config referenced by the base_configuration.
     mgr.do_shotgun_config_lookup = False
-    mgr.base_configuration = "sgtk:descriptor:path?path={0}/config".format(
-        os.path.dirname(__file__)
+    mgr.base_configuration = "sgtk:descriptor:path?path={0}".format(
+        get_config_location()
     )
-    # Find the first non-template project and use it.
-    # In the future we could have command-line arguments that allow to specify that.
-    engine = mgr.bootstrap_engine(
-        "tk-testengine",
-        user.create_sg_connection().find_one(
+
+    if entity_type == "Project" and entity_id is None:
+        context = user.create_sg_connection().find_one(
             "Project",
             [["is_template", "is", False]],
             order=[{"direction": "asc", "field_name": "id"}],
         )
-        if project_id is None
-        else {"type": "Project", "id": project_id},
-    )
+    elif entity_id is None:
+        context = user.create_sg_connection().find_one(
+            entity_type, [], order=[{"direction": "asc", "field_name": "id"}]
+        )
+    elif entity_type and entity_id:
+        context = user.create_sg_connection().find_one(
+            entity_type, [["id", "is", entity_id]]
+        )
+    else:
+        raise RuntimeError(
+            "Bad context argument for {0}@{1}".format(entity_type, entity_id)
+        )
+
+    print("Launching test engine in context {0}".format(context))
+
+    # Find the first non-template project and use it.
+    # In the future we could have command-line arguments that allow to specify that.
+    engine = mgr.bootstrap_engine("tk-testengine", context)
     return engine
 
 
@@ -144,11 +168,11 @@ def main(arguments=None):
     This will launch all the Toolkit applications and panels registered at app init
     and wait until all of them have been closed.
     """
-    arguments = arguments or sys.argv
+    arguments = arguments or sys.argv[1:]
 
     # docopt does not care about the script name, so skip or we'll
     # get an error.
-    options = docopt.docopt(__doc__, argv=arguments[1:])
+    options = docopt.docopt(__doc__, argv=arguments)
 
     # Find the current repo and add Toolkit to the PYTHONPATH so we ca import it.
     repo = Repository(util.expand_path(options["--location"] or os.getcwd()))
@@ -161,7 +185,12 @@ def main(arguments=None):
 
     engine = _start_engine(
         repo,
-        int(options["--project-id"]) if options["--project-id"] is not None else None,
+        options["--context-entity-type"]
+        if options["--context-entity-type"] is not None
+        else "Project",
+        int(options["--context-entity-id"])
+        if options["--context-entity-id"] is not None
+        else None,
     )
 
     print("Available commands:")
