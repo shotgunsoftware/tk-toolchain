@@ -1,4 +1,5 @@
 [![Python 2.7 3.7](https://img.shields.io/badge/python-2.7%20%7C%203.7-blue.svg)](https://www.python.org/)
+[![Build Status](https://travis-ci.org/shotgunsoftware/tk-toolchain.svg?branch=master)](https://travis-ci.org/shotgunsoftware/tk-toolchain)
 [![codecov](https://codecov.io/gh/shotgunsoftware/tk-toolchain/branch/master/graph/badge.svg)](https://codecov.io/gh/shotgunsoftware/tk-toolchain)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -17,7 +18,35 @@ Here are the tools that the library offers:
 regardless of the repository. It also provides a collection of environment variables and a test engine to help application
 developers to write tests.
 
-`tk_docs_preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
+`tk-docs-preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
+
+# How can I install `tk-toolchain`?
+
+## Installing the `master` branch from GitHub
+
+If you wish to install the current `master` branch, use the following command:
+
+```
+pip install git+https://github.com/shotgunsoftware/tk-toolchain.git#egg=tk-toolchain
+```
+
+## Installing any branch from GitHub
+
+If you wish to install a development branch, use the following command:
+
+```
+pip install git+https://github.com/shotgunsoftware/tk-toolchain.git@development_branch#egg=tk-toolchain
+```
+
+## Installing for development or debugging
+
+If you want to add a feature or debug the package, first clone the repository and then use the following command inside it:
+
+```
+pip install -e .
+```
+
+Any changes you make will immediately be accessible from the package.
 
 # Pre-requisites
 
@@ -32,11 +61,12 @@ These tools assume that all your Toolkit-based repositories are in the same fold
 
 This allows the tools to quickly find other repositories they might need to run.
 
+You also need to have a copy of the Python 3 interpreter available or the `black` code formatter won't be able to run. If you are using macOS or Linux, we highly recommend you use `pyenv`. You can install it on macOS via `brew` or your favorite package manager on Linux. On Windows, download it from [python.org](https://www.python.org)
+
 # How can I run these tools?
 
-First, you need to install them. Simply type `python -m pip install https://github.com/shotgunsoftware/tk-toolchain.git` and all the required modules will be installed for you.
-
-Then, type `pytest` to run the unit tests inside a Toolkit repository or `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
+- Type `pytest` to run the unit tests inside a Toolkit repository
+- Type `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
 
 # `pytest_tank_test`
 
@@ -135,3 +165,10 @@ For all of these examples, if your folder hierarchy is similar to
 then the tool will find all the required folders on it's own and you will only need
 to type "tk-docs-preview" to preview the documentation
 ```
+# `pre-commit`
+
+The pre-commit hook should be run on all Toolkit repositories in order to keep code quality as high as possible. The most important of the pre-commit hooks is the `black` code formatter, which will take care of formatting your code according to PEP8 so you don't have to think about it. Only the files that have been modified will be reformatted.
+
+In you've just cloned a repository, type `pre-commit install` so that the hook is executed every single time you commit to `git`.
+
+If you're setting up a new repository, or if the repository you're about to work into does not have a file named `.pre-commit-config.yaml`, you can take the one at the root of this repository, copy it into your new repository andn the commit it. Then, run `pre-commit install`. If you've committed third-party modules inside your repo, you should update the `exclude` regular expression in that file so your third-parties are not reformatted. Once you've properly set the exclusion list, it's also a good idea to run `pre-commit run --all` so that all files in the repository are reformatted.
