@@ -67,7 +67,6 @@ You also need to have a copy of the Python 3 interpreter available or the `black
 
 - Type `pytest` to run the unit tests inside a Toolkit repository
 - Type `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
-- Type `tk-run-app` to launch the application from the current repository.
 
 # `pytest_tank_test`
 
