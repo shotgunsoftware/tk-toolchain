@@ -100,6 +100,7 @@ def pytest_configure(config):
     util.merge_into_environment_variables(repo.get_roots_environment_variables())
     util.merge_into_environment_variables(get_test_engine_enviroment())
 
+    print("Fixtures found at", os.path.join(repo.root, "tests", "fixtures"))
     # Note: This won't be documented (or renamed) as we're not super comfortable
     # supporting TankTestBase at the moment for clients to write tests with.
     os.environ["TK_TEST_FIXTURES"] = os.path.join(repo.root, "tests", "fixtures")

@@ -114,9 +114,7 @@ def _start_engine(repo, entity_type, entity_id):
     import sgtk
 
     # Initialize logging to disk and on screen.
-    sgtk.LogManager().initialize_base_file_handler(
-        "tk-run-app-{0}.log".format(repo.name)
-    )
+    sgtk.LogManager().initialize_base_file_handler("tk-run-app-{0}".format(repo.name))
     sgtk.LogManager().initialize_custom_handler()
 
     util.merge_into_environment_variables(repo.get_roots_environment_variables())
@@ -151,6 +149,13 @@ def _start_engine(repo, entity_type, entity_id):
     else:
         raise RuntimeError(
             "Bad context argument for {0}@{1}".format(entity_type, entity_id)
+        )
+
+    if context is None:
+        raise RuntimeError(
+            "Context enity {0} with id {1} could not be found.".format(
+                entity_type, entity_id
+            )
         )
 
     print("Launching test engine in context {0}".format(context))
