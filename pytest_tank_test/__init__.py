@@ -9,6 +9,8 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
+from __future__ import print_function
+
 from tk_toolchain.repo import Repository
 from tk_toolchain import util
 from tk_toolchain.tk_testengine import get_test_engine_enviroment
