@@ -13,15 +13,20 @@ and documentation.
 
 # What can it do?
 
-Here are the tools that the library offers:
+By installing `tk-toolchain`, you will get the following tools:
 
-`pytest_tank_test`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`
+`pytest_tank_test`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`,
 regardless of the repository. It also provides a collection of environment variables and a test engine to help application
 developers to write tests.
 
 `tk-docs-preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
 
 `tk-run-app`: This tool allows you to run most Toolkit application from the command line and launch it's GUI.
+
+Also, the following tools will be installed:
+
+`pytest`: [pytest](https://docs.pytest.org/en/latest/) is a test runner that is much more flexible than the old test runner that was packaged with tk-core.
+`pre-commit`: [Pre-commit](https://pre-commit.com) is a tool that allows developers to run validators and reformatters before committing code to git, ensuring quality and consistency in a code base.
 
 # How can I install `tk-toolchain`?
 
@@ -64,7 +69,7 @@ These tools assume that all your Toolkit-based repositories are in the same fold
 
 This allows the tools to quickly find other repositories they might need to run.
 
-You also need to have a copy of the Python 3 interpreter available or the `black` code formatter won't be able to run. If you are using macOS or Linux, we highly recommend you use `pyenv`. You can install it on macOS via `brew` or your favorite package manager on Linux. On Windows, download it from [python.org](https://www.python.org)
+You also need to have a copy of the Python 3 interpreter available or the `black` code formatter won't be able to run. If you are using macOS or Linux, we highly recommend you use `pyenv`. You can install it on macOS via `brew` or your favorite package manager on Linux. On Windows, download Python 3 from [python.org](https://www.python.org)
 
 # How can I run these tools?
 
@@ -72,15 +77,25 @@ You also need to have a copy of the Python 3 interpreter available or the `black
 - Type `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
 - Type `tk-run-app` to launch the application from the current repository.
 
+# `pre-commit`
+
+The pre-commit hook should be run on all Toolkit repositories in order to keep code quality as high as possible. The most important of the pre-commit hooks is the `black` code formatter, which will take care of formatting your code according to PEP8 so you don't have to think about it. Only the files that have been modified will be reformatted.
+
+In you've just cloned a repository, type `pre-commit install` so that the hook is executed every single time you commit to `git` in the future.
+
+If you're setting up a new repository, or if the repository you're about to work in does not have a file named `.pre-commit-config.yaml`, you can take the one at the root of this repository, copy it into your new repository and then commit it. Then, run `pre-commit install`. If you've committed third-party modules inside your repo, you should update the `exclude` regular expression in that file so your third-parties are not reformatted. Once you've properly set the exclusion list, it's also a good idea to run `pre-commit run --all` so that all files in the repository are reformatted.
+
+Note that it is possible to have pre-commit [configured automatically](https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories) when cloning repositories or creating new ones.
+
 # `pytest_tank_test`
 
-This `pytest` plugins offers a collection of services that will help a Toolkit developer to write tests and run them with `pytest`. It removes the need for custom shell scripts that use the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of it's test runner.
+This `pytest` plugin removes the need to launch Toolkit unit tests using the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of it's test runner.
 
 The plugin offers the following services:
 
 ##### Adds the Toolkit core to the `PYTHONPATH`
 
-The Toolkit core will be added at the front of the `PYTHONPATH`, assuming it is installed a sibling folder to your current reposiroty as explained [above](#pre-requisites).
+The Toolkit core will be added at the front of the `PYTHONPATH`, assuming it is installed in a sibling folder to your current reposiroty as explained [above](#pre-requisites).
 
 ##### Exposes the common folder for all your repositories
 
@@ -102,10 +117,10 @@ tk-framework-shotgunutils_v5.x.x:
 This would allow your tests to run wherever the repositories have been cloned, as long as they are next to each other
 on your filesystem.
 
-##### Adds any python modules for your tests into the `PYTHONPATH`
+##### Adds any Python modules for your tests into the `PYTHONPATH`
 
 If your repository contains a folder named `tests/python`, it will be added at the front of the `PYTHONPATH`. This
-allows your tests modules to share common building blocks.
+allows your test modules to share common building blocks.
 
 ##### Configures a Toolkit log file for your tests
 
@@ -132,7 +147,7 @@ tk-testengine:
 
 # `tk-docs-preview`
 
-This tools allows to build the documentation for a Toolkit of the Python API repository. Just like the `pytest` plugin, it [assumes](#pre-requisites) the folder structure on disk to make it as simple as typing `tk-docs-preview` on the command line to build the documentation and get a preview in the browser.
+This tool allows to build the documentation for a Toolkit bundle or the Python API repository. Just like the `pytest` plugin, it [makes assumptions](#pre-requisites) about the folder structure on disk to make it as simple as typing `tk-docs-preview` on the command line to build the documentation and get a preview in the browser.
 
 Here's the `--help` output.
 
@@ -179,11 +194,3 @@ Known limitations:
 - Only works with applications that do not depend on DCC specific code.
 - The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`
 - You cannot select the context. It will always use the first non-template project it finds on the Shotgun server as the context.
-
-# `pre-commit`
-
-The pre-commit hook should be run on all Toolkit repositories in order to keep code quality as high as possible. The most important of the pre-commit hooks is the `black` code formatter, which will take care of formatting your code according to PEP8 so you don't have to think about it. Only the files that have been modified will be reformatted.
-
-In you've just cloned a repository, type `pre-commit install` so that the hook is executed every single time you commit to `git`.
-
-If you're setting up a new repository, or if the repository you're about to work into does not have a file named `.pre-commit-config.yaml`, you can take the one at the root of this repository, copy it into your new repository andn the commit it. Then, run `pre-commit install`. If you've committed third-party modules inside your repo, you should update the `exclude` regular expression in that file so your third-parties are not reformatted. Once you've properly set the exclusion list, it's also a good idea to run `pre-commit run --all` so that all files in the repository are reformatted.
