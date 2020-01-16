@@ -28,9 +28,10 @@ Options:
                        Specifies the id of the entity of the context.
 
     --location=<location>
-                        Specifies the location where the Toolkit app is. If missing,
-                        the application will assume it is run inside a repository
-                        and will search for the app there.
+                        Specifies the location where the Toolkit application is.
+                        If missing, the tk-run-app assumes it is run from inside
+                        the repository and launch the application at the root of
+                        it.
 """
 
 import os

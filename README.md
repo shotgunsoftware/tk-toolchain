@@ -181,16 +181,41 @@ For all of these examples, if your folder hierarchy is similar to
     /home/you/gitrepos/python-api
     /home/you/gitrepos/tk-multi-toolkitapp
 
-then the tool will find all the required folders on it's own and you will only need
+then the tool will find all the required folders on its own and you will only need
 to type "tk-docs-preview" to preview the documentation
 ```
 
 # `tk-run-app`
 
-This tool allows you to launch apps like the Toolkit Publisher, Loader or Panel straight from the command line. Simply type `tk-run-app` from the repository of an application and the tool will launch all the registered actions.
+This tool allows you to launch apps like the Toolkit Publisher, Loader or Panel straight from the command line. Simply type `tk-run-app` from the repository of an application and the tool will launch all the registered actions. If you do not specify a context, it will use the first non-template project it finds in Shotgun server as the context.
+
+Here's the ``--help`` output.
+
+```
+Toolkit Application Runner
+
+Launch a Toolkit application from the command line by running this tool in any
+Toolkit repository.
+
+Usage:
+    tk-run-app [--context-entity-type=<entity-type>] [--context-entity-id=<entity-id>] [--location=<location>]
+
+Options:
+
+    -e, --context-entity-type=<entity-type>
+                       Specifies the type of the entity of the context.
+
+    -i, --context-entity-id=<entity-id>
+                       Specifies the id of the entity of the context.
+
+    --location=<location>
+                        Specifies the location where the Toolkit application is.
+                        If missing, the tk-run-app assumes it is run from inside
+                        the repository and launch the application at the root of
+                        it.
+```
 
 Known limitations:
 
 - Only works with applications that do not depend on DCC specific code.
 - The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`
-- You cannot select the context. It will always use the first non-template project it finds on the Shotgun server as the context.
