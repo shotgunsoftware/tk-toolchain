@@ -88,7 +88,8 @@ def update_yaml_data(data, bundle, version):
     file_updated = False
 
     if is_descriptor(data):
-        if data["name"] == bundle:
+        # If we've found the bundle and we have a new version
+        if data["name"] == bundle and data["version"] != version:
             data["version"] = version
             file_updated = True
     else:
