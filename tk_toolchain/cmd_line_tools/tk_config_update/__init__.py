@@ -132,7 +132,14 @@ def main(arguments=None):
                 )
             repo.add(yml_file)
 
-    repo.commit("Updated {0} to {1}".format(bundle, version))
+    repo.commit(
+        (
+            "Updated {bundle} to {version}\n"
+            "Release notes: https://github.com/shotgunsoftware/{bundle}/wiki/Release-Notes#{version_no_dots}"
+        ).format(
+            bundle=bundle, version=version, version_no_dots=version.replace(".", "")
+        )
+    )
 
     if options["--push-changes"] is True:
         repo.push()
