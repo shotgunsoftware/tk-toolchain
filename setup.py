@@ -66,6 +66,7 @@ setup(
         "sphinx_rtd_theme",
         # Other tools used by devs that are useful to have.
         "pre-commit",
+        "docopt",
         "ruamel.yaml==0.16.5",
     ],
     classifiers=[
