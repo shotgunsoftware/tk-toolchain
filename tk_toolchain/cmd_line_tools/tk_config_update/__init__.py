@@ -126,12 +126,17 @@ def main(arguments=None):
             yaml_data = yaml.load(fh, yaml.RoundTripLoader)
 
         if update_yaml_data(yaml_data, bundle, version):
+            repo_updated = True
             print("Updated '{0}'".format(yml_file))
             with open(yml_file, "w") as fh:
                 yaml.dump(
                     yaml_data, fh, default_flow_style=False, Dumper=yaml.RoundTripDumper
                 )
             repo.add(yml_file)
+
+    if repo_updated is False:
+        print("No files were updated.")
+        return 0
 
     repo.commit(
         (
