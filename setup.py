@@ -66,6 +66,7 @@ setup(
         "sphinx_rtd_theme",
         # Other tools used by devs that are useful to have.
         "pre-commit",
+        "ruamel.yaml==0.16.5",
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -83,7 +84,8 @@ setup(
     entry_points={
         "pytest11": ["pytest_tank_test = pytest_tank_test"],
         "console_scripts": [
-            "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_preview:main"
+            "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_preview:main",
+            "tk-config-update = tk_toolchain.cmd_line_tools.tk_config_update:main",
         ],
     },
 )
