@@ -13,17 +13,17 @@
 """
 Toolkit Configuration Update
 
-Update the version of a bundle in a config to the specified version.
+Update the version of a bundle in a config to the specified version and pushes
+it back to the source repository.
 
 Usage:
     tk-config-update <config> <bundle> <version> [--push-changes]
 
 Options:
-
-    --push-changes  Pushes the changes to the repository. If not specified
+    --push-changes  Pushes the changes to the repository. If not specified,
                     the remote repository is not updated.
 
-Examples:
+Example:
     tk-config-update git@github.com:shotgunsoftware/tk-config-default2.git tk-core v0.19.0
 """
 
@@ -137,6 +137,6 @@ def main(arguments=None):
     if options["--push-changes"] is True:
         repo.push()
     else:
-        print("Specify --push-changes to update the remote repository")
+        print("Specify --push-changes to update the remote repository.")
 
     return 0
