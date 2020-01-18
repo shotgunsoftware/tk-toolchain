@@ -44,25 +44,50 @@ except ImportError:
 
 # FIXME: Maybe we should rename the other repository class (tk_toolchain.repo.Repository) Bundle?
 class Repository(object):
-    def __init__(self, remote):
-        self._remote = remote
-        self._root = tempfile.mkdtemp()
-        atexit.register(lambda: shutil.rmtree(self._root))
+    """
+    Allows to make operations on a repository. You need to clone it first.
+    """
+
+    @classmethod
+    def clone(cls, remote):
+        """
+        Clone a repository from a remote.
+        """
+        root = tempfile.mkdtemp()
+        atexit.register(lambda: shutil.rmtree(root))
+        subprocess.check_call(["git", "clone", remote, root, "--depth", "1"])
+        return Repository(root)
+
+    def __init__(self, root):
+        self._root = root
 
     @property
     def root(self):
+        """
+        Root of the local cloned directory.
+        """
         return self._root
 
-    def clone(self):
-        self._git("clone", self._remote, self._root, "--depth", "1")
-
     def add(self, location):
+        """
+        Add a location to the index.
+
+        :param str location: Location on disk.
+        """
         self._git("add", location)
 
     def commit(self, msg):
+        """
+        Commit the index.
+
+        :param str msg: Message for the commit.
+        """
         self._git("commit", "-m", "{0}".format(msg))
 
     def push(self):
+        """
+        Push the repository back to the remote.
+        """
         self._git("push", "origin", "master")
 
     def _git(self, *args):
@@ -70,6 +95,13 @@ class Repository(object):
 
 
 def enumerate_yaml_files(root):
+    """
+    Enumerate all the files in the repository.
+
+    :param str root: Path to the repository/
+
+    :returns: Iterator on all files ending with .yml.
+    """
     for (dirpath, dirnames, filenames) in os.walk(root):
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
@@ -78,10 +110,25 @@ def enumerate_yaml_files(root):
 
 
 def is_descriptor(data):
+    """
+    Check if the dictionary is a descriptor.
+
+    :param dict-like data: Dictionary to inspect.
+
+    :returns: True the dictionary has keys type, name and version, False otherwise.
+    """
     return "type" in data.keys() and "name" in data.keys() and "version" in data.keys()
 
 
 def update_yaml_data(data, bundle, version):
+    """
+    Recursively visit a dictionary looking for a descriptors and updates them
+    if the bundle name match and they are out of date.
+
+    :param dict-like data: Data to visit.
+    :param str bundle: Name of the bundle to search for.
+    :param str version: New version of the bundle.
+    """
     if not isinstance(data, yaml.comments.CommentedMap):
         return False
 
@@ -113,31 +160,38 @@ def main(arguments=None):
     # get an error.
     options = docopt.docopt(__doc__, argv=arguments)
 
-    repo = Repository(options["<config>"])
+    repo = Repository.clone(options["<config>"])
     bundle = options["<bundle>"]
     version = options["<version>"]
 
-    repo.clone()
-
     repo_updated = False
 
+    # For every yml file in the repo
     for yml_file in enumerate_yaml_files(repo.root):
+
+        # Load it and preserve the formatting
         with open(yml_file, "r") as fh:
             yaml_data = yaml.load(fh, yaml.RoundTripLoader)
 
+        # If we found a descriptor to update
         if update_yaml_data(yaml_data, bundle, version):
-            repo_updated = True
-            print("Updated '{0}'".format(yml_file))
+
+            # Write back the changes and update the git index.
             with open(yml_file, "w") as fh:
                 yaml.dump(
                     yaml_data, fh, default_flow_style=False, Dumper=yaml.RoundTripDumper
                 )
             repo.add(yml_file)
 
+            repo_updated = True
+            print("Updated '{0}'".format(yml_file))
+
+    # If the repository was not updated, we're done.
     if repo_updated is False:
         print("No files were updated.")
         return 0
 
+    # Commit the repo and link to the release notes in the comments.
     repo.commit(
         (
             "Updated {bundle} to {version}\n"
@@ -147,6 +201,7 @@ def main(arguments=None):
         )
     )
 
+    # This script does not upload changes by default.
     if options["--push-changes"] is True:
         repo.push()
     else:
