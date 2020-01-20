@@ -87,9 +87,9 @@ If you're setting up a new repository, or if the repository you're about to work
 
 Note that it is possible to have pre-commit [configured automatically](https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories) when cloning repositories or creating new ones.
 
-# `pytest_tank_test`
+# `pytest`
 
-This `pytest` plugin removes the need to launch Toolkit unit tests using the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of it's test runner.
+`pytest` is a very popular test runner. `tk-toolchain` comes with a `pytest`-plugin that replicates the functionality found in `tests/run_tests.py` of tk-core. It removes the need to launch Toolkit unit tests using the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of its test runner.
 
 The plugin offers the following services:
 
