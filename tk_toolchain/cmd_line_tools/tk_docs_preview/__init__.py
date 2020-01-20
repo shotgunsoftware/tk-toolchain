@@ -181,7 +181,7 @@ to type "tk-docs-preview" to preview the documentation.
                 import PySide  # noqa
             except ImportError:
                 try:
-                    import PySide2
+                    import PySide2  # noqa testing importability, ignore unused import
                 except ImportError:
                     log.error(
                         "PySide or PySide2 are required to build the documentation."

@@ -30,7 +30,6 @@ def setup_toolkit():
         # run toolkit init. The doc generation scripts bootstrap script have already
         # set the PYTHONPATH so both the app we are documenting and core should be
         # available at this point.
-        toolkit_available = True
         import tank
     except:
         # not every documentable environment needs sgtk
@@ -127,7 +126,7 @@ def setup_toolkit():
 
         tank.get_hook_baseclass = get_hook_baseclass_proxy
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

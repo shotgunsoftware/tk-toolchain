@@ -15,54 +15,54 @@ import os
 
 from tk_toolchain.repo import Repository
 
-CURRENT_REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
-REPOS_ROOT = os.path.dirname(CURRENT_REPO_ROOT)
 
-TK_CORE_ROOT = os.path.join(REPOS_ROOT, "tk-core")
-TK_FRAMEWORK_ROOT = os.path.join(REPOS_ROOT, "tk-framework-shotgunutils")
-TK_APP_ROOT = os.path.join(REPOS_ROOT, "tk-multi-publish2")
-TK_ENGINE_ROOT = os.path.join(REPOS_ROOT, "tk-maya")
-TK_CONFIG_ROOT = os.path.join(REPOS_ROOT, "tk-config-basic")
-PYTHON_API_ROOT = os.path.join(REPOS_ROOT, "python-api")
-
-
-def test_find_root():
+def test_find_root(current_repo_root):
     """
     Ensure we can find a root.
     """
     # Make sure we can resolve from the current working directly.
-    assert Repository.find_root() == CURRENT_REPO_ROOT
+    assert Repository.find_root() == current_repo_root
     # Make sure we can resolve from any subdirectory
-    assert Repository.find_root(os.path.dirname(__file__)) == CURRENT_REPO_ROOT
+    assert Repository.find_root(os.path.dirname(__file__)) == current_repo_root
 
     with pytest.raises(RuntimeError):
         Repository.find_root("/var/tmp")
 
 
-def test_repo_init():
+def test_repo_init(current_repo_root):
     """
     Ensure we can create a repository from a folder.
     """
-    assert Repository().root == CURRENT_REPO_ROOT
+    assert Repository().root == current_repo_root
     # Make sure we can resolve from any subdirectory
-    assert Repository(os.path.dirname(__file__)).root == CURRENT_REPO_ROOT
+    assert Repository(os.path.dirname(__file__)).root == current_repo_root
     with pytest.raises(RuntimeError):
         Repository("/var/tmp")
 
 
-def test_repo_parent():
+def test_get_environment_variables(current_repo_root, repos_root):
+    """
+    Ensure environement variables are properly set.
+    """
+    assert Repository().get_roots_environment_variables() == {
+        "SHOTGUN_CURRENT_REPO_ROOT": current_repo_root,
+        "SHOTGUN_REPOS_ROOT": repos_root,
+    }
+
+
+def test_repo_parent(repos_root):
     """
     Ensure repo parent folder is detected properly.
     """
-    assert Repository().parent == REPOS_ROOT
+    assert Repository().parent == repos_root
 
 
-def test_repr():
+def test_repr(current_repo_root):
     """
     Ensure __repr__ behaves correctly.
     """
-    assert repr(Repository()) == "<tk_toolchain.repo.Repository for {}>".format(
-        CURRENT_REPO_ROOT
+    assert repr(Repository()) == "<tk_toolchain.repo.Repository for {0}>".format(
+        current_repo_root
     )
 
 
@@ -100,43 +100,43 @@ def _test_component(
         assert repo.is_toolkit_component()
 
 
-def test_is_tk_core():
+def test_is_tk_core(tk_core_root):
     """
     Ensure tk-core repo is detected as such.
     """
-    _test_component(Repository(TK_CORE_ROOT), is_tk_core=True)
+    _test_component(Repository(tk_core_root), is_tk_core=True)
 
 
-def test_is_framework():
+def test_is_framework(tk_framework_root):
     """
     Ensure framework repo is detected as such.
     """
-    _test_component(Repository(TK_FRAMEWORK_ROOT), is_framework=True)
+    _test_component(Repository(tk_framework_root), is_framework=True)
 
 
-def test_is_engine():
+def test_is_engine(tk_engine_root):
     """
     Ensure engine repo is detected as such.
     """
-    _test_component(Repository(TK_ENGINE_ROOT), is_engine=True)
+    _test_component(Repository(tk_engine_root), is_engine=True)
 
 
-def test_is_app():
+def test_is_app(tk_app_root):
     """
     Ensure app repo is detected as such.
     """
-    _test_component(Repository(TK_APP_ROOT), is_app=True)
+    _test_component(Repository(tk_app_root), is_app=True)
 
 
-def test_is_config():
+def test_is_config(tk_config_root):
     """
     Ensure config repo is detected as such.
     """
-    _test_component(Repository(TK_CONFIG_ROOT), is_config=True)
+    _test_component(Repository(tk_config_root), is_config=True)
 
 
-def test_is_python_api():
+def test_is_python_api(python_api_root):
     """
     Ensure python-api repo is detected as such.
     """
-    _test_component(Repository(PYTHON_API_ROOT), is_python_api=True)
+    _test_component(Repository(python_api_root), is_python_api=True)
