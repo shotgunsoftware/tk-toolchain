@@ -217,5 +217,5 @@ Options:
 
 Known limitations:
 
-- Only works with applications that do not depend on DCC specific code.
+- Only works with applications that do not depend on DCC-specific code.
 - The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`
