@@ -91,17 +91,32 @@ Note that it is possible to have pre-commit [configured automatically](https://p
 
 `pytest` is a very popular test runner. `tk-toolchain` comes with a `pytest`-plugin that replicates the functionality found in `tests/run_tests.py` of tk-core. It removes the need to launch Toolkit unit tests using the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of its test runner.
 
+## Cheatsheet
+
+If you are unfamiliar with pytest, here's a quick cheatsheet of things you'll want to do on a daily-basis.
+
+-  Stop using the `self.assert*` methods from `TestCase/TankTestBase` and use `assert` when writing tests. `pytest` introspecs the code and detailled errors will show up. For example, for `assert a == b`, where a == 1 and b == 2, pytest will print out
+```
+>       assert a == b
+E       assert 1 == 2
+```
+- Since you'll have installed `pytest` in both Python 2 and Python 3, you can easily switch between both by using `python2 -m pytest` and `python3 -m pytest`.
+- Run a subset of the tests by typing `pytest -k something`. Any test name that matches `something` will be executed. Tests are named after the file they reside in, the class and method name. For example `tests/authentication_tests/test_auth_settings.py::DefaultsManagerTest::test_backwards_compatible`. As you can see, using `-k` you can easily run the tests of a single folder, file, class or a test.
+- You can tell `pytest` to stop the execution right into the debugger where an unhandled exception is thrown by passing in `--pdb`.
+
+## pytest_tank_test's role
+
 The plugin offers the following services:
 
 ##### Adds the Toolkit core to the `PYTHONPATH`
 
-The Toolkit core will be added at the front of the `PYTHONPATH`, assuming it is installed in a sibling folder to your current reposiroty as explained [above](#pre-requisites).
+The Toolkit core will be added at the front of the `PYTHONPATH`, assuming it is installed in a sibling folder to your current repository as explained [above](#pre-requisites).
 
 ##### Exposes the common folder for all your repositories
 
 The folder in which all your repositories have been cloned will be exposed via the `SHOTGUN_REPOS_ROOT` environment variable. In the [above](#pre-requisites) example, the common folder for all the repositories is `/home/yourlogin/git-repos`.
 
-This can be used to quickly reference any Toolkit bundle that your configuration will require during testing. For example:
+This can be used to quickly reference any Toolkit bundle that you might require during testing. For example:
 
 ```yaml
 tk-framework-qtwidgets_v2.x.x:
@@ -115,7 +130,7 @@ tk-framework-shotgunutils_v5.x.x:
 ```
 
 This would allow your tests to run wherever the repositories have been cloned, as long as they are next to each other
-on your filesystem.
+on your filesystem. [Toolkit's CI/CD pipeline](https://github.com/shotgunsoftware/tk-ci-tools) lays out repositories this way.
 
 ##### Adds any Python modules for your tests into the `PYTHONPATH`
 
