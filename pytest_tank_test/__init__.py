@@ -9,9 +9,12 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
+from __future__ import print_function
+
 from tk_toolchain.repo import Repository
+from tk_toolchain import util
+from tk_toolchain.tk_testengine import get_test_engine_enviroment
 import os
-import inspect
 import sys
 
 
@@ -56,7 +59,7 @@ def pytest_configure(config):
         )
         return
 
-    print("Repository found at {}".format(repo.root))
+    print("Repository found at {0}".format(repo.root))
 
     # tk-toolchain assumes that the other repositories are clone alongside
     # the current one with their real name. However, for the current repo,
@@ -96,17 +99,10 @@ def pytest_configure(config):
             os.path.join(repo.root, "tests", "python"),
         )
 
-    # Exposes the root of all Toolkit repositories.
-    os.environ["SHOTGUN_REPOS_ROOT"] = repo.parent
+    util.merge_into_environment_variables(repo.get_roots_environment_variables())
+    util.merge_into_environment_variables(get_test_engine_enviroment())
 
-    # Expose the current repository root.
-    os.environ["SHOTGUN_CURRENT_REPO_ROOT"] = repo.root
-
-    # Exposes the location of the test engine bundle.
-    os.environ["SHOTGUN_TEST_ENGINE"] = os.path.join(
-        os.path.dirname(inspect.getsourcefile(pytest_configure)), "tk-testengine"
-    )
-
+    print("Fixtures found at", os.path.join(repo.root, "tests", "fixtures"))
     # Note: This won't be documented (or renamed) as we're not super comfortable
     # supporting TankTestBase at the moment for clients to write tests with.
     os.environ["TK_TEST_FIXTURES"] = os.path.join(repo.root, "tests", "fixtures")

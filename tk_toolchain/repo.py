@@ -60,9 +60,19 @@ class Repository(object):
         """
         Representation of this object.
         """
-        return "<{}.{} for {}>".format(
+        return "<{0}.{1} for {2}>".format(
             self.__class__.__module__, self.__class__.__name__, self._root
         )
+
+    def get_roots_environment_variables(self):
+        """
+        Provides a list of environment variables useful
+        for locating Toolkit components.
+        """
+        return {
+            "SHOTGUN_REPOS_ROOT": self.parent,
+            "SHOTGUN_CURRENT_REPO_ROOT": self.root,
+        }
 
     @property
     def root(self):

@@ -1,4 +1,5 @@
-[![Python 2.7 3.7](https://img.shields.io/badge/python-2.7%20%7C%203.7-blue.svg)](https://www.python.org/)
+
+[![Python 2.6 2.7 3.7](https://img.shields.io/badge/python-2.6%20%7C%202.7%20%7C%203.7-blue.svg)](https://www.python.org/)
 [![Build Status](https://travis-ci.org/shotgunsoftware/tk-toolchain.svg?branch=master)](https://travis-ci.org/shotgunsoftware/tk-toolchain)
 [![codecov](https://codecov.io/gh/shotgunsoftware/tk-toolchain/branch/master/graph/badge.svg)](https://codecov.io/gh/shotgunsoftware/tk-toolchain)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -19,6 +20,8 @@ regardless of the repository. It also provides a collection of environment varia
 developers to write tests.
 
 `tk-docs-preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
+
+`tk-run-app`: This tool allows you to run most Toolkit application from the command line and launch it's GUI.
 
 Also, the following tools will be installed:
 
@@ -72,6 +75,7 @@ You also need to have a copy of the Python 3 interpreter available or the `black
 
 - Type `pytest` to run the unit tests inside a Toolkit repository
 - Type `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
+- Type `tk-run-app` to launch the application from the current repository.
 
 # `pre-commit`
 
@@ -83,21 +87,36 @@ If you're setting up a new repository, or if the repository you're about to work
 
 Note that it is possible to have pre-commit [configured automatically](https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories) when cloning repositories or creating new ones.
 
-# `pytest_tank_test`
+# `pytest`
 
-This `pytest` plugin removes the need to launch Toolkit unit tests using the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of it's test runner.
+`pytest` is a very popular test runner. `tk-toolchain` comes with a `pytest`-plugin that replicates the functionality found in `tests/run_tests.py` of tk-core. It removes the need to launch Toolkit unit tests using the `run_tests.sh/run_tests.bat` scripts from `tk-core` and of its test runner.
+
+## Cheatsheet
+
+If you are unfamiliar with pytest, here's a quick cheatsheet of things you'll want to do on a daily-basis.
+
+-  Stop using the `self.assert*` methods from `TestCase/TankTestBase` and use `assert` when writing tests. `pytest` introspecs the code and detailled errors will show up. For example, for `assert a == b`, where a == 1 and b == 2, pytest will print out
+```
+>       assert a == b
+E       assert 1 == 2
+```
+- Since you'll have installed `pytest` in both Python 2 and Python 3, you can easily switch between both by using `python2 -m pytest` and `python3 -m pytest`.
+- Run a subset of the tests by typing `pytest -k something`. Any test name that matches `something` will be executed. Tests are named after the file they reside in, the class and method name. For example `tests/authentication_tests/test_auth_settings.py::DefaultsManagerTest::test_backwards_compatible`. As you can see, using `-k` you can easily run the tests of a single folder, file, class or a test.
+- You can tell `pytest` to stop the execution right into the debugger where an unhandled exception is thrown by passing in `--pdb`.
+
+## pytest_tank_test's role
 
 The plugin offers the following services:
 
 ##### Adds the Toolkit core to the `PYTHONPATH`
 
-The Toolkit core will be added at the front of the `PYTHONPATH`, assuming it is installed in a sibling folder to your current reposiroty as explained [above](#pre-requisites).
+The Toolkit core will be added at the front of the `PYTHONPATH`, assuming it is installed in a sibling folder to your current repository as explained [above](#pre-requisites).
 
 ##### Exposes the common folder for all your repositories
 
 The folder in which all your repositories have been cloned will be exposed via the `SHOTGUN_REPOS_ROOT` environment variable. In the [above](#pre-requisites) example, the common folder for all the repositories is `/home/yourlogin/git-repos`.
 
-This can be used to quickly reference any Toolkit bundle that your configuration will require during testing. For example:
+This can be used to quickly reference any Toolkit bundle that you might require during testing. For example:
 
 ```yaml
 tk-framework-qtwidgets_v2.x.x:
@@ -111,7 +130,7 @@ tk-framework-shotgunutils_v5.x.x:
 ```
 
 This would allow your tests to run wherever the repositories have been cloned, as long as they are next to each other
-on your filesystem.
+on your filesystem. [Toolkit's CI/CD pipeline](https://github.com/shotgunsoftware/tk-ci-tools) lays out repositories this way.
 
 ##### Adds any Python modules for your tests into the `PYTHONPATH`
 
@@ -177,6 +196,41 @@ For all of these examples, if your folder hierarchy is similar to
     /home/you/gitrepos/python-api
     /home/you/gitrepos/tk-multi-toolkitapp
 
-then the tool will find all the required folders on it's own and you will only need
+then the tool will find all the required folders on its own and you will only need
 to type "tk-docs-preview" to preview the documentation
 ```
+
+# `tk-run-app`
+
+This tool allows you to launch apps like the Toolkit Publisher, Loader or Panel straight from the command line. Simply type `tk-run-app` from the repository of an application and the tool will launch all the registered actions. If you do not specify a context, it will use the first non-template project it finds in Shotgun server as the context.
+
+Here's the ``--help`` output.
+
+```
+Toolkit Application Runner
+
+Launch a Toolkit application from the command line by running this tool in any
+Toolkit repository.
+
+Usage:
+    tk-run-app [--context-entity-type=<entity-type>] [--context-entity-id=<entity-id>] [--location=<location>]
+
+Options:
+
+    -e, --context-entity-type=<entity-type>
+                       Specifies the type of the entity of the context.
+
+    -i, --context-entity-id=<entity-id>
+                       Specifies the id of the entity of the context.
+
+    --location=<location>
+                        Specifies the location where the Toolkit application is.
+                        If missing, the tk-run-app assumes it is run from inside
+                        the repository and launch the application at the root of
+                        it.
+```
+
+Known limitations:
+
+- Only works with applications that do not depend on DCC-specific code.
+- The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`

@@ -11,30 +11,25 @@
 
 import os
 
-import pytest_tank_test
 
-CURRENT_REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
-REPOS_ROOT = os.path.dirname(CURRENT_REPO_ROOT)
-
-
-def test_shotgun_repos_root():
+def test_shotgun_repos_root(repos_root):
     """
     Ensure SHOTGUN_REPOS_ROOT is set.
     """
-    assert os.environ.get("SHOTGUN_REPOS_ROOT") == REPOS_ROOT
+    assert os.environ.get("SHOTGUN_REPOS_ROOT") == repos_root
 
 
-def test_shotgun_current_repo_root():
+def test_shotgun_current_repo_root(current_repo_root):
     """
     Ensure SHOTGUN_CURRENT_REPO_ROOT is set.
     """
-    assert os.environ.get("SHOTGUN_CURRENT_REPO_ROOT") == CURRENT_REPO_ROOT
+    assert os.environ.get("SHOTGUN_CURRENT_REPO_ROOT") == current_repo_root
 
 
-def test_shotgun_test_engine_env_var():
+def test_shotgun_test_engine_env_var(current_repo_root):
     """
     Ensure SHOTGUN_TEST_ENGINE is set.
     """
     assert os.environ.get("SHOTGUN_TEST_ENGINE") == os.path.join(
-        os.path.dirname(pytest_tank_test.__file__), "tk-testengine"
+        os.path.join(current_repo_root, "tk_toolchain", "tk_testengine")
     )

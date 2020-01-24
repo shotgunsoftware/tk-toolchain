@@ -51,3 +51,17 @@ class TestEngine(sgtk.platform.Engine):
         Print any log message to the console.
         """
         print(handler.format(record))
+
+    def show_dialog(self, title, bundle, widget_class, *args, **kwargs):
+        """
+        Shows a dialog.
+
+        See sgtk.platform.Engine documentation's for more details.
+        """
+        dialog = super(self.__class__, self).show_dialog(
+            title, bundle, widget_class, *args, **kwargs
+        )
+        # Forces the dialog to show on top of other dialogs when using PySide 1
+        dialog.window().raise_()
+        dialog.window().show()
+        return dialog

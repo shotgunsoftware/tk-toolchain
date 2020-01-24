@@ -11,7 +11,6 @@
 
 import os
 import sys
-import shutil
 import tempfile
 
 
@@ -137,31 +136,3 @@ class SphinxProcessor(object):
             pass
 
         return self._sphinx_build_dir
-
-    def copy_docs(self, log, src, dst):
-        """
-        Alternative implementation to shutil.copytree
-        Copies recursively with very open permissions.
-        Creates folders if they don't already exist.
-
-        :param src: Source path
-        :param dst: Destination path
-        """
-        if not os.path.exists(dst):
-            log.debug("mkdir 0777 %s" % dst)
-            os.mkdir(dst, 0o777)
-
-        names = os.listdir(src)
-        for name in names:
-
-            srcname = os.path.join(src, name)
-            dstname = os.path.join(dst, name)
-
-            try:
-                if os.path.isdir(srcname):
-                    self.copy_docs(log, srcname, dstname)
-                else:
-                    shutil.copy(srcname, dstname)
-                    log.debug("Copy %s -> %s" % (srcname, dstname))
-            except Exception as e:
-                log.error("Can't copy %s to %s: %s" % (srcname, dstname, e))

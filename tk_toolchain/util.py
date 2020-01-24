@@ -22,3 +22,15 @@ def expand_path(path):
     """
     # TODO: What is an env var contains an env var?
     return os.path.expanduser(os.path.expandvars(path))
+
+
+def merge_into_environment_variables(env):
+    """
+    Merge the passed in environment variables into the real
+    environment.
+
+    If an environment variable is already defined, the original
+    value will remain.
+    """
+    for name, value in env.items():
+        os.environ.setdefault(name, value)
