@@ -83,7 +83,7 @@ The pre-commit hook should be run on all Toolkit repositories in order to keep c
 
 In you've just cloned a repository, type `pre-commit install` so that the hook is executed every single time you commit to `git` in the future.
 
-If you're setting up a new repository, or if the repository you're about to work in does not have a file named `.pre-commit-config.yaml`, you can take the one at the root of this repository, copy it into your new repository and then commit it. Then, run `pre-commit install`. If you've committed third-party modules inside your repo, you should update the `exclude` regular expression in that file so your third-parties are not reformatted. Once you've properly set the exclusion list, it's also a good idea to run `pre-commit run --all` so that all files in the repository are reformatted.
+If you're setting up a new repository, or if the repository you're about to work in does not have a file named `.pre-commit-config.yaml`, you can take the one at the root of this repository (minus the flake8 rule as legacy Toolkit applications have a lot of cleanup that needs to be done), copy it into your new repository and then commit it. Then, run `pre-commit install`. If you've committed third-party modules inside your repo, you should update the `exclude` regular expression in that file so your third-parties are not reformatted. Once you've properly set the exclusion list, it's also a good idea to run `pre-commit run --all` so that all files in the repository are reformatted.
 
 Note that it is possible to have pre-commit [configured automatically](https://pre-commit.com/#automatically-enabling-pre-commit-on-repositories) when cloning repositories or creating new ones.
 
