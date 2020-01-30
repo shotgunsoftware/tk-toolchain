@@ -104,7 +104,7 @@ def enumerate_yaml_files(root):
 
     :returns: Iterator on all files ending with .yml.
     """
-    for (dirpath, dirnames, filenames) in os.walk(root):
+    for (dirpath, _, filenames) in os.walk(root):
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
             if filepath.endswith(".yml"):
