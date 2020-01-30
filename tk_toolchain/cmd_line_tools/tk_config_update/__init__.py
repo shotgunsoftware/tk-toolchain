@@ -34,7 +34,6 @@ import shutil
 import atexit
 import tempfile
 import docopt
-import contextlib
 
 try:
     from ruamel import yaml
@@ -92,6 +91,9 @@ class Repository(object):
 
     def _git(self, *args):
         subprocess.check_call(["git"] + list(args), cwd=self._root)
+
+    def diff(self, ref="HEAD"):
+        self._git("diff", ref)
 
 
 def enumerate_yaml_files(root):
@@ -190,6 +192,8 @@ def main(arguments=None):
     if repo_updated is False:
         print("No files were updated.")
         return 0
+
+    repo.diff()
 
     # Commit the repo and link to the release notes in the comments.
     repo.commit(
