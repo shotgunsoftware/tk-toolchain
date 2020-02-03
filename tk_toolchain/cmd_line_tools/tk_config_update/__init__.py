@@ -41,10 +41,11 @@ except ImportError:
     sys.exit("This tool can only be run with Python 2.7 or greater.")
 
 
-# FIXME: Maybe we should rename the other repository class (tk_toolchain.repo.Repository) Bundle?
+# FIXME: Maybe we should rename the other repository class (tk_toolchain.repo.Repository)
+# to Bundle?
 class Repository(object):
     """
-    Allows to make operations on a repository. You need to clone it first.
+    Allows to make operations on a repository.
     """
 
     @classmethod
@@ -58,12 +59,15 @@ class Repository(object):
         return Repository(root)
 
     def __init__(self, root):
+        """
+        :param str root: Root of the repository.
+        """
         self._root = root
 
     @property
     def root(self):
         """
-        Root of the local cloned directory.
+        Root of the repository.
         """
         return self._root
 
@@ -89,13 +93,25 @@ class Repository(object):
         """
         self._git("push", "origin", "master")
 
+    def diff(self):
+        """
+        Diff with the head.
+        """
+        self._git("diff", "HEAD")
+
     def _git(self, *args):
+        """
+        Run a git command.
+
+        :param args: List of arguments for the git command.
+
+        If invoking the method as _git("push", "origin", "master"), then the
+        result would be subprocess.check_call(["git", "push", "origin", "master"])
+        """
+        # Disable the pager, we don't want this call to be blocking.
         environ = os.environ.copy()
         environ["PAGER"] = ""
         subprocess.check_call(["git"] + list(args), cwd=self._root, env=environ)
-
-    def diff(self, ref="HEAD"):
-        self._git("diff", ref)
 
 
 def enumerate_yaml_files(root):
