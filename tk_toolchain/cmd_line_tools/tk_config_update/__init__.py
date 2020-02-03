@@ -90,7 +90,9 @@ class Repository(object):
         self._git("push", "origin", "master")
 
     def _git(self, *args):
-        subprocess.check_call(["git"] + list(args), cwd=self._root)
+        environ = os.environ.copy()
+        environ["PAGER"] = ""
+        subprocess.check_call(["git"] + list(args), cwd=self._root, env=environ)
 
     def diff(self, ref="HEAD"):
         self._git("diff", ref)
@@ -122,10 +124,34 @@ def is_descriptor(data):
     return "type" in data.keys() and "name" in data.keys() and "version" in data.keys()
 
 
+def is_descriptor_matching(data, bundle, version):
+    """
+    Check if the descriptor that is passed in matches the bundle name
+    and potential new version.
+    """
+    # If this is not the right bundle or the version hasn't changed, skip
+    # the update.
+    if data["name"] != bundle or data["version"] == version:
+        return False
+
+    # Frameworks can be found multiple times in a configuration with different
+    # major versions. We must be careful to only update the right one however.
+    # To do this, we'll make sure that the major version of the descriptor
+    # is the same as the new version's.
+    if bundle.startswith("tk-framework"):
+        major_released, _ = data["version"].split(".", 1)
+        major_update, _ = version.split(".", 1)
+        if major_released != major_update:
+            return False
+
+    # All good, we can push now.
+    return True
+
+
 def update_yaml_data(data, bundle, version):
     """
-    Recursively visit a dictionary looking for a descriptors and updates them
-    if the bundle name match and they are out of date.
+    Recursively visit a dictionary looking for a descriptor and updates them
+    if there's a match.
 
     :param dict-like data: Data to visit.
     :param str bundle: Name of the bundle to search for.
@@ -138,7 +164,7 @@ def update_yaml_data(data, bundle, version):
 
     if is_descriptor(data):
         # If we've found the bundle and we have a new version
-        if data["name"] == bundle and data["version"] != version:
+        if is_descriptor_matching(data, bundle, version):
             data["version"] = version
             file_updated = True
     else:
