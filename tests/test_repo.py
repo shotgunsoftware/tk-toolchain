@@ -16,7 +16,7 @@ import os
 from tk_toolchain.repo import Repository
 
 
-def test_find_root(current_repo_root):
+def test_find_root(current_repo_root, tmpdir):
     """
     Ensure we can find a root.
     """
@@ -25,20 +25,18 @@ def test_find_root(current_repo_root):
     # Make sure we can resolve from any subdirectory
     assert Repository.find_root(os.path.dirname(__file__)) == current_repo_root
 
-    with pytest.raises(RuntimeError):
-        Repository.find_root("/var/tmp")
+    with pytest.raises(RuntimeError) as exception:
+        Repository(tmpdir.strpath)
+    assert "is not inside a repository" in str(exception)
 
 
-def test_repo_init(current_repo_root, tmpdir):
+def test_repo_init(current_repo_root):
     """
     Ensure we can create a repository from a folder.
     """
     assert Repository().root == current_repo_root
     # Make sure we can resolve from any subdirectory
     assert Repository(os.path.dirname(__file__)).root == current_repo_root
-    with pytest.raises(RuntimeError) as exception:
-        Repository(tmpdir.strpath)
-    assert "is not inside a repository" in str(exception)
 
 
 def test_get_environment_variables(current_repo_root, repos_root):
