@@ -91,6 +91,7 @@ setup(
         sphinx_version,
         "sphinx_rtd_theme==0.4.3",
         "docopt==0.6.2",
+        "six==1.14.0",
     ]
     # Other tools used by devs that are useful to have.
     + (["pre-commit", "ruamel.yaml"] if is_python_27_or_greater else []),
