@@ -74,43 +74,65 @@ def test_is_descriptor():
     )
 
 
-def _ensure_right_bundle_modified(
-    original_cfg,
-    updated_cfg,
+@pytest.mark.parametrize(
+    "modified_file,path_to_descriptor,bundle,expected_version",
+    [
+        (os.path.join("core", "core_api.yml"), ["location"], "tk-core", "v0.18.0"),
+        (
+            os.path.join(*"env/includes/common/frameworks.yml".split("/")),
+            ["frameworks", "tk-framework-shotgunutils_v5.x.x", "location"],
+            "tk-framework-shotgunutils",
+            "v5.0.0",
+        ),
+        (
+            os.path.join(*"env/includes/common/frameworks.yml".split("/")),
+            ["frameworks", "tk-framework-shotgunutils_v4.x.x", "location"],
+            "tk-framework-shotgunutils",
+            "v4.0.0",
+        ),
+        (
+            os.path.join(*"env/includes/common/apps.yml".split("/")),
+            ["common.apps.tk-multi-publish2.location"],
+            "tk-multi-publish2",
+            "v10.0.0",
+        ),
+        (
+            os.path.join(*"env/includes/common/engines.yml".split("/")),
+            ["common.engines.tk-3dsmax.location"],
+            "tk-3dsmax",
+            "v11.0.0",
+        ),
+    ],
+)
+def test_update_config(
+    cloned_config,
+    test_config,
     modified_file,
     path_to_descriptor,
     bundle,
     expected_version,
 ):
+    """
+    Ensure the update updates the right file and puts the right content in it.
+    """
     updated_files = list(
-        tk_config_update.update_files(updated_cfg, bundle, expected_version)
+        tk_config_update.update_files(test_config, bundle, expected_version)
     )
-    assert updated_files == [os.path.join(updated_cfg, modified_file)]
+    assert updated_files == [os.path.join(test_config, modified_file)]
 
-    with open(os.path.join(original_cfg, modified_file), "rt") as fh:
-        original_cfg = yaml.load(fh, Loader=yaml.Loader)
+    with open(os.path.join(cloned_config, modified_file), "rt") as fh:
+        expected_cfg = yaml.load(fh, Loader=yaml.Loader)
 
-    with open(os.path.join(updated_cfg, modified_file), "rt") as fh:
-        updated_cfg = yaml.load(fh, Loader=yaml.Loader)
+    with open(os.path.join(test_config, modified_file), "rt") as fh:
+        test_config = yaml.load(fh, Loader=yaml.Loader)
 
-    value = original_cfg
+    value = expected_cfg
     for key in path_to_descriptor:
-        value = original_cfg[key]
+        value = value[key]
 
     value["version"] = expected_version
 
-    assert original_cfg == updated_cfg
-
-
-def test_update_config(tk_config_root, test_config):
-    _ensure_right_bundle_modified(
-        tk_config_root,
-        test_config,
-        os.path.join("core", "core_api.yml"),
-        ["location"],
-        "tk-core",
-        "v0.18.0",
-    )
+    assert expected_cfg == test_config
 
 
 expected_config_files = set(
