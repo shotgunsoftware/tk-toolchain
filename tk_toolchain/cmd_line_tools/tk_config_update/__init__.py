@@ -197,6 +197,14 @@ def update_yaml_data(data, bundle, version):
 
 def update_files(repo_root, bundle, version):
     """
+    Update files in the repository that contain a descriptor
+    to the given bundle.
+
+    :param str repo_root: Root of the repository to update.
+    :param str bundle: Name of the bundle to search for.
+    :param str version: Name of the new version.
+
+    :returns: Generator of modified files.
     """
     # For every yml file in the repo
     for yml_file in enumerate_yaml_files(repo_root):
