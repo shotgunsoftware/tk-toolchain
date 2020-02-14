@@ -22,11 +22,17 @@ from tk_toolchain.cmd_line_tools import tk_config_update
 # run the tool on it without modifying it.
 @pytest.fixture(scope="module")
 def cloned_config(tk_config_root, tmpdir_factory):
+    """
+    Clone tk-config-basic so we don't modify the user's repo.
+
+    If this clone fails, it's likely because tag v1.3.0 is not in your
+    copy of the repository or because tk-config-basic is missing.
+    """
     tmp_path = tmpdir_factory.mktemp("config")
     # cast LocalPath to str since Python 2 compatible methods manipulate strings
     tmp_path = str(tmp_path)
     subprocess.check_call(
-        ["git", "clone", "--branch", "v1.3.0", tk_config_root, tmp_path]
+        ["git", "clone", "--depth", "1", "--branch", "v1.3.0", tk_config_root, tmp_path]
     )
     return six.ensure_str(tmp_path)
 
@@ -46,10 +52,6 @@ def test_config(cloned_config):
 def test_enumerate_files(cloned_config):
     """
     Ensure the tool enumerates files correctly.
-
-    If this test fails for you locally because new files were added or remove,
-    simply update add the missing files and make sure the .travis.yml file clones the
-    right tag.
     """
     files_found = [
         path.replace(cloned_config + "/", "")

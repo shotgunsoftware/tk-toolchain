@@ -140,3 +140,26 @@ def test_is_python_api(python_api_root):
     Ensure python-api repo is detected as such.
     """
     _test_component(Repository(python_api_root), is_python_api=True)
+
+
+@pytest.mark.parametrize(
+    "repo_name",
+    [
+        "tk-config-basic",
+        "tk-core",
+        "tk-multi-publish2",
+        "tk-maya",
+        "tk-framework-shotgunutils",
+        "python-api",
+    ],
+)
+def test_ensure_test_repositories_exists(repo_name):
+    """
+    Ensure all repositories required for the test to pass are present on the
+    computer.
+    """
+    repo_path = os.path.join(Repository().parent, repo_name)
+    assert os.path.exists(repo_path), (
+        "Repository %s does not exist. Clone the master branch from Github for the test suite to pass."
+        % repo_path
+    )
