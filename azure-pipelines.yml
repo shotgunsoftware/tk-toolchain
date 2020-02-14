@@ -54,7 +54,7 @@ jobs:
 
     # After the tests have run, run the integration tests.
     post_tests_steps:
-      - bash:
+      - bash: |
           python setup.py sdist
           python -m pip install -U dist/tk-toolchain-*.tar.gz
         displayName: Validate setup.py
