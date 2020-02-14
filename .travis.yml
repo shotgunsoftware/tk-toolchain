@@ -27,10 +27,11 @@ install:
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-framework-shotgunutils ../tk-framework-shotgunutils
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-multi-publish2 ../tk-multi-publish2
     - git clone --depth 1 https://github.com/shotgunsoftware/tk-maya ../tk-maya
-    - git clone --depth 1 https://github.com/shotgunsoftware/tk-config-basic ../tk-config-basic
+    # Fixing the version of the config become tests actually depend on the included data.
+    - git clone --depth 1 --branch v1.3.0 https://github.com/shotgunsoftware/tk-config-basic ../tk-config-basic
     - git clone --depth 1 https://github.com/shotgunsoftware/python-api ../python-api
-    - pip install pytest pytest-cov PySide2
-
+    # For testing
+    - pip install pytest-cov PySide2
 script:
   # Pip install the module in dev mode so we can get coverage metrics.
   - pip install -e .

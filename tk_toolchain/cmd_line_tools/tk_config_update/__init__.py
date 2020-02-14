@@ -129,7 +129,7 @@ def enumerate_yaml_files(root):
                 yield filepath
 
 
-def is_descriptor(data):
+def is_app_store_descriptor(data):
     """
     Check if the dictionary is a descriptor.
 
@@ -137,7 +137,11 @@ def is_descriptor(data):
 
     :returns: True the dictionary has keys type, name and version, False otherwise.
     """
-    return "type" in data.keys() and "name" in data.keys() and "version" in data.keys()
+    return (
+        data.get("type") == "app_store"
+        and "name" in data.keys()
+        and "version" in data.keys()
+    )
 
 
 def is_descriptor_matching(data, bundle, version):
@@ -178,7 +182,7 @@ def update_yaml_data(data, bundle, version):
 
     file_updated = False
 
-    if is_descriptor(data):
+    if is_app_store_descriptor(data):
         # If we've found the bundle and we have a new version
         if is_descriptor_matching(data, bundle, version):
             data["version"] = version
@@ -189,6 +193,27 @@ def update_yaml_data(data, bundle, version):
                 file_updated = True
 
     return file_updated
+
+
+def update_files(repo_root, bundle, version):
+    """
+    """
+    # For every yml file in the repo
+    for yml_file in enumerate_yaml_files(repo_root):
+
+        # Load it and preserve the formatting
+        with open(yml_file, "r") as fh:
+            yaml_data = yaml.load(fh, yaml.RoundTripLoader)
+
+        # If we found a descriptor to update
+        if update_yaml_data(yaml_data, bundle, version):
+
+            # Write back the changes and update the git index.
+            with open(yml_file, "w") as fh:
+                yaml.dump(
+                    yaml_data, fh, default_flow_style=False, Dumper=yaml.RoundTripDumper
+                )
+            yield yml_file
 
 
 ####################################################################################
@@ -208,30 +233,14 @@ def main(arguments=None):
     bundle = options["<bundle>"]
     version = options["<version>"]
 
-    repo_updated = False
+    files_updated = []
 
-    # For every yml file in the repo
-    for yml_file in enumerate_yaml_files(repo.root):
-
-        # Load it and preserve the formatting
-        with open(yml_file, "r") as fh:
-            yaml_data = yaml.load(fh, yaml.RoundTripLoader)
-
-        # If we found a descriptor to update
-        if update_yaml_data(yaml_data, bundle, version):
-
-            # Write back the changes and update the git index.
-            with open(yml_file, "w") as fh:
-                yaml.dump(
-                    yaml_data, fh, default_flow_style=False, Dumper=yaml.RoundTripDumper
-                )
-            repo.add(yml_file)
-
-            repo_updated = True
-            print("Updated '{0}'".format(yml_file))
+    for yml_file in update_files(repo.root, bundle, version):
+        print("Updated '{0}'".format(yml_file))
+        files_updated.append(yml_file)
 
     # If the repository was not updated, we're done.
-    if repo_updated is False:
+    if not files_updated:
         print("No files were updated.")
         return 0
 
