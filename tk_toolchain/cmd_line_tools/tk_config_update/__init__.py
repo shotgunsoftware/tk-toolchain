@@ -237,6 +237,7 @@ def main(arguments=None):
 
     for yml_file in update_files(repo.root, bundle, version):
         print("Updated '{0}'".format(yml_file))
+        repo.add(yml_file)
         files_updated.append(yml_file)
 
     # If the repository was not updated, we're done.
