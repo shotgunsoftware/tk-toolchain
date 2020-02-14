@@ -34,6 +34,18 @@ is_python_27_or_greater = python_version >= (2, 7)
 is_python_27 = python_version == (2, 7)
 is_python_2 = python_version[0] == 2
 
+pytest_version = "pytest==4.6.6" if is_python_27_or_greater else "pytest<3.3"
+pytest_cov_version = (
+    "pytest-cov==2.6.1" if is_python_27_or_greater else "pytest-cov==2.5.1"
+)
+pyyaml_version = "PyYAML" if is_python_27_or_greater else "PyYAML==3.11"
+
+if is_python_3:
+    sphinx_version = "sphinx"
+elif is_python_27:
+    sphinx_version = "sphinx<=1.8.5"
+else:
+    sphinx_version = "sphinx==1.4.9"
 
 setup(
     name="tk-toolchain",
@@ -65,25 +77,23 @@ setup(
     python_requires=">=2.6.0",
     install_requires=[
         # Tests
-        "pytest==4.6.6" if is_python_27_or_greater else "pytest<3.3",
-        "pytest-cov==2.6.1" if is_python_27_or_greater else "pytest-cov==2.5.1",
+        pytest_version,
+        pytest_cov_version,
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==2.0.0",
         "coverage==4.5.4",
         "unittest2==1.1.0",
         # Doc generation
-        "PyYAML" if is_python_27_or_greater else "PyYAML==3.11",
+        pyyaml_version,
         # sphinx 2.0 is Python 3 only, so we have to cap out the version
         # we use on Python 2.
-        "sphinx"
-        if is_python_3
-        else ("sphinx<=1.8.5" if is_python_27 else "sphinx==1.4.9"),
-        "sphinx_rtd_theme",
-        "docopt",
+        sphinx_version,
+        "sphinx_rtd_theme==0.4.3",
+        "docopt==0.6.2",
     ]
     # Other tools used by devs that are useful to have.
-    + (["pre-commit"] if is_python_27_or_greater else []),
+    + (["pre-commit", "ruamel.yaml"] if is_python_27_or_greater else []),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Pytest",
