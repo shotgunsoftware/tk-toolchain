@@ -54,7 +54,9 @@ def test_enumerate_files(cloned_config):
     Ensure the tool enumerates files correctly.
     """
     files_found = [
-        path.replace(cloned_config + os.path.sep, "")
+        # strip the root of the path and flip the separators so we can
+        # compare with the constant at the bottom of the file.
+        path.replace(cloned_config + os.path.sep, "").replace(os.path.sep, "/")
         for path in tk_config_update.enumerate_yaml_files(cloned_config)
     ]
     assert set(files_found) == expected_config_files
