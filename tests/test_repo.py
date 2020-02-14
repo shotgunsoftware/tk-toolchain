@@ -29,15 +29,16 @@ def test_find_root(current_repo_root):
         Repository.find_root("/var/tmp")
 
 
-def test_repo_init(current_repo_root):
+def test_repo_init(current_repo_root, tmpdir):
     """
     Ensure we can create a repository from a folder.
     """
     assert Repository().root == current_repo_root
     # Make sure we can resolve from any subdirectory
     assert Repository(os.path.dirname(__file__)).root == current_repo_root
-    with pytest.raises(RuntimeError):
-        Repository("/var/tmp")
+    with pytest.raises(RuntimeError) as exception:
+        Repository(tmpdir.strpath)
+    assert "is not inside a repository" in str(exception)
 
 
 def test_get_environment_variables(current_repo_root, repos_root):
