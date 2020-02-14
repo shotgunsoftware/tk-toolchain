@@ -60,20 +60,19 @@ def test_enumerate_files(cloned_config):
     assert set(files_found) == expected_config_files
 
 
-def test_is_descriptor():
-    assert tk_config_update.is_app_store_descriptor({"something": "something"}) is False
-    assert (
-        tk_config_update.is_app_store_descriptor(
-            {"type": "shotgun", "name": "something", "version": "231"}
-        )
-        is False
-    )
-    assert (
-        tk_config_update.is_app_store_descriptor(
-            {"type": "app_store", "name": "something", "version": "231"}
-        )
-        is True
-    )
+@pytest.mark.parametrize(
+    "descriptor, expected_result",
+    [
+        ({"something": "something"}, False),
+        ({"type": "shotgun", "name": "something", "version": "231"}, False),
+        ({"type": "app_store", "name": "something", "version": "231"}, True),
+    ],
+)
+def test_is_app_store_descriptor(descriptor, expected_result):
+    """
+    Ensure appstore descriptor detection works.
+    """
+    assert tk_config_update.is_app_store_descriptor(descriptor) is expected_result
 
 
 @pytest.mark.parametrize(
