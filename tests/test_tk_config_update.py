@@ -54,7 +54,7 @@ def test_enumerate_files(cloned_config):
     Ensure the tool enumerates files correctly.
     """
     files_found = [
-        path.replace(cloned_config + "/", "")
+        path.replace(cloned_config + os.path.sep, "")
         for path in tk_config_update.enumerate_yaml_files(cloned_config)
     ]
     assert set(files_found) == expected_config_files
@@ -80,25 +80,25 @@ def test_is_app_store_descriptor(descriptor, expected_result):
     [
         (os.path.join("core", "core_api.yml"), ["location"], "tk-core", "v0.18.0"),
         (
-            os.path.join(*"env/includes/common/frameworks.yml".split("/")),
+            "env/includes/common/frameworks.yml",
             ["frameworks", "tk-framework-shotgunutils_v5.x.x", "location"],
             "tk-framework-shotgunutils",
             "v5.0.0",
         ),
         (
-            os.path.join(*"env/includes/common/frameworks.yml".split("/")),
+            "env/includes/common/frameworks.yml",
             ["frameworks", "tk-framework-shotgunutils_v4.x.x", "location"],
             "tk-framework-shotgunutils",
             "v4.0.0",
         ),
         (
-            os.path.join(*"env/includes/common/apps.yml".split("/")),
+            "env/includes/common/apps.yml",
             ["common.apps.tk-multi-publish2.location"],
             "tk-multi-publish2",
             "v10.0.0",
         ),
         (
-            os.path.join(*"env/includes/common/engines.yml".split("/")),
+            "env/includes/common/engines.yml",
             ["common.engines.tk-3dsmax.location"],
             "tk-3dsmax",
             "v11.0.0",
@@ -116,6 +116,8 @@ def test_update_config(
     """
     Ensure the update updates the right file and puts the right content in it.
     """
+    # Make the path valid of the current os.
+    modified_file = modified_file.replace("/", os.path.sep)
     updated_files = list(
         tk_config_update.update_files(test_config, bundle, expected_version)
     )
