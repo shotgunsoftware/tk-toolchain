@@ -41,7 +41,6 @@ jobs:
 - template: build-pipeline.yml@templates
   parameters:
     additional_repositories:
-    - name: tk-core
     - name: tk-framework-shotgunutils
     - name: tk-multi-about
     - name: tk-maya
@@ -51,7 +50,7 @@ jobs:
 
     extra_test_dependencies:
       # Replaces tk-toolchain with this branch's copy
-      - "--force-reinstall --editable ."
+      - "--editable ."
 
     # After the tests have run, run the integration tests.
     post_tests_steps:
