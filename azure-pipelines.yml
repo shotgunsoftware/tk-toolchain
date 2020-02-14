@@ -42,7 +42,7 @@ jobs:
   parameters:
     additional_repositories:
     - name: tk-framework-shotgunutils
-    - name: tk-multi-about
+    - name: tk-multi-publish2
     - name: tk-maya
     - name: tk-config-basic
       ref: v1.3.0
