@@ -19,4 +19,4 @@ def get_test_engine_enviroment():
     :returns: Dictionary of environment variables necessary to run
         the test engine.
     """
-    return {"SHOTGUN_TEST_ENGINE": os.path.dirname(__file__)}
+    return {"SHOTGUN_TEST_ENGINE": os.path.abspath(os.path.dirname(__file__))}
