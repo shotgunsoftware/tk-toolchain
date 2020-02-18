@@ -31,6 +31,9 @@ repos:
     - id: requirements-txt-fixer
     # Removes trailing whitespaces.
     - id: trailing-whitespace
+    # Validate yml files
+    - id: check-yaml
+    # Look for unused variables and other common flake errors
     - id: flake8
       args: [--select=F]
   # Leave black at the bottom so all touchups are done before it is run.

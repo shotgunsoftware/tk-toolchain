@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright (c) 2019 Shotgun Software Inc.
 #
@@ -9,14 +10,7 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-import os
+from tk_toolchain.cmd_line_tools.tk_config_update import main
+import sys
 
-
-def get_test_engine_enviroment():
-    """
-    Return the environment variables necessary to run the test engine.
-
-    :returns: Dictionary of environment variables necessary to run
-        the test engine.
-    """
-    return {"SHOTGUN_TEST_ENGINE": os.path.abspath(os.path.dirname(__file__))}
+sys.exit(main())

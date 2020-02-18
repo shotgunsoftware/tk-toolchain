@@ -16,7 +16,7 @@ import os
 from tk_toolchain.repo import Repository
 
 
-def test_find_root(current_repo_root):
+def test_find_root(current_repo_root, tmpdir):
     """
     Ensure we can find a root.
     """
@@ -25,8 +25,9 @@ def test_find_root(current_repo_root):
     # Make sure we can resolve from any subdirectory
     assert Repository.find_root(os.path.dirname(__file__)) == current_repo_root
 
-    with pytest.raises(RuntimeError):
-        Repository.find_root("/var/tmp")
+    with pytest.raises(RuntimeError) as exception:
+        Repository(tmpdir.strpath)
+    assert "is not inside a repository" in str(exception)
 
 
 def test_repo_init(current_repo_root):
@@ -36,8 +37,6 @@ def test_repo_init(current_repo_root):
     assert Repository().root == current_repo_root
     # Make sure we can resolve from any subdirectory
     assert Repository(os.path.dirname(__file__)).root == current_repo_root
-    with pytest.raises(RuntimeError):
-        Repository("/var/tmp")
 
 
 def test_get_environment_variables(current_repo_root, repos_root):
@@ -66,11 +65,13 @@ def test_repr(current_repo_root):
     )
 
 
-def test_repo_name():
+def test_repo_name(tk_engine_root):
     """
     Ensure repo name is detected correctly.
     """
-    assert Repository().name == "tk-toolchain"
+    # Do not use the current repo here for the test, because Azure
+    # clones in a folder with a random string.
+    assert Repository(tk_engine_root).name == "tk-maya"
 
 
 def _test_component(
@@ -140,3 +141,26 @@ def test_is_python_api(python_api_root):
     Ensure python-api repo is detected as such.
     """
     _test_component(Repository(python_api_root), is_python_api=True)
+
+
+@pytest.mark.parametrize(
+    "repo_name",
+    [
+        "tk-config-basic",
+        "tk-core",
+        "tk-multi-publish2",
+        "tk-maya",
+        "tk-framework-shotgunutils",
+        "python-api",
+    ],
+)
+def test_ensure_test_repositories_exists(repo_name):
+    """
+    Ensure all repositories required for the test to pass are present on the
+    computer.
+    """
+    repo_path = os.path.join(Repository().parent, repo_name)
+    assert os.path.exists(repo_path), (
+        "Repository %s does not exist. Clone the master branch from Github for the test suite to pass."
+        % repo_path
+    )

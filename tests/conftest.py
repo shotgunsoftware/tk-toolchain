@@ -13,42 +13,45 @@ import os
 
 import pytest
 
+# Using session scope since these will never change. It also allows us to
+# use them with fixtures of any scope.
 
-@pytest.fixture
+
+@pytest.fixture(scope="session")
 def current_repo_root():
     return os.path.dirname(os.path.dirname(__file__))
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def repos_root(current_repo_root):
     return os.path.dirname(current_repo_root)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def tk_config_root(repos_root):
     return os.path.join(repos_root, "tk-config-basic")
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def tk_core_root(repos_root):
     return os.path.join(repos_root, "tk-core")
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def tk_app_root(repos_root):
     return os.path.join(repos_root, "tk-multi-publish2")
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def tk_engine_root(repos_root):
     return os.path.join(repos_root, "tk-maya")
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def tk_framework_root(repos_root):
     return os.path.join(repos_root, "tk-framework-shotgunutils")
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def python_api_root(repos_root):
     return os.path.join(repos_root, "python-api")

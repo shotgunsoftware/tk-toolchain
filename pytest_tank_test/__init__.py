@@ -36,6 +36,7 @@ def _initialize_logging():
 
     tank.LogManager().initialize_base_file_handler("tk-test")
     tank.LogManager().initialize_custom_handler()
+    print("Logs for this test run can be found at", tank.LogManager().log_file)
 
 
 def pytest_configure(config):
