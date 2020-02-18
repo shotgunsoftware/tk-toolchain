@@ -45,7 +45,7 @@ except ImportError:
 # to Bundle?
 class Repository(object):
     """
-    Allows to make operations on a repository.
+    Handles operations on a repository.
     """
 
     @classmethod
@@ -147,7 +147,10 @@ def is_app_store_descriptor(data):
 def is_descriptor_matching(data, bundle, version):
     """
     Check if the descriptor that is passed in matches the bundle name
-    and potential new version.
+    and the versions are different.
+
+    Note that for frameworks, a match will occur only if the major version
+    is the same.
     """
     # If this is not the right bundle or the version hasn't changed, skip
     # the update.
@@ -164,7 +167,6 @@ def is_descriptor_matching(data, bundle, version):
         if major_released != major_update:
             return False
 
-    # All good, we can push now.
     return True
 
 

@@ -31,6 +31,8 @@ def cloned_config(tk_config_root, tmpdir_factory):
     tmp_path = tmpdir_factory.mktemp("config")
     # cast LocalPath to str since Python 2 compatible methods manipulate strings
     tmp_path = str(tmp_path)
+    # We're cloning version v1.3.0 to ensure the test doesn't fail due to a change
+    # in the config.
     subprocess.check_call(
         ["git", "clone", "--depth", "1", "--branch", "v1.3.0", tk_config_root, tmp_path]
     )
@@ -140,6 +142,8 @@ def test_update_config(
     assert expected_cfg == test_config
 
 
+# This will of files will not change over time as the repository for the tests
+# was cloned from a tag.
 expected_config_files = set(
     [
         "env/includes/desktop2/site.yml",

@@ -32,7 +32,6 @@ python_version = sys.version_info[0:2]
 is_python_3 = python_version[0] == 3
 is_python_27_or_greater = python_version >= (2, 7)
 is_python_27 = python_version == (2, 7)
-is_python_2 = python_version[0] == 2
 
 pytest_version = "pytest==4.6.6" if is_python_27_or_greater else "pytest<3.3"
 pytest_cov_version = (

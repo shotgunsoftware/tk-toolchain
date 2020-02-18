@@ -70,7 +70,7 @@ def test_repo_name(tk_engine_root):
     Ensure repo name is detected correctly.
     """
     # Do not use the current repo here for the test, because Azure
-    # azure clones in a folder with a random string.
+    # clones in a folder with a random string.
     assert Repository(tk_engine_root).name == "tk-maya"
 
 
