@@ -52,9 +52,17 @@ def pytest_configure(config):
     cur_dir = os.path.abspath(os.curdir)
 
     # The path to the current repo root
+    valid_repo = True
     try:
         repo = Repository(cur_dir)
     except RuntimeError:
+        valid_repo = False
+    else:
+        if repo.is_toolkit_component() is False:
+            valid_repo = False
+    # If we were unable to construct a Repository object, or if we're not in a
+    # toolkit component repo, bail.
+    if valid_repo is False:
         print(
             "This does not appear to be a Toolkit repository. Skipping initialization of 'pytest_tank_test.'"
         )
