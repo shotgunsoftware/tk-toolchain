@@ -58,7 +58,11 @@ def pytest_configure(config):
         valid_repo = False
     else:
         # Make sure we're in a toolkit component
-        valid_repo = repo.is_toolkit_component()
+        valid_repo = (
+            repo.is_toolkit_component()
+            or repo.is_python_api()
+            or repo.is_tk_toolchain()
+        )
     # If we were unable to construct a Repository object, or if we're not in a
     # toolkit component repo, bail.
     if valid_repo is False:
