@@ -26,6 +26,8 @@ class Repository(object):
         :param str path: One of the descendant folders.
 
         :returns: Path to the repository root.
+
+        :raises RuntimeError: If the path is not inside a repository
         """
 
         child_path = path or os.getcwd()
@@ -46,15 +48,10 @@ class Repository(object):
     def __init__(self, path=None):
         """
         :param str path: Path inside a repository.
+
+        :raises RuntimeError: If the path is not inside a repository
         """
         self._root = self.find_root(path)
-        # Ensure the root is pointing to a valid repository type.
-        if (
-            self.is_tk_toolchain()
-            or self.is_python_api()
-            or self.is_toolkit_component()
-        ):
-            return
 
     def __repr__(self):
         """
@@ -149,6 +146,20 @@ class Repository(object):
             or self.is_app()
             or self.is_config()
             or self.is_tk_core()
+        )
+
+    def is_shotgun_component(self):
+        """
+        Check if the repository is for a Shotgun component.
+
+        This can be a Toolkit component, tk-toolchain or the Python API.
+
+        :returns: ``True`` is the repository is for Shotgun component, ``False`` otherwise.
+        """
+        return (
+            self.is_toolkit_component()
+            or self.is_tk_toolchain()
+            or self.is_python_api()
         )
 
     def is_tk_toolchain(self):

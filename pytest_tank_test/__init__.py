@@ -55,8 +55,16 @@ def pytest_configure(config):
     try:
         repo = Repository(cur_dir)
     except RuntimeError:
+        valid_repo = False
+    else:
+        # Make sure we're in a toolkit component
+        valid_repo = repo.is_shotgun_component()
+    # If we were unable to construct a Repository object, or if we're not in a
+    # shotgun component repo, bail.
+    if valid_repo is False:
         print(
-            "This does not appear to be a Toolkit repository. Skipping initialization of 'pytest_tank_test.'"
+            "%s does not appear to be inside Shotgun repository. Skipping initialization of 'pytest_tank_test.'"
+            % cur_dir
         )
         return
 

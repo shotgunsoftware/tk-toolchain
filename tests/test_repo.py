@@ -94,6 +94,10 @@ def _test_component(
     assert repo.is_config() == is_config
     assert repo.is_python_api() == is_python_api
     assert repo.is_tk_toolchain() == is_tk_toolchain
+    assert repo.is_shotgun_component()
+    assert repo.is_toolkit_component() == (
+        is_tk_core or is_framework or is_engine or is_config or is_app
+    )
 
     if is_python_api or is_tk_toolchain:
         assert repo.is_toolkit_component() is False
