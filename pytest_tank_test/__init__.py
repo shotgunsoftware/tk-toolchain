@@ -60,7 +60,7 @@ def pytest_configure(config):
         # Make sure we're in a toolkit component
         valid_repo = repo.is_shotgun_component()
     # If we were unable to construct a Repository object, or if we're not in a
-    # toolkit component repo, bail.
+    # shotgun component repo, bail.
     if valid_repo is False:
         print(
             "%s does not appear to be inside Shotgun repository. Skipping initialization of 'pytest_tank_test.'"

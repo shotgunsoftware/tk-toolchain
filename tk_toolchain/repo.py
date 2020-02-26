@@ -150,7 +150,7 @@ class Repository(object):
 
     def is_shotgun_component(self):
         """
-        Check if the repository is for a Shotgun component
+        Check if the repository is for a Shotgun component.
 
         This can be a Toolkit component, tk-toolchain or the Python API.
 
