@@ -159,6 +159,8 @@ def _start_engine(repo, entity_type, entity_id):
             )
         )
 
+    print("Python Version: {0}".format(sys.version))
+
     print("Launching test engine in context {0}".format(context))
 
     # Find the first non-template project and use it.
