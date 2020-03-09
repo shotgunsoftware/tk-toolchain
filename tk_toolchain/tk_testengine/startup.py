@@ -15,7 +15,6 @@ from sgtk.platform import SoftwareLauncher, SoftwareVersion, LaunchInformation
 
 
 class TestLauncher(SoftwareLauncher):
-
     def scan_software(self):
         """
         For each software executable that was found, get the software products for it.
@@ -45,13 +44,11 @@ class TestLauncher(SoftwareLauncher):
                 software_list.append(sw)
         else:
             # No scanned software was provided to so provide a single default software.
-            software_list = [SoftwareVersion(
-                "2020",
-                "Test Software",
-                "path/to/software_2020.app",
-                "",
-                []
-            )]
+            software_list = [
+                SoftwareVersion(
+                    "2020", "Test Software", "path/to/software_2020.app", "", []
+                )
+            ]
         return software_list
 
     @property
@@ -71,4 +68,3 @@ class TestLauncher(SoftwareLauncher):
         required_env = self.get_standard_plugin_environment()
 
         return LaunchInformation(exec_path, args, required_env)
-
