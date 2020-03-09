@@ -63,6 +63,8 @@ class TestLauncher(SoftwareLauncher):
 
     def prepare_launch(self, exec_path, args, file_to_open=None):
         """
+        Provides the bare minimum prepare_launch.
+        Makes no changes other than to provide the standard environment.
         """
 
         # Add std context and site info to the env.
