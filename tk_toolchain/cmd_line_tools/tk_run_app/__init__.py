@@ -42,7 +42,7 @@ import docopt
 
 from tk_toolchain.repo import Repository
 from tk_toolchain import util
-from tk_toolchain.tk_testengine import get_test_engine_enviroment
+from tk_toolchain.tk_testengine import get_test_engine_environment
 
 
 def get_config_location():
@@ -119,7 +119,7 @@ def _start_engine(repo, entity_type, entity_id):
     sgtk.LogManager().initialize_custom_handler()
 
     util.merge_into_environment_variables(repo.get_roots_environment_variables())
-    util.merge_into_environment_variables(get_test_engine_enviroment())
+    util.merge_into_environment_variables(get_test_engine_environment())
     os.environ["SHOTGUN_TK_APP_LOCATION"] = repo.root
 
     # Standard Toolkit bootstrap code.

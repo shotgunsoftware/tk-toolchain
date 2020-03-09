@@ -13,7 +13,7 @@ from __future__ import print_function
 
 from tk_toolchain.repo import Repository
 from tk_toolchain import util
-from tk_toolchain.tk_testengine import get_test_engine_enviroment
+from tk_toolchain.tk_testengine import get_test_engine_environment
 import os
 import sys
 
@@ -109,7 +109,7 @@ def pytest_configure(config):
         )
 
     util.merge_into_environment_variables(repo.get_roots_environment_variables())
-    util.merge_into_environment_variables(get_test_engine_enviroment())
+    util.merge_into_environment_variables(get_test_engine_environment())
 
     print("Fixtures found at", os.path.join(repo.root, "tests", "fixtures"))
     # Note: This won't be documented (or renamed) as we're not super comfortable
