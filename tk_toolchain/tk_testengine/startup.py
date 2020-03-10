@@ -29,7 +29,7 @@ class TestLauncher(SoftwareLauncher):
         if serialized_software_list:
             software_list = pickle.loads(serialized_software_list)
         else:
-            # No scanned software was provided to so provide a single default software.
+            # No scanned software was provided so provide a single default software.
             software_list = [
                 SoftwareVersion(
                     "2020", "Test Software", "path/to/software_2020.app", "", []
