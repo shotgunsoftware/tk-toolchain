@@ -9,9 +9,9 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 import os
-import json
 
 from sgtk.platform import SoftwareLauncher, SoftwareVersion, LaunchInformation
+from sgtk.util import pickle
 
 
 class TestLauncher(SoftwareLauncher):
@@ -23,25 +23,11 @@ class TestLauncher(SoftwareLauncher):
         """
 
         # A list of software scan results can be provided via the SHOTGUN_SCAN_SOFTWARE_LIST env var
-        # as a serialized json string in the following format
-        # [
-        #     [
-        #         "2050", # version
-        #         "Software Name",
-        #         "path/to/executable",
-        #         "path/to/icon", # optional can be empty string
-        #         ["arg1", "arg2"], # args, can be an empty list
-        #     ]
-        # ]
-
-        software_list = []
+        # as a serialized string containing a list of SoftwareVersion instances.
 
         serialized_software_list = os.environ.get("SHOTGUN_SCAN_SOFTWARE_LIST")
-        imported_software_list = json.loads(serialized_software_list)
-        if imported_software_list:
-            for scanned_software in imported_software_list:
-                sw = SoftwareVersion(*scanned_software)
-                software_list.append(sw)
+        if serialized_software_list:
+            software_list = pickle.loads(serialized_software_list)
         else:
             # No scanned software was provided to so provide a single default software.
             software_list = [
