@@ -43,7 +43,7 @@ class TestLauncher(SoftwareLauncher):
                 sw = SoftwareVersion(*scanned_software)
                 software_list.append(sw)
         else:
-            # No scanned software was provided to so provide a single default software.
+            # No scanned software was provided so provide a single default software.
             software_list = [
                 SoftwareVersion(
                     "2020", "Test Software", "path/to/software_2020.app", "", []
