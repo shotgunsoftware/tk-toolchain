@@ -12,7 +12,7 @@
 import os
 
 
-def get_test_engine_enviroment():
+def get_test_engine_environment():
     """
     Return the environment variables necessary to run the test engine.
 
