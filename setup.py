@@ -39,8 +39,11 @@ pytest_cov_version = (
 )
 pyyaml_version = "PyYAML" if is_python_27_or_greater else "PyYAML==3.11"
 
+
 if is_python_3:
-    sphinx_version = "sphinx"
+    # It appears Sphinx 3 breaks our documentation build. We're going to lock
+    # the Sphinx version in the meantime.
+    sphinx_version = "sphinx==2.4.4"
 elif is_python_27:
     sphinx_version = "sphinx<=1.8.5"
 else:
