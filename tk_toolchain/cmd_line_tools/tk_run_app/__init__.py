@@ -41,7 +41,7 @@ from pprint import pprint
 import docopt
 
 from tk_toolchain.repo import Repository
-from tk_toolchain import util
+from tk_toolchain import util, authentication
 from tk_toolchain.tk_testengine import get_test_engine_environment
 
 
@@ -50,48 +50,6 @@ def get_config_location():
     Return the location of the configuration tk-run-app uses.
     """
     return os.path.join(os.path.dirname(__file__), "config")
-
-
-def _get_user():
-    """
-    Authenticate with a Shotgun site.
-
-    If SHOTGUN_HOST, SHOTGUN_USER_LOGIN and SHOGUN_USER_PASSWORD
-    are set, then they will be used for authentication. If not,
-    the user will be prompted for their credentials if they
-    are not already logged into Shotgun.
-
-    :returns: A Shotgun user.
-    :rtype: sgtk.authentication.ShotgunUser
-    """
-    host = os.environ.get("SHOTGUN_HOST")
-    login = os.environ.get("SHOTGUN_USER_LOGIN")
-    password = os.environ.get("SHOTGUN_USER_PASSWORD")
-
-    from sgtk.authentication import ShotgunAuthenticator
-
-    sg_auth = ShotgunAuthenticator()
-
-    # If all the variables were set, we can authenticate.
-    if host and login and password:
-        print("Authenticating from environment variables.")
-        return sg_auth.create_session_user(login, password=password, host=host)
-    elif host or login or password:
-        # Something was set, but not everything.
-        # Do not print the values, as this can be used in CI.
-        print(
-            "Not all authentication environment variables were set. "
-            "Falling back to interactive authentication.\n"
-            "SHOTGUN_HOST: {0}\n"
-            "SHOTGUN_USER_LOGIN: {1}\n"
-            "SHOTGUN_USER_PASSWORD: {2}\n".format(
-                "set" if host else "unset",
-                "set" if login else "unset",
-                "set" if password else "unset",
-            )
-        )
-
-    return sg_auth.get_user()
 
 
 def _progress_callback(value, message):
@@ -123,7 +81,7 @@ def _start_engine(repo, entity_type, entity_id):
     os.environ["SHOTGUN_TK_APP_LOCATION"] = repo.root
 
     # Standard Toolkit bootstrap code.
-    user = _get_user()
+    user = authentication.get_toolkit_user()
     mgr = sgtk.bootstrap.ToolkitManager(user)
     mgr.progress_callback = _progress_callback
     # Do not look in Shotgun for a config to load, we absolutely want to
