@@ -28,11 +28,11 @@ def get_toolkit_user():
     :returns: A Shotgun user.
     :rtype: sgtk.authentication.ShotgunUser
     """
-    host = os.environ.get("SHOTGUN_HOST")
-    script_name = os.environ.get("SHOTGUN_SCRIPT_NAME")
-    script_key = os.environ.get("SHOTGUN_SCRIPT_KEY")
-    login = os.environ.get("SHOTGUN_USER_LOGIN")
-    password = os.environ.get("SHOTGUN_USER_PASSWORD")
+    host = os.environ.get("TK_TOOLCHAIN_HOST")
+    script_name = os.environ.get("TK_TOOLCHAIN_SCRIPT_NAME")
+    script_key = os.environ.get("TK_TOOLCHAIN_SCRIPT_KEY")
+    login = os.environ.get("TK_TOOLCHAIN_USER_LOGIN")
+    password = os.environ.get("TK_TOOLCHAIN_USER_PASSWORD")
 
     # Lazy loading as Toolkit might not be available yet.
     from sgtk.authentication import ShotgunAuthenticator
@@ -52,11 +52,11 @@ def get_toolkit_user():
         print(
             "Not all authentication environment variables were set. "
             "Falling back to interactive authentication.\n"
-            "SHOTGUN_HOST: {0}\n"
-            "SHOTGUN_USER_LOGIN: {1}\n"
-            "SHOTGUN_USER_PASSWORD: {2}\n"
-            "SHOTGUN_SCRIPT_NAME: {3}\n"
-            "SHOTGUN_SCRIPT_KEY: {4}\n".format(
+            "TK_TOOLCHAIN_HOST: {0}\n"
+            "TK_TOOLCHAIN_USER_LOGIN: {1}\n"
+            "TK_TOOLCHAIN_USER_PASSWORD: {2}\n"
+            "TK_TOOLCHAIN_SCRIPT_NAME: {3}\n"
+            "TK_TOOLCHAIN_SCRIPT_KEY: {4}\n".format(
                 "set" if host else "unset",
                 "set" if login else "unset",
                 "set" if password else "unset",

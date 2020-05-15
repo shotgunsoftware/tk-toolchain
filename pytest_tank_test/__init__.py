@@ -44,7 +44,7 @@ def pytest_configure(config):
     Configures the environment so that tests can
     - import sgtk
     - import tank_test
-    - find the repository root via SHOTGUN_REPO_ROOT
+    - find the repository root via SHOTGUN_CURRENT_REPO_ROOT
     - find the test engine via SHOTGUN_TEST_ENGINE
     - write to a Toolkit log file
     """
