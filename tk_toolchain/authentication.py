@@ -12,32 +12,17 @@
 import os
 
 
-def get_toolkit_user():
+def _get_toolkit_user(sg_auth, environment):
     """
-    Authenticate with a Shotgun site.
-
-    If SHOTGUN_HOST, SHOTGUN_USER_LOGIN and SHOGUN_USER_PASSWORD
-    or SHOTGUN_HOST, SHOTGUN_SCRIPT_NAME and SHOTGUN_SCRIPT_KEY
-    are set, then they will be used for authentication. If not,
-    the user will be prompted for their credentials if they
-    are not already logged into Shotgun.
-
-    User based authentication has precedence over script based
-    authentication.
-
-    :returns: A Shotgun user.
-    :rtype: sgtk.authentication.ShotgunUser
+    Retrieves the Toolkit user using the passed in authenticator and
+    environment.
     """
-    host = os.environ.get("TK_TOOLCHAIN_HOST")
-    script_name = os.environ.get("TK_TOOLCHAIN_SCRIPT_NAME")
-    script_key = os.environ.get("TK_TOOLCHAIN_SCRIPT_KEY")
-    login = os.environ.get("TK_TOOLCHAIN_USER_LOGIN")
-    password = os.environ.get("TK_TOOLCHAIN_USER_PASSWORD")
 
-    # Lazy loading as Toolkit might not be available yet.
-    from sgtk.authentication import ShotgunAuthenticator
-
-    sg_auth = ShotgunAuthenticator()
+    host = environment.get("TK_TOOLCHAIN_HOST")
+    script_name = environment.get("TK_TOOLCHAIN_SCRIPT_NAME")
+    script_key = environment.get("TK_TOOLCHAIN_SCRIPT_KEY")
+    login = environment.get("TK_TOOLCHAIN_USER_LOGIN")
+    password = environment.get("TK_TOOLCHAIN_USER_PASSWORD")
 
     # If all the variables were set, we can authenticate.
     if host and login and password:
@@ -46,7 +31,8 @@ def get_toolkit_user():
     if host and script_name and script_key:
         print("Authenticating from environment variables.")
         return sg_auth.create_script_user(script_name, script_key, host=host)
-    elif host or login or password:
+    # If one of those values has been set.
+    elif (host or login or password or script_name or script_key) is not None:
         # Something was set, but not everything.
         # Do not print the values, as this can be used in CI.
         print(
@@ -66,3 +52,28 @@ def get_toolkit_user():
         )
 
     return sg_auth.get_user()
+
+
+def get_toolkit_user():
+    """
+    Authenticate with a Shotgun site.
+
+    If SHOTGUN_HOST, SHOTGUN_USER_LOGIN and SHOGUN_USER_PASSWORD
+    or SHOTGUN_HOST, SHOTGUN_SCRIPT_NAME and SHOTGUN_SCRIPT_KEY
+    are set, then they will be used for authentication. If not,
+    the user will be prompted for their credentials if they
+    are not already logged into Shotgun.
+
+    User based authentication has precedence over script based
+    authentication.
+
+    :returns: A Shotgun user.
+    :rtype: sgtk.authentication.ShotgunUser
+    """
+
+    # Lazy loading as Toolkit might not be available yet.
+    from sgtk.authentication import ShotgunAuthenticator
+
+    sg_auth = ShotgunAuthenticator()
+
+    return _get_toolkit_user(sg_auth, os.environ)
