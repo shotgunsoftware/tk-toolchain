@@ -43,6 +43,26 @@ def test_user_based_auth(sg_auth_mock):
     assert result == set(env.values())
 
 
+def test_user_overrides_script(sg_auth_mock):
+    """
+    Test used based auth.
+    """
+    user_env = {
+        "TK_TOOLCHAIN_HOST": "https://a.b.com",
+        "TK_TOOLCHAIN_USER_LOGIN": "elvis",
+        "TK_TOOLCHAIN_USER_PASSWORD": "hailToTheKing",
+    }
+    all_env = {
+        "TK_TOOLCHAIN_SCRIPT_NAME": "automation",
+        "TK_TOOLCHAIN_SCRIPT_KEY": "!$3,asdas$dfadf*(0",
+    }
+    all_env.update(user_env)
+    result = _get_toolkit_user(sg_auth_mock, all_env)
+
+    assert sg_auth_mock.create_session_user.called
+    assert result == set(user_env.values())
+
+
 def test_script_based_auth(sg_auth_mock):
     """
     Test script based auth.
