@@ -31,7 +31,7 @@ def sg_auth_mock():
 
 def test_user_based_auth(sg_auth_mock):
     """
-    Test used based auth.
+    Test user based auth.
     """
     env = {
         "TK_TOOLCHAIN_HOST": "https://a.b.com",
@@ -45,7 +45,7 @@ def test_user_based_auth(sg_auth_mock):
 
 def test_user_overrides_script(sg_auth_mock):
     """
-    Test used based auth.
+    Ensure user credentials override script user credentials.
     """
     user_env = {
         "TK_TOOLCHAIN_HOST": "https://a.b.com",
