@@ -68,6 +68,11 @@ def pytest_configure(config):
         )
         return
 
+    # Print Python interpreter location so that on CI we know where the
+    # interpreter is on disk. This can be helpful when trying to launch
+    # a specific Python on CI.
+    print("Python running from {0}".format(sys.executable))
+
     print("Repository found at {0}".format(repo.root))
 
     # tk-toolchain assumes that the other repositories are clone alongside
