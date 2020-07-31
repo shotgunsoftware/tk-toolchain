@@ -17,7 +17,7 @@ Launch a Toolkit application from the command line by running this tool in any
 Toolkit repository.
 
 Usage:
-    tk-run-app [--context-entity-type=<entity-type>] [--context-entity-id=<entity-id>] [--location=<location>]
+    tk-run-app [--context-entity-type=<entity-type>] [--context-entity-id=<entity-id>] [--location=<location>] [--config=<config>]
 
 Options:
 
@@ -32,6 +32,9 @@ Options:
                         If missing, the tk-run-app assumes it is run from inside
                         the repository and launch the application at the root of
                         it.
+
+    -c, --config=<config>
+                        Specifies the location of the Toolkit config folder to use.
 """
 
 import os
@@ -62,7 +65,7 @@ def _progress_callback(value, message):
     print("[%s] %s" % (value, message))
 
 
-def _start_engine(repo, entity_type, entity_id):
+def _start_engine(repo, entity_type, entity_id, config):
     """
     Bootstraps Toolkit and uses the app in the current repo.
 
@@ -88,7 +91,7 @@ def _start_engine(repo, entity_type, entity_id):
     # use the config referenced by the base_configuration.
     mgr.do_shotgun_config_lookup = False
     mgr.base_configuration = "sgtk:descriptor:path?path={0}".format(
-        get_config_location()
+        config if config else get_config_location()
     )
 
     if entity_type == "Project" and entity_id is None:
@@ -140,6 +143,14 @@ def main(arguments=None):
     # get an error.
     options = docopt.docopt(__doc__, argv=arguments)
 
+    # Check to see if a Toolkit config location was passed and resolve any
+    # environment variables in the path.
+    config = util.expand_path(options["--config"]) if options["--config"] else None
+
+    if config and not os.path.exists(config):
+        print("This config location does not exist. %s" % config)
+        return 1
+
     # Find the current repo and add Toolkit to the PYTHONPATH so we ca import it.
     repo = Repository(util.expand_path(options["--location"] or os.getcwd()))
     tk_core = os.path.join(repo.parent, "tk-core", "python")
@@ -157,6 +168,7 @@ def main(arguments=None):
         int(options["--context-entity-id"])
         if options["--context-entity-id"] is not None
         else None,
+        config,
     )
 
     print("Available commands:")
