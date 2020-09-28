@@ -158,24 +158,24 @@ def _get_available_commands(engine):
 
     :returns: ``list`` of command ``str`` names.
     """
-    possible_commands = sorted(
+    long_command_names = sorted(
         name for name, info in engine.commands.items() if _is_app_command(info)
     )
 
     # Add the list of short commands, sorted.
-    possible_commands += sorted(
+    possible_commands = long_command_names + sorted(
         info["properties"]["short_name"]
         for info in engine.commands.values()
-        if _is_app_command(info)
+        if _is_app_command(info) and "short_name" in info["properties"]
     )
 
     print("Available application commands (long and short versions):")
     pprint(possible_commands)
 
-    return possible_commands
+    return possible_commands, long_command_names
 
 
-def _validate_requested_commands(commands, available_commands, engine):
+def _validate_requested_commands(commands, available_commands, long_command_names):
     """
     Gets the list of commands the user wishes to execute, prints them
     and returns them.
@@ -192,11 +192,13 @@ def _validate_requested_commands(commands, available_commands, engine):
 
     print("The following commands will be run:")
     if commands:
-        pprint(commands)
+        pprint(sorted(commands))
         return commands
     else:
-        print("all")
-        return sorted(engine.commands)
+        # Only print the long command names for clarity. Not every app has a short
+        # command name so trying to print only these could cause issues anyway.
+        print(sorted(long_command_names))
+        return sorted(long_command_names)
 
 
 ####################################################################################
@@ -247,8 +249,10 @@ def main(arguments=None):
         config,
     )
 
-    available_commands = _get_available_commands(engine)
-    _validate_requested_commands(commands_to_run, available_commands, engine)
+    available_commands, long_command_names = _get_available_commands(engine)
+    _validate_requested_commands(
+        commands_to_run, available_commands, long_command_names
+    )
 
     # Sample command:
     # 'Work Area Info...': {'callback': <function Engine.register_command.<locals>.callback_wrapper at 0x127affe18>,
@@ -266,7 +270,10 @@ def main(arguments=None):
         # configuration, we'll launch it.
         if _is_app_command(info) is False:
             continue
-        short_name = info["properties"]["short_name"]
+        if "short_name" in info["properties"]:
+            short_name = info["properties"]["short_name"]
+        else:
+            short_name = None
         # If no commands were specified, launch every app app!
         # If the long name of the command matched one of the commands to run, launch it!
         # if the short name of the command matched one of the commands to run, launch it!
