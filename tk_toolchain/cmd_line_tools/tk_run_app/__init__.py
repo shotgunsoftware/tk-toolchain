@@ -17,7 +17,7 @@ Launch a Toolkit application from the command line by running this tool in any
 Toolkit repository.
 
 Usage:
-    tk-run-app [--context-entity-type=<entity-type>] [--context-entity-id=<entity-id>] [--location=<location>] [--config=<config>]
+    tk-run-app [--context-entity-type=<entity-type>] [--context-entity-id=<entity-id>] [--location=<location>] [--commands=<commands>] [--config=<config>]
 
 Options:
 
@@ -32,6 +32,11 @@ Options:
                         If missing, the tk-run-app assumes it is run from inside
                         the repository and launch the application at the root of
                         it.
+
+    --commands=<commands>
+                        Comma-separated list of commands to run. These can be long
+                        or short Toolkit command names. If missing, tk-run-app
+                        assumes all commands should be run.
 
     -c, --config=<config>
                         Specifies the location of the Toolkit config folder to use.
@@ -130,6 +135,72 @@ def _start_engine(repo, entity_type, entity_id, config):
     return engine
 
 
+def _is_app_command(info):
+    """
+    Checks if an app is an application command.
+
+    :returns: ``True`` if this is an app command, ``False`` otherwise.
+    """
+    # Application commands always have properties.
+    if "app" not in info["properties"]:
+        # Certain commands are not coming from apps, so skip those for now.
+        return False
+    # Make sure that the application command is from the app in the current repo.
+    return info["properties"]["app"].instance_name == "tk-multi-run-this-app"
+
+
+def _get_available_commands(engine):
+    """
+    Gets all available commands, long and short names, prints them on screen
+    and returns them.
+
+    :param engine: The Toolkit engine for which we desire to extract commands.
+
+    :returns: ``list`` of command ``str`` names.
+    """
+    long_command_names = sorted(
+        name for name, info in engine.commands.items() if _is_app_command(info)
+    )
+
+    # Add the list of short commands, sorted.
+    possible_commands = long_command_names + sorted(
+        info["properties"]["short_name"]
+        for info in engine.commands.values()
+        if _is_app_command(info) and "short_name" in info["properties"]
+    )
+
+    print("Available application commands (long and short versions):")
+    pprint(possible_commands)
+
+    return possible_commands, long_command_names
+
+
+def _validate_requested_commands(commands, available_commands, long_command_names):
+    """
+    Gets the list of commands the user wishes to execute, prints them
+    and returns them.
+
+    :param commands: List of commands the user typed in.
+    :param available_commands: List of commands, short and long, available.
+    :param engine: The Toolkit engine for which we desire to validate commands.
+
+    :returns: ``list`` of command ``str`` names.
+    """
+    for command in commands:
+        if command not in available_commands:
+            raise SystemExit("Command '%s' does not exist." % command)
+
+    print("The following commands will be run:")
+    if commands:
+        pprint(sorted(commands))
+        return commands
+    else:
+        # Only print the long command names for clarity. Not every app has a short
+        # command name so trying to print only these could cause issues anyway.
+        print(sorted(long_command_names))
+        return sorted(long_command_names)
+
+
 ####################################################################################
 # script entry point
 def main(arguments=None):
@@ -156,6 +227,13 @@ def main(arguments=None):
     tk_core = os.path.join(repo.parent, "tk-core", "python")
     sys.path.insert(0, tk_core)
 
+    if options["--commands"]:
+        commands_to_run = [
+            command.strip() for command in (options["--commands"] or "").split(",")
+        ]
+    else:
+        commands_to_run = []
+
     if repo.is_app() is False:
         print("This location does not have a Toolkit application.")
         return 1
@@ -171,8 +249,10 @@ def main(arguments=None):
         config,
     )
 
-    print("Available commands:")
-    pprint(sorted(engine.commands))
+    available_commands, long_command_names = _get_available_commands(engine)
+    _validate_requested_commands(
+        commands_to_run, available_commands, long_command_names
+    )
 
     # Sample command:
     # 'Work Area Info...': {'callback': <function Engine.register_command.<locals>.callback_wrapper at 0x127affe18>,
@@ -188,10 +268,20 @@ def main(arguments=None):
     for name, info in engine.commands.items():
         # We'll iterate on every app and when we find the app instance that is inside the
         # configuration, we'll launch it.
-        if "app" not in info["properties"]:
-            # Certain commands are not coming from apps, so skip those for now.
+        if _is_app_command(info) is False:
             continue
-        if info["properties"]["app"].instance_name == "tk-multi-run-this-app":
+        if "short_name" in info["properties"]:
+            short_name = info["properties"]["short_name"]
+        else:
+            short_name = None
+        # If no commands were specified, launch every app app!
+        # If the long name of the command matched one of the commands to run, launch it!
+        # if the short name of the command matched one of the commands to run, launch it!
+        if (
+            not commands_to_run
+            or name in commands_to_run
+            or short_name in commands_to_run
+        ):
             info["callback"]()
             app_launched = True
 
