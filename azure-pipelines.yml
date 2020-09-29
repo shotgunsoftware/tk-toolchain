@@ -39,6 +39,9 @@ variables:
 
 jobs:
 - template: build-pipeline.yml@templates
+  # Tell the build system that we want to pip install tk-toolchain
+  # from the current branch.
+  tk_toolchain_ref: $(Build.SourceBranch)
   parameters:
     additional_repositories:
     - name: tk-framework-shotgunutils
@@ -47,14 +50,3 @@ jobs:
     - name: tk-config-basic
       ref: v1.3.0
     - name: python-api
-
-    extra_test_dependencies:
-      # Replaces tk-toolchain with this branch's copy
-      - "--editable ."
-
-    # After the tests have run, run the integration tests.
-    post_tests_steps:
-      - bash: |
-          python setup.py sdist
-          python -m pip install -U dist/tk-toolchain-*.tar.gz
-        displayName: Validate setup.py
