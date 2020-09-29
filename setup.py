@@ -96,7 +96,8 @@ setup(
         "six==1.14.0",
     ]
     # Other tools used by devs that are useful to have.
-    + (["pre-commit", "ruamel.yaml"] if is_python_27_or_greater else []),
+    + (["pre-commit", "ruamel.yaml"] if is_python_27_or_greater else [])
+    + (["ruamel.ordereddict==0.4.14;sys_platform=='win32'"] if is_python_27 else []),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Pytest",
