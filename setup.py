@@ -94,8 +94,6 @@ setup(
         "sphinx_rtd_theme==0.4.3",
         "docopt==0.6.2",
         "six==1.14.0",
-        # Pinning version number because 0.4.15 requires Visual Studio 9 to compile a binary extension
-        "ruamel.ordereddict<=0.4.14",
     ]
     # Other tools used by devs that are useful to have.
     + (["pre-commit", "ruamel.yaml"] if is_python_27_or_greater else []),
