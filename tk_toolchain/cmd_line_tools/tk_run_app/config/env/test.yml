@@ -44,3 +44,7 @@ frameworks:
     location:
       type: path
       path: $SHOTGUN_REPOS_ROOT/tk-framework-widget
+  tk-framework-widget_v1.x.x:
+    location:
+      type: path
+      path: $SHOTGUN_REPOS_ROOT/tk-framework-widget
