@@ -8,3 +8,7 @@
 # By accessing, using, copying or modifying this work you indicate your
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
+
+
+from .cmd_line_tools.tk_docs_generation.sphinx_processor import SphinxProcessor  # noqa
+from .cmd_line_tools.tk_docs_generation import preview_docs  # noqa

@@ -65,14 +65,20 @@ setup(
     package_data={
         "tk_toolchain": [
             os.path.join("tk_testengine", "*"),
-            os.path.join("cmd_line_tools", "tk_docs_preview", "sphinx_data", "*"),
+            os.path.join("cmd_line_tools", "tk_docs_generation", "sphinx_data", "*"),
             os.path.join("cmd_line_tools", "tk_run_app", "config", "env", "*"),
             os.path.join("cmd_line_tools", "tk_run_app", "config", "core", "*"),
             os.path.join(
                 "cmd_line_tools", "tk_run_app", "config", "core", "hooks", "*"
             ),
             os.path.join(
-                "cmd_line_tools", "tk_docs_preview", "sphinx_data", "_static", "*"
+                "cmd_line_tools", "tk_docs_generation", "sphinx_data", "_static", "*"
+            ),
+            os.path.join(
+                "cmd_line_tools", "tk_docs_generation", "sphinx_data", "_templates", "*"
+            ),
+            os.path.join(
+                "cmd_line_tools", "tk_docs_generation", "sphinx_data", "resources", "*"
             ),
         ]
     },
@@ -115,7 +121,7 @@ setup(
     entry_points={
         "pytest11": ["pytest_tank_test = pytest_tank_test"],
         "console_scripts": [
-            "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_preview:main",
+            "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_generation:main",
             "tk-run-app = tk_toolchain.cmd_line_tools.tk_run_app:main",
             "tk-config-update = tk_toolchain.cmd_line_tools.tk_config_update:main",
         ],

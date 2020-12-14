@@ -38,7 +38,7 @@ class OptionParserLineBreakingEpilog(optparse.OptionParser):
         return self.epilog
 
 
-def preview_docs(core_path, bundle_path, is_build_only):
+def preview_docs(core_path, bundle_path, is_build_only, warnings_as_errors=True):
     """
     Generate doc preview in a temp folder and show it in
     a web browser.
@@ -74,7 +74,7 @@ def preview_docs(core_path, bundle_path, is_build_only):
     )
 
     # build docs
-    location = sphinx_processor.build_docs(doc_name, "vX.Y.Z")
+    location = sphinx_processor.build_docs(doc_name, "vX.Y.Z", warnings_as_errors)
 
     if not is_build_only:
         # show in browser
@@ -103,7 +103,7 @@ def main(arguments=None):
 
         desc = (
             "This tool previews sphinx documentation for a Toolkit bundle or the "
-            "Shotgun Python API. It script generates sphinx doc for a repository you "
+            "Shotgun Python API. It generates a sphinx doc for a repository you "
             "have locally on disk. This is useful for in-progress doc generation and "
             "when you want a quick turnaround."
         )

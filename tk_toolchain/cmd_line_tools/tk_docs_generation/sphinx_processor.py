@@ -47,8 +47,14 @@ class SphinxProcessor(object):
 
         self._docs_path = os.path.join(path, "docs")
 
-        if not os.path.exists(self._docs_path):
-            raise Exception("Cannot find a docs folder in %s!" % path)
+        if not os.path.exists(os.path.join(self._docs_path, "index.rst")):
+            # fall back on "docs_src"
+            log.warning(
+                "No docs found in 'docs' folder - falling back on 'doc_src' folder"
+            )
+            self._docs_path = os.path.join(path, "doc_src")
+            if not os.path.exists(os.path.join(self._docs_path, "index.rst")):
+                raise Exception("Cannot find a docs folder in %s!" % path)
 
         # now add stuff to pythonpath
         # note that we are adding it to both sys.path and the
@@ -101,7 +107,7 @@ class SphinxProcessor(object):
         self._log.debug("Added to PYTHONPATH: %s" % path)
         os.environ["PYTHONPATH"] = os.path.pathsep.join(pythonpath)
 
-    def build_docs(self, name, version):
+    def build_docs(self, name, version, warnings_as_errors=True):
         """
         Generate sphinx docs
 
@@ -111,12 +117,19 @@ class SphinxProcessor(object):
         """
         self._log.debug("Building docs with name %s and version %s" % (name, version))
 
+        # Pass a flag that will cause it to raise an error if a warning is thrown
+        # only if warning_as_errors is true. Typically we want this to be always True
+        # but we have some repos that need fixing and are currently throwing warnings.
+        warnings_as_errors_flag = "-W" if warnings_as_errors else ""
+
         # run build command
         # Use double quotes to make sure it works on Windows and Unix.
+        # -T means show traceback
         cmd = (
-            'sphinx-build -c "%s" -W -D project="%s" -D release="%s" -D version="%s" "%s" "%s"'
+            'sphinx-build -c "%s" %s -T -E -D project="%s" -D release="%s" -D version="%s" "%s" "%s"'
             % (
                 self._sphinx_conf_py_location,
+                warnings_as_errors_flag,
                 name,
                 version,
                 version,
