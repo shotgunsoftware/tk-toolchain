@@ -14,7 +14,7 @@ import tempfile
 
 import pytest
 
-from tk_toolchain.cmd_line_tools import tk_docs_preview
+from tk_toolchain.cmd_line_tools import tk_docs_generation
 
 
 # Note: These tests are likely to introduce side effects because they monkey
@@ -32,7 +32,7 @@ def test_without_any_parameters(tk_framework_root):
     # framework detection code path.
     os.chdir(tk_framework_root)
     try:
-        assert tk_docs_preview.main(["tk_docs_preview", "--build-only"]) == 0
+        assert tk_docs_generation.main(["tk_docs_preview", "--build-only"]) == 0
     finally:
         os.chdir(cwd)
 
@@ -49,7 +49,7 @@ def test_with_python_api(python_api_root):
     """
 
     assert (
-        tk_docs_preview.main(
+        tk_docs_generation.main(
             ["tk_docs_preview", "--build-only", "--bundle={0}".format(python_api_root)]
         )
         == 0
@@ -61,7 +61,7 @@ def test_with_tk_core(tk_core_root):
     Make sure we can generate documentation for tk-core
     """
     assert (
-        tk_docs_preview.main(
+        tk_docs_generation.main(
             ["tk_docs_preview", "--build-only", "--bundle={0}".format(tk_core_root)]
         )
         == 0
@@ -73,7 +73,7 @@ def test_with_tk_framework_shotgunutils(tk_framework_root, tk_core_root):
     Make sure we can generate documentation for a bundle that uses tk-core
     """
     assert (
-        tk_docs_preview.main(
+        tk_docs_generation.main(
             [
                 "tk_docs_preview",
                 "--build-only",
@@ -90,7 +90,7 @@ def test_with_repo_without_doc(tk_config_root, tk_core_root):
     Make sure the doc generation tool exits gracefully when there is no docs folder.
     """
     assert (
-        tk_docs_preview.main(
+        tk_docs_generation.main(
             [
                 "tk_docs_preview",
                 "--build-only",
@@ -108,7 +108,7 @@ def test_with_unknown_folder(tk_core_root):
     repo
     """
     assert (
-        tk_docs_preview.main(
+        tk_docs_generation.main(
             [
                 "tk_docs_preview",
                 "--build-only",

@@ -11,6 +11,7 @@
 
 import os
 import sys
+import shutil
 import tempfile
 
 
@@ -47,8 +48,14 @@ class SphinxProcessor(object):
 
         self._docs_path = os.path.join(path, "docs")
 
-        if not os.path.exists(self._docs_path):
-            raise Exception("Cannot find a docs folder in %s!" % path)
+        if not os.path.exists(os.path.join(self._docs_path, "index.rst")):
+            # fall back on "docs_src"
+            log.warning(
+                "No docs found in 'docs' folder - falling back on 'doc_src' folder"
+            )
+            self._docs_path = os.path.join(path, "doc_src")
+            if not os.path.exists(os.path.join(self._docs_path, "index.rst")):
+                raise Exception("Cannot find a docs folder in %s!" % path)
 
         # now add stuff to pythonpath
         # note that we are adding it to both sys.path and the
@@ -101,7 +108,7 @@ class SphinxProcessor(object):
         self._log.debug("Added to PYTHONPATH: %s" % path)
         os.environ["PYTHONPATH"] = os.path.pathsep.join(pythonpath)
 
-    def build_docs(self, name, version):
+    def build_docs(self, name, version, warnings_as_errors=True):
         """
         Generate sphinx docs
 
@@ -111,12 +118,19 @@ class SphinxProcessor(object):
         """
         self._log.debug("Building docs with name %s and version %s" % (name, version))
 
+        # Pass a flag that will cause it to raise an error if a warning is thrown
+        # only if warning_as_errors is true. Typically we want this to be always True
+        # but we have some repos that need fixing and are currently throwing warnings.
+        warnings_as_errors_flag = "-W" if warnings_as_errors else ""
+
         # run build command
         # Use double quotes to make sure it works on Windows and Unix.
+        # -T means show traceback
         cmd = (
-            'sphinx-build -c "%s" -W -D project="%s" -D release="%s" -D version="%s" "%s" "%s"'
+            'sphinx-build -c "%s" %s -T -E -D project="%s" -D release="%s" -D version="%s" "%s" "%s"'
             % (
                 self._sphinx_conf_py_location,
+                warnings_as_errors_flag,
                 name,
                 version,
                 version,
@@ -136,3 +150,31 @@ class SphinxProcessor(object):
             pass
 
         return self._sphinx_build_dir
+
+    def copy_docs(self, log, src, dst):
+        """
+        Alternative implementation to shutil.copytree
+        Copies recursively with very open permissions.
+        Creates folders if they don't already exist.
+
+        :param src: Source path
+        :param dst: Destination path
+        """
+        if not os.path.exists(dst):
+            log.debug("mkdir 0777 %s" % dst)
+            os.mkdir(dst, 0o777)
+
+        names = os.listdir(src)
+        for name in names:
+
+            srcname = os.path.join(src, name)
+            dstname = os.path.join(dst, name)
+
+            try:
+                if os.path.isdir(srcname):
+                    self.copy_docs(log, srcname, dstname)
+                else:
+                    shutil.copy(srcname, dstname)
+                    log.debug("Copy %s -> %s" % (srcname, dstname))
+            except Exception as e:
+                log.error("Can't copy %s to %s: %s" % (srcname, dstname, e))
