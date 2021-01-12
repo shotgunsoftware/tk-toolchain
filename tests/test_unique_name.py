@@ -18,8 +18,8 @@ def test_with_env_var(monkeypatch):
     Using monkeypatch to avoid modifying the environment that can affect other tests.
     """
     monkeypatch.setenv("SHOTGUN_TEST_ENTITY_SUFFIX", "Potatoe")
-    project_name = create_unique_name("Test-")
-    assert project_name == "Test-Potatoe"
+    project_name = create_unique_name("Test")
+    assert project_name == "Test - Potatoe"
 
 
 def test_without_env_var(monkeypatch):
