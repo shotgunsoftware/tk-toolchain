@@ -17,7 +17,7 @@ def create_unique_name(name):
     Create a project unique name by passing environment.
     """
     if "SHOTGUN_TEST_ENTITY_SUFFIX" in os.environ:
-        project_name = (name + os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"])
+        project_name = name + os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"]
     else:
         project_name = name
 
