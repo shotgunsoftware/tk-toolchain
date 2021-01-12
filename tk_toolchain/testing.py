@@ -14,7 +14,18 @@ import os
 
 def create_unique_name(name):
     """
-    Create a project unique name by passing environment.
+    Create a unique name.
+
+    When ``SHOTGUN_TEST_ENTITY_SUFFIX`` is set, the suffix is added to the name. This can be useful
+    in a CI environment where multiple resources can be created on a server and each need a unique
+    name.
+
+    It is the responsibility of the CI environment to set ``SHOTGUN_TEST_ENTITY_SUFFIX`` for this method
+    to work. If the environment variable is not set, the name is returned as is.
+
+    :param str name: Name that needs to be made unique.
+
+    :returns: The name with a suffix is one was specified by the environment variable.
     """
     if "SHOTGUN_TEST_ENTITY_SUFFIX" in os.environ:
         project_name = name + os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"]
