@@ -10,16 +10,8 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 import pytest
-import subprocess
-import time
 import os
-import sys
 from tk_toolchain.authentication import get_toolkit_user
-
-try:
-    from MA.UI import topwindows
-except ImportError:
-    pytestmark = pytest.mark.skip()
 
 
 @pytest.fixture(scope="session")
