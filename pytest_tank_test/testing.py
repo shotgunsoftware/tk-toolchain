@@ -32,7 +32,9 @@ def tk_test_current_user(tk_test_shotgun):
     :returns: The current user id and name
     """
     user = get_toolkit_user()
-    username = tk_test_shotgun.find_one("HumanUser", [["login", "is", str(user)]], ["name"])
+    username = tk_test_shotgun.find_one(
+        "HumanUser", [["login", "is", str(user)]], ["name"]
+    )
 
     return username
 
@@ -75,7 +77,9 @@ def tk_test_create_project(tk_test_shotgun):
 
 
 @pytest.fixture(scope="session")
-def tk_test_create_entities(tk_test_create_project, tk_test_shotgun, tk_test_current_user):
+def tk_test_create_entities(
+    tk_test_create_project, tk_test_shotgun, tk_test_current_user
+):
     """
     Creates Shotgun entities which will be used in different test cases.
 
@@ -91,9 +95,13 @@ def tk_test_create_entities(tk_test_create_project, tk_test_shotgun, tk_test_cur
 
     # Validate if Automation shot task template exists
     shot_template_filters = [["code", "is", "Automation Shot Task Template"]]
-    existed_shot_template = tk_test_shotgun.find_one("TaskTemplate", shot_template_filters)
+    existed_shot_template = tk_test_shotgun.find_one(
+        "TaskTemplate", shot_template_filters
+    )
     if existed_shot_template is not None:
-        tk_test_shotgun.delete(existed_shot_template["type"], existed_shot_template["id"])
+        tk_test_shotgun.delete(
+            existed_shot_template["type"], existed_shot_template["id"]
+        )
     # Create a shot task templates
     shot_template_data = {
         "code": "Automation Shot Task Template",
@@ -117,9 +125,13 @@ def tk_test_create_entities(tk_test_create_project, tk_test_shotgun, tk_test_cur
 
     # Validate if Automation asset task template exists
     asset_template_filters = [["code", "is", "Automation Asset Task Template"]]
-    existed_asset_template = tk_test_shotgun.find_one("TaskTemplate", asset_template_filters)
+    existed_asset_template = tk_test_shotgun.find_one(
+        "TaskTemplate", asset_template_filters
+    )
     if existed_asset_template is not None:
-        tk_test_shotgun.delete(existed_asset_template["type"], existed_asset_template["id"])
+        tk_test_shotgun.delete(
+            existed_asset_template["type"], existed_asset_template["id"]
+        )
     # Create an asset task templates
     asset_template_data = {
         "code": "Automation Asset Task Template",
@@ -183,7 +195,9 @@ def tk_test_create_entities(tk_test_create_project, tk_test_shotgun, tk_test_cur
     }
     version = tk_test_shotgun.create("Version", version_data)
     # Upload a version to the published file
-    tk_test_shotgun.upload("Version", version["id"], file_to_publish, "sg_uploaded_movie")
+    tk_test_shotgun.upload(
+        "Version", version["id"], file_to_publish, "sg_uploaded_movie"
+    )
 
     # Find the model task to publish to
     filters = [
