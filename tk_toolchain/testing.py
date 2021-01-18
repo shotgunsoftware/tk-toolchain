@@ -32,9 +32,23 @@ def shotgun():
 
 
 @pytest.fixture(scope="session")
+def current_user(shotgun):
+    """
+    Get current user
+
+    :returns: The current user id and name
+    """
+    user = get_toolkit_user()
+    username = shotgun.find_one("HumanUser", [["login", "is", str(user)]], ["name"])
+
+    return username
+
+@pytest.fixture(scope="session")
 def sg_project(shotgun):
     """
     Generates a fresh Shotgun Project to use with the UI Automation.
+
+    :returns: Current project name and id
     """
     # Create or update the integration_tests local storage with the current test run
     storage_name = create_unique_name("Toolkit UI Automation")
@@ -67,9 +81,11 @@ def sg_project(shotgun):
 
 
 @pytest.fixture(scope="session")
-def sg_entities(sg_project, shotgun):
+def sg_entities(sg_project, shotgun, current_user):
     """
     Creates Shotgun entities which will be used in different test cases.
+
+    :returns: model_task, publish_file and version informations
     """
     # Create a Sequence to be used by the Shot creation
     sequence_data = {
@@ -200,10 +216,6 @@ def sg_entities(sg_project, shotgun):
     }
     publish_file = shotgun.create("PublishedFile", publish_data)
 
-    # Assign a task to the current user
-    # Find current user
-    user = get_toolkit_user()
-    current_user = shotgun.find_one("HumanUser", [["login", "is", str(user)]], ["name"])
     # Assign current user to the task model
     shotgun.update(
         "Task",
@@ -214,7 +226,7 @@ def sg_entities(sg_project, shotgun):
         },
     )
 
-    return (model_task, publish_file, version, current_user)
+    return (model_task, publish_file, version)
 
 
 def create_unique_name(name):
@@ -233,8 +245,8 @@ def create_unique_name(name):
     :returns: The name with a suffix is one was specified by the environment variable.
     """
     if "SHOTGUN_TEST_ENTITY_SUFFIX" in os.environ:
-        project_name = name + " - " + os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"]
+        unique_name = name + " - " + os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"]
     else:
-        project_name = name
+        unique_name = name
 
-    return project_name
+    return unique_name
