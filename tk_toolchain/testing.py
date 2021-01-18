@@ -21,6 +21,7 @@ try:
 except ImportError:
     pytestmark = pytest.mark.skip()
 
+
 @pytest.fixture(scope="session")
 def shotgun():
     """
@@ -42,6 +43,7 @@ def current_user(shotgun):
     username = shotgun.find_one("HumanUser", [["login", "is", str(user)]], ["name"])
 
     return username
+
 
 @pytest.fixture(scope="session")
 def sg_project(shotgun):
