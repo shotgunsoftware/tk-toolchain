@@ -48,7 +48,7 @@ def tk_test_create_project(tk_test_shotgun):
     :returns: Current project name and id
     """
     # Create or update the integration_tests local storage with the current test run
-    storage_name = create_unique_name("Toolkit UI Automation")
+    storage_name = "Toolkit UI Automation"
     local_storage = tk_test_shotgun.find_one(
         "LocalStorage", [["code", "is", storage_name]], ["code"]
     )
@@ -71,6 +71,7 @@ def tk_test_create_project(tk_test_shotgun):
     project_data = {
         "sg_description": "Project Created by Automation",
         "name": project_name,
+        "tank_name": project_name,
     }
     new_project = tk_test_shotgun.create("Project", project_data)
 
