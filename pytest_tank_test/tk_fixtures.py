@@ -176,12 +176,6 @@ def tk_test_create_entities(
     }
     asset = tk_test_shotgun.create("Asset", asset_data)
 
-    # Get the publish_file_type id to be passed in the publish creation
-    published_file_type_filters = [["code", "is", "Image"]]
-    published_file_type = tk_test_shotgun.find_one(
-        "PublishedFileType", published_file_type_filters
-    )
-
     # File to publish
     file_to_publish = os.path.join(
         os.path.expandvars("${TK_TEST_FIXTURES}"), "files", "images", "sven.png"
@@ -215,7 +209,6 @@ def tk_test_create_entities(
         "code": "sven.png",
         "name": "sven.png",
         "description": "This file was published by the Toolkit UI automation",
-        "published_file_type": published_file_type,
         "path": {"local_path": file_to_publish},
         "entity": asset,
         "task": model_task,
