@@ -12,6 +12,7 @@
 import pytest
 import os
 from tk_toolchain.authentication import get_toolkit_user
+from tk_toolchain.testing import create_unique_name
 
 
 @pytest.fixture(scope="session")
@@ -47,7 +48,7 @@ def tk_test_create_project(tk_test_shotgun):
     :returns: Current project name and id
     """
     # Create or update the integration_tests local storage with the current test run
-    storage_name = tk_test_create_unique_name("Toolkit UI Automation")
+    storage_name = create_unique_name("Toolkit UI Automation")
     local_storage = tk_test_shotgun.find_one(
         "LocalStorage", [["code", "is", storage_name]], ["code"]
     )
@@ -60,7 +61,7 @@ def tk_test_create_project(tk_test_shotgun):
     )
 
     # Make sure there is not already an automation project created
-    project_name = tk_test_create_unique_name("Toolkit UI Automation")
+    project_name = create_unique_name("Toolkit UI Automation")
     filters = [["name", "is", project_name]]
     existed_project = tk_test_shotgun.find_one("Project", filters)
     if existed_project is not None:
@@ -235,26 +236,3 @@ def tk_test_create_entities(
     )
 
     return (model_task, publish_file, version)
-
-
-def tk_test_create_unique_name(name):
-    """
-    Create a unique name.
-
-    When ``SHOTGUN_TEST_ENTITY_SUFFIX`` is set, the suffix is added to the name. This can be useful
-    in a CI environment where multiple resources can be created on a server and each need a unique
-    name.
-
-    It is the responsibility of the CI environment to set ``SHOTGUN_TEST_ENTITY_SUFFIX`` for this method
-    to work. If the environment variable is not set, the name is returned as is.
-
-    :param str name: Name that needs to be made unique.
-
-    :returns: The name with a suffix is one was specified by the environment variable.
-    """
-    if "SHOTGUN_TEST_ENTITY_SUFFIX" in os.environ:
-        unique_name = name + " - " + os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"]
-    else:
-        unique_name = name
-
-    return unique_name

@@ -14,12 +14,12 @@ from __future__ import print_function
 from tk_toolchain.repo import Repository
 from tk_toolchain import util
 from tk_toolchain.tk_testengine import get_test_engine_environment
-from .testing import (
+from .tk_fixtures import (  # noqa
     tk_test_create_project,
     tk_test_shotgun,
     tk_test_current_user,
     tk_test_create_entities,
-)  # noqa
+)
 
 import os
 import sys
