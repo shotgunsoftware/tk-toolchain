@@ -21,7 +21,7 @@ def test_create_project(tk_test_shotgun, tk_test_create_project):
     project_name = create_unique_name("Toolkit UI Automation")
     filters = [["name", "is", project_name]]
     existed_project = tk_test_shotgun.find_one("Project", filters)
-    
+
     # Get current project info
     current_project = tk_test_create_project
 
@@ -71,7 +71,12 @@ def test_current_user(tk_test_shotgun, tk_test_current_user):
     assert username == current_user
 
 
-def test_create_entities(tk_test_create_project, tk_test_shotgun, tk_test_current_user, tk_test_create_entities):
+def test_create_entities(
+    tk_test_create_project,
+    tk_test_shotgun,
+    tk_test_current_user,
+    tk_test_create_entities,
+):
     """
     Ensure getting current_user
     """
