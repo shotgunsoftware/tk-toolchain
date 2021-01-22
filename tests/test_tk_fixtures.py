@@ -13,7 +13,7 @@ from tk_toolchain.testing import create_unique_name
 from tk_toolchain.authentication import get_toolkit_user
 
 
-def test_create_project(tk_test_shotgun, tk_test_create_project):
+def test_create_project(tk_test_shotgun, tk_test_project):
     """
     Ensure the project gets created successfully.
     """
@@ -23,7 +23,7 @@ def test_create_project(tk_test_shotgun, tk_test_create_project):
     existed_project = tk_test_shotgun.find_one("Project", filters)
 
     # Get current project info
-    current_project = tk_test_create_project
+    current_project = tk_test_project
 
     # Make sure both file has the same id.
     assert existed_project["id"] == current_project["id"]
@@ -59,6 +59,7 @@ def test_current_user(tk_test_shotgun, tk_test_current_user):
     Ensure getting current_user
     """
     # Getting current user
+    import pdb;pdb.set_trace()
     user = get_toolkit_user()
     username = tk_test_shotgun.find_one(
         "HumanUser", [["login", "is", str(user)]], ["name"]
@@ -72,26 +73,23 @@ def test_current_user(tk_test_shotgun, tk_test_current_user):
 
 
 def test_create_entities(
-    tk_test_create_project,
-    tk_test_shotgun,
-    tk_test_current_user,
-    tk_test_create_entities,
+    tk_test_project, tk_test_shotgun, tk_test_current_user, tk_test_entities,
 ):
     """
     Ensure getting current_user
     """
     # Getting task entity from create entities fixture
-    task_entity_fixture = tk_test_create_entities[0]
+    task_entity_fixture = tk_test_entities[0]
 
     # Getting asset entity from create entities fixture
-    publishedFile_entity_fixture = tk_test_create_entities[1]
+    publishedFile_entity_fixture = tk_test_entities[1]
 
     # Getting version entity from create entities fixture
-    version_entity_fixture = tk_test_create_entities[2]
+    version_entity_fixture = tk_test_entities[2]
 
     # Getting task entity
     filters = [
-        ["project", "is", tk_test_create_project],
+        ["project", "is", tk_test_project],
         ["entity.Asset.code", "is", "AssetAutomation"],
         ["step.Step.code", "is", "model"],
     ]
@@ -100,14 +98,14 @@ def test_create_entities(
 
     # Getting publishedFile entity
     filters = [
-        ["project", "is", tk_test_create_project],
+        ["project", "is", tk_test_project],
         ["code", "is", "sven.png"],
     ]
     publishedFile_entity = tk_test_shotgun.find_one("PublishedFile", filters)
 
     # Getting version entity
     filters = [
-        ["project", "is", tk_test_create_project],
+        ["project", "is", tk_test_project],
         ["code", "is", "sven.png"],
     ]
     version_entity = tk_test_shotgun.find_one("Version", filters)

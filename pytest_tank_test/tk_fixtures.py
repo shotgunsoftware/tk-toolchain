@@ -41,13 +41,15 @@ def tk_test_current_user(tk_test_shotgun):
 
 
 @pytest.fixture(scope="session")
-def tk_test_create_project(tk_test_shotgun):
+def tk_test_project(tk_test_shotgun):
     """
     Generates a fresh Shotgun Project to use with the UI Automation.
 
     :returns: Current project name and id
     """
-    # Create or update the integration_tests local storage with the current test run
+    # Create or update the integration_tests local storage with the current test run.
+    # Cannot use a unique name for storage_name because Workfiles2 automation
+    # is using an advanced custom config and it has storage name harcoded in roots.yml
     storage_name = "Toolkit UI Automation"
     local_storage = tk_test_shotgun.find_one(
         "LocalStorage", [["code", "is", storage_name]], ["code"]
@@ -79,9 +81,7 @@ def tk_test_create_project(tk_test_shotgun):
 
 
 @pytest.fixture(scope="session")
-def tk_test_create_entities(
-    tk_test_create_project, tk_test_shotgun, tk_test_current_user
-):
+def tk_test_entities(tk_test_project, tk_test_shotgun, tk_test_current_user):
     """
     Creates Shotgun entities which will be used in different test cases.
 
@@ -89,7 +89,7 @@ def tk_test_create_entities(
     """
     # Create a Sequence to be used by the Shot creation
     sequence_data = {
-        "project": tk_test_create_project,
+        "project": tk_test_project,
         "code": "seq_001",
         "sg_status_list": "ip",
     }
@@ -157,7 +157,7 @@ def tk_test_create_entities(
 
     # Create a new shot
     shot_data = {
-        "project": tk_test_create_project,
+        "project": tk_test_project,
         "sg_sequence": new_sequence,
         "code": "shot_001",
         "description": "This shot was created by the Toolkit UI automation",
@@ -168,7 +168,7 @@ def tk_test_create_entities(
 
     # Create a new asset
     asset_data = {
-        "project": tk_test_create_project,
+        "project": tk_test_project,
         "code": "AssetAutomation",
         "description": "This asset was created by the Toolkit UI automation",
         "sg_status_list": "ip",
@@ -184,7 +184,7 @@ def tk_test_create_entities(
 
     # Create a version an upload to it
     version_data = {
-        "project": tk_test_create_project,
+        "project": tk_test_project,
         "code": "sven.png",
         "description": "This version was created by the Toolkit UI automation",
         "entity": asset,
@@ -197,7 +197,7 @@ def tk_test_create_entities(
 
     # Find the model task to publish to
     filters = [
-        ["project", "is", tk_test_create_project],
+        ["project", "is", tk_test_project],
         ["entity.Asset.code", "is", asset["code"]],
         ["step.Step.code", "is", "model"],
     ]
@@ -206,7 +206,7 @@ def tk_test_create_entities(
 
     # Create a published file
     publish_data = {
-        "project": tk_test_create_project,
+        "project": tk_test_project,
         "code": "sven.png",
         "name": "sven.png",
         "description": "This file was published by the Toolkit UI automation",
