@@ -59,7 +59,6 @@ def test_current_user(tk_test_shotgun, tk_test_current_user):
     Ensure getting current_user
     """
     # Getting current user
-    import pdb;pdb.set_trace()
     user = get_toolkit_user()
     username = tk_test_shotgun.find_one(
         "HumanUser", [["login", "is", str(user)]], ["name"]
