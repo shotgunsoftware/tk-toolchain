@@ -28,8 +28,8 @@ def create_unique_name(name):
     :returns: The name with a suffix is one was specified by the environment variable.
     """
     if "SHOTGUN_TEST_ENTITY_SUFFIX" in os.environ:
-        project_name = name + " - " + os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"]
+        unique_name = name + " - " + os.environ["SHOTGUN_TEST_ENTITY_SUFFIX"]
     else:
-        project_name = name
+        unique_name = name
 
-    return project_name
+    return unique_name
