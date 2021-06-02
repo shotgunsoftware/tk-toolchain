@@ -24,7 +24,7 @@
 from __future__ import print_function
 import logging
 import sys
-from tk_toolchain.repo import Repository
+
 
 def setup_toolkit():
     try:
@@ -175,7 +175,7 @@ for arg in sys.argv:
     if "python-api" in arg:
         extensions.append("sphinx.ext.autosectionlabel")
         break
-    
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
