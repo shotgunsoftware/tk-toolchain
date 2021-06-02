@@ -23,7 +23,8 @@
 
 from __future__ import print_function
 import logging
-
+import sys
+from tk_toolchain.repo import Repository
 
 def setup_toolkit():
     try:
@@ -165,6 +166,16 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
 ]
+
+# FIXME: Toolkit API does not rely on this plugin. Adding it generates errors.
+# The Python API on the other hand does and we don't have time to fix the doc before
+# the rebrand, so add the plugin for the Python API and call it a day.
+is_python_api = False
+for arg in sys.argv:
+    if "python-api" in arg:
+        extensions.append("sphinx.ext.autosectionlabel")
+        break
+    
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
