@@ -208,7 +208,7 @@ to type "tk-docs-preview" to preview the documentation.
             core_path,
             repo.root,
             options.build_only,
-            warnings_as_errors=not Repository().is_python_api(),
+            warnings_as_errors=not repo.is_python_api(),
         )
         exit_code = 0
     except Exception as e:
