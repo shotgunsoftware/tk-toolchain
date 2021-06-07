@@ -368,16 +368,16 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/2", None),
     "PySide": ("http://pyside.github.io/docs/pyside/", None),
     "PySide2": ("https://doc.qt.io/qtforpython", None),
-    "sgtk": ("http://developer.shotgunsoftware.com/tk-core/", None),
+    "sgtk": ("http://developer.shotgridsoftware.com/tk-core/", None),
     "tk-framework-qtwidgets": (
-        "http://developer.shotgunsoftware.com/tk-framework-qtwidgets/",
+        "http://developer.shotgridsoftware.com/tk-framework-qtwidgets/",
         None,
     ),
     "tk-framework-shotgunutils": (
-        "http://developer.shotgunsoftware.com/tk-framework-shotgunutils/",
+        "http://developer.shotgridsoftware.com/tk-framework-shotgunutils/",
         None,
     ),
-    "shotgun-api3": ("http://developer.shotgunsoftware.com/python-api", None),
+    "shotgun-api3": ("http://developer.shotgridsoftware.com/python-api", None),
 }
 
 autodoc_member_order = "bysource"

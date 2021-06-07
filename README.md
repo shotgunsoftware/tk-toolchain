@@ -139,7 +139,7 @@ allows your test modules to share common building blocks.
 
 ##### Configures a Toolkit log file for your tests
 
-The Toolkit log for your tests will be written out in the standard Toolkit log file location under the name `tk-test.log`. Unless `SHOTGUN_HOME` [has been set](http://developer.shotgunsoftware.com/tk-core/utils.html?highlight=logmanager#sgtk.util.LocalFileStorageManager), the logs will be found under
+The Toolkit log for your tests will be written out in the standard Toolkit log file location under the name `tk-test.log`. Unless `SHOTGUN_HOME` [has been set](http://developer.shotgridsoftware.com/tk-core/utils.html?highlight=logmanager#sgtk.util.LocalFileStorageManager), the logs will be found under
 
 | Platform | Location                                     |
 | -------- | -------------------------------------------- |
