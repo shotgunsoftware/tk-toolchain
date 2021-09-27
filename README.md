@@ -15,9 +15,7 @@ and documentation.
 
 By installing `tk-toolchain`, you will get the following tools:
 
-`pytest_tank_test`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`,
-regardless of the repository. It also provides a collection of environment variables and a test engine to help application
-developers to write tests.
+`pytest_tank_test`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`, regardless of the repository. It also provides a collection of environment variables and a test engine to help application developers to write tests. It will also inform a developer if frameworks are missing for the tests to work correctly.
 
 `tk-docs-preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
 
@@ -73,7 +71,7 @@ You also need to have a copy of the Python 3 interpreter available or the `black
 
 # How can I run these tools?
 
-- Type `pytest` to run the unit tests inside a Toolkit repository
+- Type `pytest` to run the unit tests inside any Toolkit repository.
 - Type `tk-docs-preview` to preview the documentation in the `docs` folder of your Toolkit application's repository.
 - Type `tk-run-app` to launch the application from the current repository.
 

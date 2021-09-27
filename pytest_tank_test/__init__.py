@@ -20,6 +20,7 @@ from .tk_fixtures import (  # noqa
     tk_test_current_user,
     tk_test_entities,
 )
+import ruamel.yaml
 
 import os
 import sys
@@ -127,6 +128,54 @@ def pytest_configure(config):
     # Note: This won't be documented (or renamed) as we're not super comfortable
     # supporting TankTestBase at the moment for clients to write tests with.
     os.environ["TK_TEST_FIXTURES"] = os.path.join(repo.root, "tests", "fixtures")
+
+    _ensure_dependencies(repo)
+
+
+def _ensure_dependencies(repo):
+    """
+    Ensure all dependencies to run the tests are present.
+
+    info.yml is not sufficient, because it doesn't enumerate the dependencies
+    needed to run the tests. Therefore, we're going to look at Azure-Pipelines,
+    which has the list of repositories to clone in order to run the tests.
+    """
+    # azure-pipelines.yml enumerates the repo necessary for the tests to run
+    # so let's use that.
+    info_yml_path = os.path.join(repo.root, "azure-pipelines.yml")
+    if not os.path.exists(info_yml_path):
+        return
+
+    # Read the info.yml so we can search for framework dependencies
+    with open(info_yml_path, "rt") as fh:
+        info_yml = ruamel.yaml.load(fh, Loader=ruamel.yaml.Loader)
+
+    # If there is no frameworks section, there's no dependencies to check.
+    jobs = info_yml.get("jobs", [])
+    for job in jobs:
+        # There can be multiple jobs. Look for the one which has the additional_repositories
+        # parameter. That's the one that enumerates all Toolkit repositories required for
+        # the tests.
+        parameters = job.get("parameters", {})
+        additional_repositories = parameters.get("additional_repositories")
+        if not additional_repositories:
+            return
+
+        # For each of the additional repositories...
+        for additional_repository in additional_repositories:
+            # ... look on disk if the repository is cloned ...
+            repo_location = os.path.join(repo.parent, additional_repository["name"])
+            if os.path.exists(repo_location):
+                # ... and make sure that directory has all its dependencies.
+                _ensure_dependencies(Repository(repo_location))
+            else:
+                # ... Dependency missing. Print helpful message.
+                raise RuntimeError(
+                    "{0}, which is a dependency of {1}, should be cloned before the tests are executed:\n"
+                    "pushd .. && git clone git@github.com:shotgunsoftware/{0}.git && popd".format(
+                        additional_repository["name"], repo.name
+                    )
+                )
 
 
 def pytest_ignore_collect(path, config):
