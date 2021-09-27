@@ -15,7 +15,7 @@ and documentation.
 
 By installing `tk-toolchain`, you will get the following tools:
 
-`pytest_tank_test`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`, regardless of the repository. It also provides a collection of environment variables and a test engine to help application developers to write tests. It will also inform a developer if frameworks are missing for the tests to work correctly.
+`pytest_tank_test`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`, regardless of the repository. It also provides a collection of environment variables and a test engine to help application developers to write tests. It will also inform a developer if a repository should be cloned for the tests to work properly.
 
 `tk-docs-preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
 
@@ -24,6 +24,7 @@ By installing `tk-toolchain`, you will get the following tools:
 Also, the following tools will be installed:
 
 `pytest`: [pytest](https://docs.pytest.org/en/latest/) is a test runner that is much more flexible than the old test runner that was packaged with tk-core.
+
 `pre-commit`: [Pre-commit](https://pre-commit.com) is a tool that allows developers to run validators and reformatters before committing code to git, ensuring quality and consistency in a code base.
 
 # How can I install `tk-toolchain`?
@@ -106,11 +107,11 @@ E       assert 1 == 2
 
 The plugin offers the following services:
 
-##### Adds the Toolkit core to the `PYTHONPATH`
+### Adds the Toolkit core to the `PYTHONPATH`
 
 The Toolkit core will be added at the front of the `PYTHONPATH`, assuming it is installed in a sibling folder to your current repository as explained [above](#pre-requisites).
 
-##### Exposes the common folder for all your repositories
+### Exposes the common folder for all your repositories
 
 The folder in which all your repositories have been cloned will be exposed via the `SHOTGUN_REPOS_ROOT` environment variable. In the [above](#pre-requisites) example, the common folder for all the repositories is `/home/yourlogin/git-repos`.
 
@@ -130,12 +131,12 @@ tk-framework-shotgunutils_v5.x.x:
 This would allow your tests to run wherever the repositories have been cloned, as long as they are next to each other
 on your filesystem. [Toolkit's CI/CD pipeline](https://github.com/shotgunsoftware/tk-ci-tools) lays out repositories this way.
 
-##### Adds any Python modules for your tests into the `PYTHONPATH`
+### Adds any Python modules for your tests into the `PYTHONPATH`
 
 If your repository contains a folder named `tests/python`, it will be added at the front of the `PYTHONPATH`. This
 allows your test modules to share common building blocks.
 
-##### Configures a Toolkit log file for your tests
+### Configures a Toolkit log file for your tests
 
 The Toolkit log for your tests will be written out in the standard Toolkit log file location under the name `tk-test.log`. Unless `SHOTGUN_HOME` [has been set](http://developer.shotgridsoftware.com/tk-core/utils.html?highlight=logmanager#sgtk.util.LocalFileStorageManager), the logs will be found under
 
@@ -145,7 +146,7 @@ The Toolkit log for your tests will be written out in the standard Toolkit log f
 | Windows  | `%APPDATA%\Roaming\Shotgun\Logs\tk-test.log` |
 | Linux    | `~/.shotgun/logs/tk-test.log`                |
 
-##### Provides a test engine
+### Provides a test engine
 
 A bare-bones implementation of a Toolkit engine is provided and can be referenced in your configurations via the `SHOTGUN_TEST_ENGINE` environment variable. This can replace the need to use a fully-featured engine like `tk-shell` or `tk-maya` to run your tests. `sgtk.platform.qt` and `sgtk.platform.qt5` will be initialized as expected.
 
@@ -231,4 +232,4 @@ Options:
 Known limitations:
 
 - Only works with applications that do not depend on DCC-specific code.
-- The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`
+- The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`.
