@@ -4,12 +4,38 @@
 [![codecov](https://codecov.io/gh/shotgunsoftware/tk-toolchain/branch/master/graph/badge.svg)](https://codecov.io/gh/shotgunsoftware/tk-toolchain)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Toolkit Build tools](#toolkit-build-tools)
+- [What can it do?](#what-can-it-do)
+- [How can I install `tk-toolchain`?](#how-can-i-install-tk-toolchain)
+  - [Installing the `master` branch from GitHub](#installing-the-master-branch-from-github)
+  - [Installing any branch from GitHub](#installing-any-branch-from-github)
+  - [Installing for development or debugging](#installing-for-development-or-debugging)
+- [Pre-requisites](#pre-requisites)
+- [How can I run these tools?](#how-can-i-run-these-tools)
+- [`pre-commit`](#pre-commit)
+- [`pytest`](#pytest)
+  - [Cheatsheet](#cheatsheet)
+  - [pytest_tank_test's role](#pytest_tank_tests-role)
+    - [Adds the Toolkit core to the `PYTHONPATH`](#adds-the-toolkit-core-to-the-pythonpath)
+    - [Exposes the common folder for all your repositories](#exposes-the-common-folder-for-all-your-repositories)
+    - [Adds any Python modules for your tests into the `PYTHONPATH`](#adds-any-python-modules-for-your-tests-into-the-pythonpath)
+    - [Configures a Toolkit log file for your tests](#configures-a-toolkit-log-file-for-your-tests)
+    - [Provides a test engine](#provides-a-test-engine)
+- [`tk-docs-preview`](#tk-docs-preview)
+- [`tk-run-app`](#tk-run-app)
+- [`tk-config-update`](#tk-config-update)
+- [FAQ](#faq)
+  - [When I run `tk-run-app` or `tk-docs-preview`, I get `command not found: tk-run-app`](#when-i-run-tk-run-app-or-tk-docs-preview-i-get-command-not-found-tk-run-app)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Toolkit Build tools
 
-The Toolkit Build tools will help developers of Toolkit-based applications in their day to day development tasks. It is meant
-to be installed as a pip package and can be used both locally or on a continuous integration service to validate their code
-and documentation.
+The Toolkit Build tools will help developers of Toolkit-based applications in their day to day development tasks. It is meant to be installed as a pip package and can be used both locally or on a continuous integration service to validate their code and documentation.
 
 # What can it do?
 
@@ -20,6 +46,8 @@ By installing `tk-toolchain`, you will get the following tools:
 `tk-docs-preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
 
 `tk-run-app`: This tool allows you to run most Toolkit application from the command line and launch it's GUI.
+
+`tk-config-update`: This tool allows you to update a repository with the given version of a Toolkit bundle.
 
 Also, the following tools will be installed:
 
@@ -233,3 +261,34 @@ Known limitations:
 
 - Only works with applications that do not depend on DCC-specific code.
 - The app can use frameworks, but they need to be compatible with the latest version of `tk-framework-qtwidgets`, `tk-framework-shotgunutils` and `tk-framework-widget`.
+
+# `tk-config-update`
+
+This tool allows you to update a Toolkit component's version in a configuration found at the specified location. By default, the changes are not pushed back to the origin. Adding `--push-changes` will push the changes back to the origin.
+
+```
+Toolkit Configuration Update
+
+Update the version of a bundle in a config to the specified version and pushes
+it back to the source repository.
+
+Usage:
+    tk-config-update <config> <bundle> <version> [--push-changes]
+
+Options:
+    --push-changes  Pushes the changes to the repository. If not specified,
+                    the remote repository is not updated.
+
+Example:
+    tk-config-update git@github.com:shotgunsoftware/tk-config-default2.git tk-core v0.19.0
+```
+
+# FAQ
+
+## When I run `tk-run-app` or `tk-docs-preview`, I get `command not found: tk-run-app`
+
+On certain platforms, command line tools are installed in a folder that is not necessarily in your PATH. Find where your python interpreter installs command line tools on your platform and add that location to your path. Another option is to run the tools using `python -m <module-name>`. For example:
+
+- `tk-run-app` : `python -m tk_toolchain.cmd_line_tools.tk_run_app`
+- `tk-docs-preview` : `python -m tk_toolchain.cmd_line_tools.tk_docs_generation`
+- `tk-config-update` : `python -m tk_toolchain.cmd_line_tools.tk_config_update`
