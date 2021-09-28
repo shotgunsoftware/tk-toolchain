@@ -268,7 +268,7 @@ Known limitations:
 
 ## `tk-config-update`
 
-This is an internal tool that allows the Toolkit team to easily update a configuration whenever a new version of an bundle is tagged on a repository on Github. By default, the changes are not pushed back to the origin. Adding `--push-changes` will push the changes back to the origin.
+This is an internal tool that allows the Toolkit team to easily update a configuration whenever a new version of a bundle is tagged on a repository on Github. By default, the changes are not pushed back to the origin. Adding `--push-changes` will push the changes back to the origin.
 
 ```
 Toolkit Configuration Update

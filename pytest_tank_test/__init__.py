@@ -142,22 +142,28 @@ def _ensure_dependencies(repo):
     """
     # azure-pipelines.yml enumerates the repo necessary for the tests to run
     # so let's use that.
-    info_yml_path = os.path.join(repo.root, "azure-pipelines.yml")
-    if not os.path.exists(info_yml_path):
+    azurepipelines_yml_path = os.path.join(repo.root, "azure-pipelines.yml")
+    if not os.path.exists(azurepipelines_yml_path):
         return
 
     # Read the info.yml so we can search for framework dependencies
-    with open(info_yml_path, "rt") as fh:
-        info_yml = ruamel.yaml.load(fh, Loader=ruamel.yaml.Loader)
+    with open(azurepipelines_yml_path, "rt") as fh:
+        azurepipelines_yml = ruamel.yaml.load(fh, Loader=ruamel.yaml.Loader)
 
-    # If there is no frameworks section, there's no dependencies to check.
-    jobs = info_yml.get("jobs", [])
-    for job in jobs:
+    # Here's an example of an azure-pipelines.yml file.
+    # jobs:
+    # - template: build-pipeline.yml@templates
+    #   parameters:
+    #     additional_repositories:
+    #     - name: tk-framework-shotgunutils
+    #     - name: tk-multi-publish2
+    for job in azurepipelines_yml.get("jobs", []):
         # There can be multiple jobs. Look for the one which has the additional_repositories
         # parameter. That's the one that enumerates all Toolkit repositories required for
         # the tests.
-        parameters = job.get("parameters", {})
-        additional_repositories = parameters.get("additional_repositories")
+        additional_repositories = job.get("parameters", {}).get(
+            "additional_repositories"
+        )
         if not additional_repositories:
             return
 
