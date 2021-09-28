@@ -20,7 +20,7 @@
   - [`pre-commit`](#pre-commit)
   - [`pytest`](#pytest)
     - [Cheatsheet](#cheatsheet)
-    - [`pytest_tank_test`'s role](#pytest_tank_tests-role)
+    - [Toolkit's `pytest` plugin, `pytest_tanktest`](#toolkits-pytest-plugin-pytest_tanktest)
       - [Adds the Toolkit core to the `PYTHONPATH`](#adds-the-toolkit-core-to-the-pythonpath)
       - [Exposes the common folder for all your repositories](#exposes-the-common-folder-for-all-your-repositories)
       - [Adds any Python modules for your tests into the `PYTHONPATH`](#adds-any-python-modules-for-your-tests-into-the-pythonpath)
@@ -131,7 +131,7 @@ E       assert 1 == 2
 - Run a subset of the tests by typing `pytest -k something`. Any test name that matches `something` will be executed. Tests are named after the file they reside in, the class and method name. For example `tests/authentication_tests/test_auth_settings.py::DefaultsManagerTest::test_backwards_compatible`. As you can see, using `-k` you can easily run the tests of a single folder, file, class or a test.
 - You can tell `pytest` to stop the execution right into the debugger where an unhandled exception is thrown by passing in `--pdb`.
 
-### `pytest_tank_test`'s role
+### Toolkit's `pytest` plugin, `pytest_tanktest`
 
 This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`, regardless of the repository. It does quite a few things, namely:
 
