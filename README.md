@@ -20,12 +20,13 @@
   - [`pre-commit`](#pre-commit)
   - [`pytest`](#pytest)
     - [Cheatsheet](#cheatsheet)
-    - [pytest_tank_test's role](#pytest_tank_tests-role)
+    - [`pytest_tank_test`'s role](#pytest_tank_tests-role)
       - [Adds the Toolkit core to the `PYTHONPATH`](#adds-the-toolkit-core-to-the-pythonpath)
       - [Exposes the common folder for all your repositories](#exposes-the-common-folder-for-all-your-repositories)
       - [Adds any Python modules for your tests into the `PYTHONPATH`](#adds-any-python-modules-for-your-tests-into-the-pythonpath)
       - [Configures a Toolkit log file for your tests](#configures-a-toolkit-log-file-for-your-tests)
       - [Provides a test engine](#provides-a-test-engine)
+      - [Detects missing repositories](#detects-missing-repositories)
   - [`tk-docs-preview`](#tk-docs-preview)
   - [`tk-run-app`](#tk-run-app)
   - [`tk-config-update`](#tk-config-update)
@@ -42,13 +43,11 @@ The Toolkit Build tools will help developers of Toolkit-based applications in th
 
 By installing `tk-toolchain`, you will get the following tools:
 
-`pytest_tank_test`: This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`, regardless of the repository. It also provides a collection of environment variables and a test engine to help application developers to write tests. It will also inform a developer if a repository should be cloned for the tests to work properly.
-
 `tk-docs-preview`: This tool allows to preview the documentation in the `docs` folder of a Toolkit application.
 
 `tk-run-app`: This tool allows you to run most Toolkit application from the command line and launch it's GUI.
 
-Also, the following tools will be installed:
+Also, the following standard Python tools will be installed:
 
 `pytest`: [pytest](https://docs.pytest.org/en/latest/) is a test runner that is much more flexible than the old test runner that was packaged with tk-core.
 
@@ -132,9 +131,9 @@ E       assert 1 == 2
 - Run a subset of the tests by typing `pytest -k something`. Any test name that matches `something` will be executed. Tests are named after the file they reside in, the class and method name. For example `tests/authentication_tests/test_auth_settings.py::DefaultsManagerTest::test_backwards_compatible`. As you can see, using `-k` you can easily run the tests of a single folder, file, class or a test.
 - You can tell `pytest` to stop the execution right into the debugger where an unhandled exception is thrown by passing in `--pdb`.
 
-### pytest_tank_test's role
+### `pytest_tank_test`'s role
 
-The plugin offers the following services:
+This is a `pytest` plugin that allows to easily run Toolkit tests written with `tk-core`'s `TankTestBase`, regardless of the repository. It does quite a few things, namely:
 
 #### Adds the Toolkit core to the `PYTHONPATH`
 
@@ -187,6 +186,10 @@ tk-testengine:
         type: dev
         path: $SHOTGUN_TEST_ENGINE
 ```
+
+#### Detects missing repositories
+
+Each Toolkit repository can have an Azure Pipelines repository which instructs the pipeline which repositories should be cloned. `pytest_tanktest` uses that file to ensure that you have all the proper repositories cloned so that the tests can succeed.
 
 ## `tk-docs-preview`
 
