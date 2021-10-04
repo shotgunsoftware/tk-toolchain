@@ -38,7 +38,12 @@ repos:
       args: [--select=F]
   # Leave black at the bottom so all touchups are done before it is run.
   - repo: https://github.com/ambv/black
-    rev: 19.10b0
+    rev: 21.9b0
     hooks:
     - id: black
       language_version: python3
+  # This will maintain the table of content at the top of our readme file.
+  - repo: https://github.com/thlorenz/doctoc
+    rev: v1.4.0
+    hooks:
+      - id: doctoc

@@ -72,7 +72,10 @@ def test_current_user(tk_test_shotgun, tk_test_current_user):
 
 
 def test_create_entities(
-    tk_test_project, tk_test_shotgun, tk_test_current_user, tk_test_entities,
+    tk_test_project,
+    tk_test_shotgun,
+    tk_test_current_user,
+    tk_test_entities,
 ):
     """
     Ensure getting current_user

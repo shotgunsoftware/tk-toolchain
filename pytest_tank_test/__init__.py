@@ -20,6 +20,7 @@ from .tk_fixtures import (  # noqa
     tk_test_current_user,
     tk_test_entities,
 )
+import ruamel.yaml
 
 import os
 import sys
@@ -94,6 +95,13 @@ def pytest_configure(config):
     # tk-core.
     if repo.is_tk_core() is False:
         tk_core_repo_root = os.path.join(repo.parent, "tk-core")
+        if not os.path.exists(tk_core_repo_root):
+            raise RuntimeError(
+                "tk-core, which is a dependency of {}, should be cloned before the tests are executed:\n"
+                "pushd .. && git clone git@github.com:shotgunsoftware/tk-core.git && popd".format(
+                    repo.name
+                )
+            )
     else:
         tk_core_repo_root = repo.root
 
@@ -127,6 +135,54 @@ def pytest_configure(config):
     # Note: This won't be documented (or renamed) as we're not super comfortable
     # supporting TankTestBase at the moment for clients to write tests with.
     os.environ["TK_TEST_FIXTURES"] = os.path.join(repo.root, "tests", "fixtures")
+
+    _ensure_dependencies(repo)
+
+
+def _ensure_dependencies(repo):
+    """
+    Ensure all dependencies to run the tests are present.
+
+    info.yml is not sufficient, because it doesn't enumerate the dependencies
+    needed to run the tests. Therefore, we're going to look at Azure-Pipelines,
+    which has the list of repositories to clone in order to run the tests.
+    """
+    # azure-pipelines.yml enumerates the repo necessary for the tests to run
+    # so let's use that.
+    azurepipelines_yml_path = os.path.join(repo.root, "azure-pipelines.yml")
+    if not os.path.exists(azurepipelines_yml_path):
+        return
+
+    # Read azure-pipelines.yml so we can search for test dependencies.
+    with open(azurepipelines_yml_path, "rt") as fh:
+        azurepipelines_yml = ruamel.yaml.load(fh, Loader=ruamel.yaml.Loader)
+
+    # Here's an example of an azure-pipelines.yml file.
+    # jobs:
+    # - template: build-pipeline.yml@templates
+    #   parameters:
+    #     additional_repositories:
+    #     - name: tk-framework-shotgunutils
+    #     - name: tk-multi-publish2
+    for job in azurepipelines_yml.get("jobs", []):
+        # There can be multiple jobs. Look for the one which has the additional_repositories
+        # parameter. That's the one that enumerates all Toolkit repositories required for
+        # the tests.
+        additional_repositories = job.get("parameters", {}).get(
+            "additional_repositories", []
+        )
+        # For each of the additional repositories...
+        for additional_repository in additional_repositories:
+            # ... look on disk if the repository is cloned ...
+            repo_location = os.path.join(repo.parent, additional_repository["name"])
+            if not os.path.exists(repo_location):
+                # ... Dependency missing. Print helpful message.
+                raise RuntimeError(
+                    "{0}, which is a dependency of {1}, should be cloned before the tests are executed:\n"
+                    "pushd .. && git clone git@github.com:shotgunsoftware/{0}.git && popd".format(
+                        additional_repository["name"], repo.name
+                    )
+                )
 
 
 def pytest_ignore_collect(path, config):
