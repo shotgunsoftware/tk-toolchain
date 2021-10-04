@@ -40,15 +40,6 @@ pytest_cov_version = (
 pyyaml_version = "PyYAML" if is_python_27_or_greater else "PyYAML==3.11"
 
 
-if is_python_3:
-    # It appears Sphinx 3 breaks our documentation build. We're going to lock
-    # the Sphinx version in the meantime.
-    sphinx_version = "sphinx==2.4.4"
-elif is_python_27:
-    sphinx_version = "sphinx<=1.8.5"
-else:
-    sphinx_version = "sphinx==1.4.9"
-
 setup(
     name="tk-toolchain",
     version="0.1.0.dev",
@@ -94,9 +85,10 @@ setup(
         "unittest2==1.1.0",
         # Doc generation
         pyyaml_version,
-        # sphinx 2.0 is Python 3 only, so we have to cap out the version
-        # we use on Python 2.
-        sphinx_version,
+        # Use the latest version of Sphinx that supports Python 2 and 3.
+        # We have some rendering issues on Sphinx 2, notably bullet list in .rst items
+        # get rendered to html without the * in front.
+        "sphinx==1.8.5",
         "sphinx_rtd_theme==0.4.3",
         "docopt==0.6.2",
         "six==1.14.0",
