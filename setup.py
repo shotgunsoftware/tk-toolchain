@@ -96,6 +96,8 @@ setup(
         "docutils==0.17.1",
         # Lock down jinja because 3.1.0 breaks the build.
         "jinja2==3.0.3" if is_python_3 else "jinja2==2.10.3",
+        # Lock down click because newer versions break code validation stage in pipeline
+        "click==8.0.4",
     ]
     # Other tools used by devs that are useful to have.
     + (["pre-commit", "ruamel.yaml"] if is_python_27_or_greater else [])
