@@ -70,12 +70,14 @@ class SphinxProcessor(object):
         # add main bundle location
         self._add_to_pythonpath(path)
 
-        # add all bundle subfolders - ignore the __pycache__ folder and hidden items (start with '.')
+        # add all bundle subfolders - ignore hidden items (those that start with '.') and
+        # ignore the specified list of folders that we know we won't need to generate docs from
+        ignore_folders = ["__pycache__", "docs", "tests", "resources"]
         bundle_items = os.listdir(path)
         for item_name in bundle_items:
             if (
-                os.path.isdir(item_name)
-                and not item_name == "__pycache__"
+                os.path.isdir(os.path.join(path, item_name))
+                and item_name not in ignore_folders
                 and not item_name.startswith(".")
             ):
                 self._add_to_pythonpath(os.path.join(path, item_name))
