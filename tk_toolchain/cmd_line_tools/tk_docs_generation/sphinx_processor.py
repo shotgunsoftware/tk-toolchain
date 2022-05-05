@@ -34,12 +34,13 @@ class SphinxProcessor(object):
     Class that wraps sphinx doc generation
     """
 
-    def __init__(self, core_path, path, log):
+    def __init__(self, core_path, path, log, additional_paths=None):
         """
         :param core_path: Path to tk-core. If None, the core API will
                           not be added to the pythonpath.
         :param path: Path to the app/engine/fw to document
         :param log: Logger
+        :param additional_paths: Additional file paths to prepend to the PYTHONPATH and sys.path
         """
         self._log = log
         self._path = path
@@ -69,11 +70,16 @@ class SphinxProcessor(object):
         # add main bundle location
         self._add_to_pythonpath(path)
 
-        # Add python location for the hooks.
+        # add python location for the hooks.
         self._add_to_pythonpath(os.path.join(path, "hooks"))
 
-        # and python location for bundle
+        # add python location for bundle
         self._add_to_pythonpath(os.path.join(path, "python"))
+
+        # add any additional paths specified
+        additional_paths = additional_paths or []
+        for additional_path in additional_paths:
+            self._add_to_pythonpath(additional_path)
 
         # check that Sphinx and PySide are available
         if core_path:

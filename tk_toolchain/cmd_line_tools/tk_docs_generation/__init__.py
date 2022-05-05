@@ -38,17 +38,19 @@ class OptionParserLineBreakingEpilog(optparse.OptionParser):
         return self.epilog
 
 
-def preview_docs(core_path, bundle_path, is_build_only, warnings_as_errors=True):
+def preview_docs(core_path, bundle_path, is_build_only, warnings_as_errors=True, additional_paths=None):
     """
     Generate doc preview in a temp folder and show it in
     a web browser.
 
     :param core_path: Path to toolkit core
     :param bundle_path: Path to app/engine/fw to document
+    :param additional_paths: Additional file paths to prepend to the PYTHONPATH and sys.path, for
+        sphinx to generate the docs.
     """
 
     log.info("Starting preview run for %s" % bundle_path)
-    sphinx_processor = SphinxProcessor(core_path, bundle_path, log)
+    sphinx_processor = SphinxProcessor(core_path, bundle_path, log, additional_paths)
 
     # Project Name:
     # assume the name of the folder is the name of the sphinx project
@@ -161,6 +163,15 @@ to type "tk-docs-preview" to preview the documentation.
             help="Build the documentation but do not open a browser to display it.",
         )
 
+        parser.add_option(
+            "--additional-paths",
+            default=None,
+            help=(
+                "Additional file paths to prepend to the PYTHONPATH and sys.path before Sphinx generates "
+                "the docs. Specify multiple file paths by separating with semi-colon ';'."
+            ),
+        )
+
         # parse cmd line
         (options, _) = parser.parse_args(arguments)
 
@@ -209,6 +220,7 @@ to type "tk-docs-preview" to preview the documentation.
             repo.root,
             options.build_only,
             warnings_as_errors=not repo.is_python_api(),
+            additional_paths=options.additional_paths.split(";"),
         )
         exit_code = 0
     except Exception as e:
