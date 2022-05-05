@@ -114,7 +114,9 @@ class SphinxProcessor(object):
         self._log.debug("Added to PYTHONPATH: %s" % path)
         os.environ["PYTHONPATH"] = os.path.pathsep.join(pythonpath)
 
-    def build_docs(self, name, version, warnings_as_errors=True, additional_static_paths=None):
+    def build_docs(
+        self, name, version, warnings_as_errors=True, additional_static_paths=None
+    ):
         """
         Generate sphinx docs
 
@@ -133,15 +135,18 @@ class SphinxProcessor(object):
         # run build command
         # Use double quotes to make sure it works on Windows and Unix.
         # -T means show traceback
-        cmd = '%s -m sphinx -c "%s" %s -T -E -D project="%s" -D release="%s" -D version="%s" "%s" "%s"' % (
-            sys.executable,
-            self._sphinx_conf_py_location,
-            warnings_as_errors_flag,
-            name,
-            version,
-            version,
-            self._docs_path,
-            self._sphinx_build_dir,
+        cmd = (
+            '%s -m sphinx -c "%s" %s -T -E -D project="%s" -D release="%s" -D version="%s" "%s" "%s"'
+            % (
+                sys.executable,
+                self._sphinx_conf_py_location,
+                warnings_as_errors_flag,
+                name,
+                version,
+                version,
+                self._docs_path,
+                self._sphinx_build_dir,
+            )
         )
 
         execute_command(self._log, cmd)
@@ -153,7 +158,7 @@ class SphinxProcessor(object):
         # Creating .nojekyll file. This is cross platform. os.touch is not.
         with open(no_jekyll, "wt"):
             pass
-    
+
         # Copy additional static files to the build output
         additional_static_paths = additional_static_paths or []
         # Get the build output dir for html static files. This is the folder defined in conf.py
