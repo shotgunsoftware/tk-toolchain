@@ -83,7 +83,7 @@ def preview_docs(
 
     additional_static_paths = []
     bundle_static_path = os.path.join(bundle_path, "docs", "_static")
-    if bundle_static_path:
+    if os.path.exists(bundle_static_path):
         additional_static_paths.append(bundle_static_path)
 
     # build docs
