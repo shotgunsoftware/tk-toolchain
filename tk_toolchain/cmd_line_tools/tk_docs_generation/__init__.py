@@ -38,7 +38,13 @@ class OptionParserLineBreakingEpilog(optparse.OptionParser):
         return self.epilog
 
 
-def preview_docs(core_path, bundle_path, is_build_only, warnings_as_errors=True, additional_paths=None):
+def preview_docs(
+    core_path,
+    bundle_path,
+    is_build_only,
+    warnings_as_errors=True,
+    additional_paths=None,
+):
     """
     Generate doc preview in a temp folder and show it in
     a web browser.
@@ -81,7 +87,9 @@ def preview_docs(core_path, bundle_path, is_build_only, warnings_as_errors=True,
         additional_static_paths.append(bundle_static_path)
 
     # build docs
-    location = sphinx_processor.build_docs(doc_name, "vX.Y.Z", warnings_as_errors, additional_static_paths)
+    location = sphinx_processor.build_docs(
+        doc_name, "vX.Y.Z", warnings_as_errors, additional_static_paths
+    )
 
     if not is_build_only:
         # show in browser
@@ -218,6 +226,7 @@ to type "tk-docs-preview" to preview the documentation.
             log.setLevel(logging.DEBUG)
             log.debug("Enabling verbose logging.")
 
+        # Get the additional paths from the command line options. Split the string by ';' for multiple paths.
         if options.additional_paths:
             additional_paths = options.additional_paths.split(";")
         else:
