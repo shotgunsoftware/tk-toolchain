@@ -70,11 +70,15 @@ class SphinxProcessor(object):
         # add main bundle location
         self._add_to_pythonpath(path)
 
-        # add python location for the hooks.
-        self._add_to_pythonpath(os.path.join(path, "hooks"))
-
-        # add python location for bundle
-        self._add_to_pythonpath(os.path.join(path, "python"))
+        # add all bundle subfolders - ignore the __pycache__ folder and hidden items (start with '.')
+        bundle_items = os.listdir(path)
+        for item_name in bundle_items:
+            if (
+                os.path.isdir(item_name)
+                and not item_name == "__pycache__"
+                and not item_name.startswith(".")
+            ):
+                self._add_to_pythonpath(os.path.join(path, item_name))
 
         # add any additional paths specified
         additional_paths = additional_paths or []
