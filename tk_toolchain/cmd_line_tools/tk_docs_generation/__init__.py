@@ -218,6 +218,11 @@ to type "tk-docs-preview" to preview the documentation.
             log.setLevel(logging.DEBUG)
             log.debug("Enabling verbose logging.")
 
+        if options.additional_paths:
+            additional_paths = options.additional_paths.split(";")
+        else:
+            additional_paths = None
+
         # FIXME: Warnings as error is turned off for the Python API, because that API currently has errors in it.
         # It's too late to fix (we're rebranding), so we'll just disable warnings_as_error for now.
         preview_docs(
@@ -225,7 +230,7 @@ to type "tk-docs-preview" to preview the documentation.
             repo.root,
             options.build_only,
             warnings_as_errors=not repo.is_python_api(),
-            additional_paths=options.additional_paths.split(";"),
+            additional_paths=additional_paths,
         )
         exit_code = 0
     except Exception as e:
