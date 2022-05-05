@@ -114,12 +114,13 @@ class SphinxProcessor(object):
         self._log.debug("Added to PYTHONPATH: %s" % path)
         os.environ["PYTHONPATH"] = os.path.pathsep.join(pythonpath)
 
-    def build_docs(self, name, version, warnings_as_errors=True):
+    def build_docs(self, name, version, warnings_as_errors=True, additional_static_paths=None):
         """
         Generate sphinx docs
 
         :param name: The name to give to the documentation
         :param version: The version number to associate with the documentation
+        :param additional_static_paths: Additional static paths to add to the build output.
         :returns: Path to the built docs
         """
         self._log.debug("Building docs with name %s and version %s" % (name, version))
@@ -152,6 +153,14 @@ class SphinxProcessor(object):
         # Creating .nojekyll file. This is cross platform. os.touch is not.
         with open(no_jekyll, "wt"):
             pass
+    
+        # Copy additional static files to the build output
+        additional_static_paths = additional_static_paths or []
+        # Get the build output dir for html static files. This is the folder defined in conf.py
+        # as the html_static_path ("_static").
+        static_path_build_dir = os.path.join(self._sphinx_build_dir, "_static")
+        for static_path in additional_static_paths:
+            self.copy_docs(self._log, static_path, static_path_build_dir)
 
         return self._sphinx_build_dir
 
