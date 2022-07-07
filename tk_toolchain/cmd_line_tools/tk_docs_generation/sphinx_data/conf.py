@@ -195,8 +195,8 @@ master_doc = "index"
 # project = u'Specify this via command line'
 from datetime import date
 
-copyright = u"%s, Autodesk" % date.today().year
-author = u"Autodesk"
+copyright = "%s, Autodesk" % date.today().year
+author = "Autodesk"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

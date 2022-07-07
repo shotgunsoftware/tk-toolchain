@@ -126,15 +126,18 @@ class SphinxProcessor(object):
         # run build command
         # Use double quotes to make sure it works on Windows and Unix.
         # -T means show traceback
-        cmd = '%s -m sphinx -c "%s" %s -T -E -D project="%s" -D release="%s" -D version="%s" "%s" "%s"' % (
-            sys.executable,
-            self._sphinx_conf_py_location,
-            warnings_as_errors_flag,
-            name,
-            version,
-            version,
-            self._docs_path,
-            self._sphinx_build_dir,
+        cmd = (
+            '%s -m sphinx -c "%s" %s -T -E -D project="%s" -D release="%s" -D version="%s" "%s" "%s"'
+            % (
+                sys.executable,
+                self._sphinx_conf_py_location,
+                warnings_as_errors_flag,
+                name,
+                version,
+                version,
+                self._docs_path,
+                self._sphinx_build_dir,
+            )
         )
 
         execute_command(self._log, cmd)
