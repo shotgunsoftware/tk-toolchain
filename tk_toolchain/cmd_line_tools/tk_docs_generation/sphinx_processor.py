@@ -34,12 +34,13 @@ class SphinxProcessor(object):
     Class that wraps sphinx doc generation
     """
 
-    def __init__(self, core_path, path, log):
+    def __init__(self, core_path, path, log, additional_paths=None):
         """
         :param core_path: Path to tk-core. If None, the core API will
                           not be added to the pythonpath.
         :param path: Path to the app/engine/fw to document
         :param log: Logger
+        :param additional_paths: Additional file paths to prepend to the PYTHONPATH and sys.path
         """
         self._log = log
         self._path = path
@@ -69,11 +70,22 @@ class SphinxProcessor(object):
         # add main bundle location
         self._add_to_pythonpath(path)
 
-        # Add python location for the hooks.
-        self._add_to_pythonpath(os.path.join(path, "hooks"))
+        # add all bundle subfolders - ignore hidden items (those that start with '.') and
+        # ignore the specified list of folders that we know we won't need to generate docs from
+        ignore_folders = ["__pycache__", "docs", "tests", "resources"]
+        bundle_items = os.listdir(path)
+        for item_name in bundle_items:
+            if (
+                os.path.isdir(os.path.join(path, item_name))
+                and item_name not in ignore_folders
+                and not item_name.startswith(".")
+            ):
+                self._add_to_pythonpath(os.path.join(path, item_name))
 
-        # and python location for bundle
-        self._add_to_pythonpath(os.path.join(path, "python"))
+        # add any additional paths specified
+        additional_paths = additional_paths or []
+        for additional_path in additional_paths:
+            self._add_to_pythonpath(additional_path)
 
         # check that Sphinx and PySide are available
         if core_path:
@@ -108,12 +120,15 @@ class SphinxProcessor(object):
         self._log.debug("Added to PYTHONPATH: %s" % path)
         os.environ["PYTHONPATH"] = os.path.pathsep.join(pythonpath)
 
-    def build_docs(self, name, version, warnings_as_errors=True):
+    def build_docs(
+        self, name, version, warnings_as_errors=True, additional_static_paths=None
+    ):
         """
         Generate sphinx docs
 
         :param name: The name to give to the documentation
         :param version: The version number to associate with the documentation
+        :param additional_static_paths: Additional static paths to add to the build output.
         :returns: Path to the built docs
         """
         self._log.debug("Building docs with name %s and version %s" % (name, version))
@@ -149,6 +164,14 @@ class SphinxProcessor(object):
         # Creating .nojekyll file. This is cross platform. os.touch is not.
         with open(no_jekyll, "wt"):
             pass
+
+        # Copy additional static files to the build output
+        additional_static_paths = additional_static_paths or []
+        # Get the build output dir for html static files. This is the folder defined in conf.py
+        # as the html_static_path ("_static").
+        static_path_build_dir = os.path.join(self._sphinx_build_dir, "_static")
+        for static_path in additional_static_paths:
+            self.copy_docs(self._log, static_path, static_path_build_dir)
 
         return self._sphinx_build_dir
 

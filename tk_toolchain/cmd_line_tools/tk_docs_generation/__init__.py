@@ -38,17 +38,25 @@ class OptionParserLineBreakingEpilog(optparse.OptionParser):
         return self.epilog
 
 
-def preview_docs(core_path, bundle_path, is_build_only, warnings_as_errors=True):
+def preview_docs(
+    core_path,
+    bundle_path,
+    is_build_only,
+    warnings_as_errors=True,
+    additional_paths=None,
+):
     """
     Generate doc preview in a temp folder and show it in
     a web browser.
 
     :param core_path: Path to toolkit core
     :param bundle_path: Path to app/engine/fw to document
+    :param additional_paths: Additional file paths to prepend to the PYTHONPATH and sys.path, for
+        sphinx to generate the docs.
     """
 
     log.info("Starting preview run for %s" % bundle_path)
-    sphinx_processor = SphinxProcessor(core_path, bundle_path, log)
+    sphinx_processor = SphinxProcessor(core_path, bundle_path, log, additional_paths)
 
     # Project Name:
     # assume the name of the folder is the name of the sphinx project
@@ -73,8 +81,15 @@ def preview_docs(core_path, bundle_path, is_build_only, warnings_as_errors=True)
         "the release script, the proper github details will be extracted."
     )
 
+    additional_static_paths = []
+    bundle_static_path = os.path.join(bundle_path, "docs", "_static")
+    if os.path.exists(bundle_static_path):
+        additional_static_paths.append(bundle_static_path)
+
     # build docs
-    location = sphinx_processor.build_docs(doc_name, "vX.Y.Z", warnings_as_errors)
+    location = sphinx_processor.build_docs(
+        doc_name, "vX.Y.Z", warnings_as_errors, additional_static_paths
+    )
 
     if not is_build_only:
         # show in browser
@@ -161,6 +176,15 @@ to type "tk-docs-preview" to preview the documentation.
             help="Build the documentation but do not open a browser to display it.",
         )
 
+        parser.add_option(
+            "--additional-paths",
+            default=None,
+            help=(
+                "Additional file paths to prepend to the PYTHONPATH and sys.path before Sphinx generates "
+                "the docs. Specify multiple file paths by separating with semi-colon ';'."
+            ),
+        )
+
         # parse cmd line
         (options, _) = parser.parse_args(arguments)
 
@@ -202,6 +226,12 @@ to type "tk-docs-preview" to preview the documentation.
             log.setLevel(logging.DEBUG)
             log.debug("Enabling verbose logging.")
 
+        # Get the additional paths from the command line options. Split the string by ';' for multiple paths.
+        if options.additional_paths:
+            additional_paths = options.additional_paths.split(";")
+        else:
+            additional_paths = None
+
         # FIXME: Warnings as error is turned off for the Python API, because that API currently has errors in it.
         # It's too late to fix (we're rebranding), so we'll just disable warnings_as_error for now.
         preview_docs(
@@ -209,6 +239,7 @@ to type "tk-docs-preview" to preview the documentation.
             repo.root,
             options.build_only,
             warnings_as_errors=not repo.is_python_api(),
+            additional_paths=additional_paths,
         )
         exit_code = 0
     except Exception as e:
