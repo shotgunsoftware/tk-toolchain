@@ -167,10 +167,17 @@ class SphinxProcessor(object):
 
         # Copy additional static files to the build output
         additional_static_paths = additional_static_paths or []
+        # add the app/engine/fw docs/_static path (if it exists) to the additional static paths
+        # to copy
+        bundle_static_path = os.path.join(self._path, "docs", "_static")
+        if os.path.exists(bundle_static_path):
+            additional_static_paths.append(bundle_static_path)
+
         # Get the build output dir for html static files. This is the folder defined in conf.py
         # as the html_static_path ("_static").
         static_path_build_dir = os.path.join(self._sphinx_build_dir, "_static")
         for static_path in additional_static_paths:
+            self._log.debug("Copying contents from additiona static path: %s" % static_path)
             self.copy_docs(self._log, static_path, static_path_build_dir)
 
         return self._sphinx_build_dir
