@@ -81,14 +81,9 @@ def preview_docs(
         "the release script, the proper github details will be extracted."
     )
 
-    additional_static_paths = []
-    bundle_static_path = os.path.join(bundle_path, "docs", "_static")
-    if os.path.exists(bundle_static_path):
-        additional_static_paths.append(bundle_static_path)
-
     # build docs
     location = sphinx_processor.build_docs(
-        doc_name, "vX.Y.Z", warnings_as_errors, additional_static_paths
+        doc_name, "vX.Y.Z", warnings_as_errors
     )
 
     if not is_build_only:
