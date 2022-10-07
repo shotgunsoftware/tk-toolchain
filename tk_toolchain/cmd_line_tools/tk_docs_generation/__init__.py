@@ -82,9 +82,7 @@ def preview_docs(
     )
 
     # build docs
-    location = sphinx_processor.build_docs(
-        doc_name, "vX.Y.Z", warnings_as_errors
-    )
+    location = sphinx_processor.build_docs(doc_name, "vX.Y.Z", warnings_as_errors)
 
     if not is_build_only:
         # show in browser
