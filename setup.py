@@ -23,6 +23,13 @@ def read_file(fname):
 
     :returns: The text content.
     """
+
+    # import sys
+    # sys.path.append(
+    #     r"/Applications/PyCharm.app/Contents/debug-eggs/pydevd-pycharm.egg")
+    # import pydevd
+    # pydevd.settrace('localhost', port=5490, stdoutToServer=True,
+    #                 stderrToServer=True)
     file_path = os.path.join(os.path.dirname(__file__), fname)
     with codecs.open(file_path, encoding="utf-8") as fh:
         return fh.read()
@@ -78,6 +85,9 @@ setup(
         # Tests
         pytest_version,
         pytest_cov_version,
+        # Locking importlib-metadata because the latest release v5.0.0
+        # remove deprecated endpoint.
+        "importlib-metadata==4.13.0",
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==2.0.0",
