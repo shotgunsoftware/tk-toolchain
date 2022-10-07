@@ -81,7 +81,7 @@ setup(
         pytest_cov_version,
         # Locking importlib-metadata because the latest release v5.0.0
         # remove deprecated endpoint.
-        importlib_version,  
+        importlib_version,
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==2.0.0",
