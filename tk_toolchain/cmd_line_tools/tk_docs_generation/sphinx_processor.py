@@ -177,7 +177,9 @@ class SphinxProcessor(object):
         # as the html_static_path ("_static").
         static_path_build_dir = os.path.join(self._sphinx_build_dir, "_static")
         for static_path in additional_static_paths:
-            self._log.debug("Adding additional path to copy to _static directory: %s" % static_path)
+            self._log.debug(
+                "Adding additional path to copy to _static directory: %s" % static_path
+            )
             self.copy_docs(self._log, static_path, static_path_build_dir)
 
         return self._sphinx_build_dir
