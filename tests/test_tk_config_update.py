@@ -18,6 +18,7 @@ from ruamel import yaml
 
 from tk_toolchain.cmd_line_tools import tk_config_update
 
+
 # We'll create a copy of the config for this test so we can
 # run the tool on it without modifying it.
 @pytest.fixture(scope="module")

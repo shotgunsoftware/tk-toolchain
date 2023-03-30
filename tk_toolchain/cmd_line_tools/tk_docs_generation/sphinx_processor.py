@@ -199,7 +199,6 @@ class SphinxProcessor(object):
 
         names = os.listdir(src)
         for name in names:
-
             srcname = os.path.join(src, name)
             dstname = os.path.join(dst, name)
 
