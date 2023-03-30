@@ -96,7 +96,6 @@ def preview_docs(
 
 
 def main(arguments=None):
-
     arguments = arguments or sys.argv
 
     log.setLevel(logging.INFO)
