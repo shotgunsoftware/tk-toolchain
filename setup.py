@@ -34,7 +34,6 @@ is_python_27_or_greater = python_version >= (2, 7)
 is_python_27 = python_version == (2, 7)
 
 pytest_version = "pytest==4.6.6" if is_python_27_or_greater else "pytest<3.3"
-importlib_version = "importlib-metadata>=4.4,<5.0.*" if is_python_3 else ""
 pytest_cov_version = (
     "pytest-cov==2.6.1" if is_python_27_or_greater else "pytest-cov==2.5.1"
 )
@@ -79,9 +78,6 @@ setup(
         # Tests
         pytest_version,
         pytest_cov_version,
-        # Locking importlib-metadata because the latest release v5.0.0
-        # remove deprecated endpoint.
-        importlib_version,
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==2.0.0",
