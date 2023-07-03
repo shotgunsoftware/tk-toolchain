@@ -212,8 +212,9 @@ def update_files(repo_root, bundle, version):
     for yml_file in enumerate_yaml_files(repo_root):
         # Load it and preserve the formatting
         with open(yml_file, "r") as fh:
-            _yaml = yaml.YAML(typ="unsafe", pure=True)
-            yaml_data = _yaml.load(fh)
+            # _yaml = yaml.YAML(typ="unsafe", pure=True)
+            # yaml_data = _yaml.load(fh)
+            yaml_data = yaml.load(fh, yaml.RoundTripLoader)
 
         # If we found a descriptor to update
         if update_yaml_data(yaml_data, bundle, version):
