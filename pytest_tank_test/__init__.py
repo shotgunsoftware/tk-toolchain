@@ -20,7 +20,7 @@ from .tk_fixtures import (  # noqa
     tk_test_current_user,
     tk_test_entities,
 )
-import ruamel.yaml
+from ruamel.yaml import YAML
 
 import os
 import sys
@@ -155,7 +155,8 @@ def _ensure_dependencies(repo):
 
     # Read azure-pipelines.yml so we can search for test dependencies.
     with open(azurepipelines_yml_path, "rt") as fh:
-        azurepipelines_yml = ruamel.yaml.load(fh, Loader=ruamel.yaml.Loader)
+        yaml = YAML(typ="unsafe", pure=True)
+        azurepipelines_yml = yaml.load(fh, Loader=yaml.Loader)
 
     # Here's an example of an azure-pipelines.yml file.
     # jobs:
