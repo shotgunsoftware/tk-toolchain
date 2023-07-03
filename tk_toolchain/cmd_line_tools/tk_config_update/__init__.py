@@ -214,7 +214,7 @@ def update_files(repo_root, bundle, version):
         with open(yml_file, "r") as fh:
             _yaml = yaml.YAML()
             yaml_data = _yaml.load(fh)
-        
+
         # If we found a descriptor to update
         if update_yaml_data(yaml_data, bundle, version):
             # Write back the changes and update the git index.

@@ -14,7 +14,7 @@ import subprocess
 import six
 
 import pytest
-from ruamel.yaml import YAML
+from ruamel import yaml
 
 from tk_toolchain.cmd_line_tools import tk_config_update
 
@@ -129,12 +129,12 @@ def test_update_config(
     assert updated_files == [os.path.join(test_config, modified_file)]
 
     with open(os.path.join(cloned_config, modified_file), "rt") as fh:
-        yaml = YAML()
-        expected_cfg = yaml.load(fh)
+        _yaml = yaml.YAML()
+        expected_cfg = _yaml.load(fh)
 
     with open(os.path.join(test_config, modified_file), "rt") as fh:
-        yaml = YAML()
-        test_config = yaml.load(fh)
+        _yaml = yaml.YAML()
+        test_config = _yaml.load(fh)
 
     value = expected_cfg
     for key in path_to_descriptor:
