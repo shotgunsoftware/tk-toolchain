@@ -155,7 +155,7 @@ def _ensure_dependencies(repo):
 
     # Read azure-pipelines.yml so we can search for test dependencies.
     with open(azurepipelines_yml_path, "rt") as fh:
-        yaml = YAML(typ="unsafe", pure=True)
+        yaml = YAML()
         azurepipelines_yml = yaml.load(fh)
 
     # Here's an example of an azure-pipelines.yml file.

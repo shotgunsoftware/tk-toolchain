@@ -129,11 +129,11 @@ def test_update_config(
     assert updated_files == [os.path.join(test_config, modified_file)]
 
     with open(os.path.join(cloned_config, modified_file), "rt") as fh:
-        yaml = YAML(typ="unsafe", pure=True)
+        yaml = YAML()
         expected_cfg = yaml.load(fh)
 
     with open(os.path.join(test_config, modified_file), "rt") as fh:
-        yaml = YAML(typ="unsafe", pure=True)
+        yaml = YAML()
         test_config = yaml.load(fh)
 
     value = expected_cfg
