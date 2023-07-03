@@ -213,7 +213,7 @@ def update_files(repo_root, bundle, version):
         # Load it and preserve the formatting
         with open(yml_file, "r") as fh:
             _yaml = yaml.YAML(typ="unsafe", pure=True)
-            yaml_data = _yaml.load(fh, yaml.RoundTripLoader)
+            yaml_data = _yaml.load(fh)
 
         # If we found a descriptor to update
         if update_yaml_data(yaml_data, bundle, version):

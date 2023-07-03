@@ -14,7 +14,7 @@ import subprocess
 import six
 
 import pytest
-from ruamel.yaml import YAML, RoundTripLoader
+from ruamel.yaml import YAML
 
 from tk_toolchain.cmd_line_tools import tk_config_update
 
@@ -130,11 +130,11 @@ def test_update_config(
 
     with open(os.path.join(cloned_config, modified_file), "rt") as fh:
         yaml = YAML(typ="unsafe", pure=True)
-        expected_cfg = yaml.load(fh, Loader)
+        expected_cfg = yaml.load(fh)
 
     with open(os.path.join(test_config, modified_file), "rt") as fh:
         yaml = YAML(typ="unsafe", pure=True)
-        test_config = yaml.load(fh, Loader)
+        test_config = yaml.load(fh)
 
     value = expected_cfg
     for key in path_to_descriptor:
