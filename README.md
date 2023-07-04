@@ -1,5 +1,5 @@
 
-[![Python 2.7 3.7](https://img.shields.io/badge/python-2.7%20%7C%203.7-blue.svg)](https://www.python.org/)
+[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/)
 [![Build Status](https://dev.azure.com/shotgun-ecosystem/Toolkit/_apis/build/status/tk-toolchain?repoName=shotgunsoftware%2Ftk-toolchain&branchName=master)](https://dev.azure.com/shotgun-ecosystem/Toolkit/_build/latest?definitionId=66&repoName=shotgunsoftware%2Ftk-toolchain&branchName=master)
 [![codecov](https://codecov.io/gh/shotgunsoftware/tk-toolchain/branch/master/graph/badge.svg)](https://codecov.io/gh/shotgunsoftware/tk-toolchain)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -127,7 +127,6 @@ If you are unfamiliar with pytest, here's a quick cheatsheet of things you'll wa
 >       assert a == b
 E       assert 1 == 2
 ```
-- Since you'll have installed `pytest` in both Python 2 and Python 3, you can easily switch between both by using `python2 -m pytest` and `python3 -m pytest`.
 - Run a subset of the tests by typing `pytest -k something`. Any test name that matches `something` will be executed. Tests are named after the file they reside in, the class and method name. For example `tests/authentication_tests/test_auth_settings.py::DefaultsManagerTest::test_backwards_compatible`. As you can see, using `-k` you can easily run the tests of a single folder, file, class or a test.
 - You can tell `pytest` to stop the execution right into the debugger where an unhandled exception is thrown by passing in `--pdb`.
 
