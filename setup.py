@@ -12,7 +12,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import codecs
 from setuptools import setup, find_packages
 
@@ -26,6 +25,7 @@ def read_file(fname):
     file_path = os.path.join(os.path.dirname(__file__), fname)
     with codecs.open(file_path, encoding="utf-8") as fh:
         return fh.read()
+
 
 setup(
     name="tk-toolchain",
@@ -85,7 +85,7 @@ setup(
         "jinja2==3.0.3",
         # Other tools used by devs that are useful to have.
         "pre-commit",
-        
+        "ruamel.yaml",
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
