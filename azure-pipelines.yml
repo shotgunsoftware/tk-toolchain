@@ -25,9 +25,6 @@ trigger:
   branches:
     include:
     - master
-  tags:
-    include:
-    - v*
 pr:
   branches:
     include:

@@ -12,7 +12,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import codecs
 from setuptools import setup, find_packages
 
@@ -28,24 +27,12 @@ def read_file(fname):
         return fh.read()
 
 
-python_version = sys.version_info[0:2]
-is_python_3 = python_version[0] == 3
-is_python_27_or_greater = python_version >= (2, 7)
-is_python_27 = python_version == (2, 7)
-
-pytest_version = "pytest==4.6.6" if is_python_27_or_greater else "pytest<3.3"
-pytest_cov_version = (
-    "pytest-cov==2.6.1" if is_python_27_or_greater else "pytest-cov==2.5.1"
-)
-pyyaml_version = "PyYAML" if is_python_27_or_greater else "PyYAML==3.11"
-
-
 setup(
     name="tk-toolchain",
-    version="0.1.0.dev",
-    author="Shotgrid Software",
+    version="0.2.0.dev",
+    author="Autodesk",
     author_email="https://developer.shotgridsoftware.com",
-    maintainer="Shotgrid Software",
+    maintainer="Autodesk",
     maintainer_email="https://developer.shotgridsoftware.com",
     license=read_file("LICENSE"),
     url="https://github.com/shotgunsoftware/tk-toolchain",
@@ -73,18 +60,18 @@ setup(
             ),
         ]
     },
-    python_requires=">=2.6.0",
+    python_requires=">=3.6.0",
     install_requires=[
         # Tests
-        pytest_version,
-        pytest_cov_version,
+        "pytest==4.6.6",
+        "pytest-cov==4.0.0",
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==2.0.0",
         "coverage==6.2",
         "unittest2==1.1.0",
         # Doc generation
-        pyyaml_version,
+        "PyYAML",
         # Use the latest version of Sphinx that supports Python 2 and 3.
         # We have some rendering issues on Sphinx 2, notably bullet list in .rst items
         # get rendered to html without the * in front.
@@ -95,19 +82,17 @@ setup(
         # Lock down docutils because 0.18 break the build.
         "docutils==0.17.1",
         # Lock down jinja because 3.1.0 breaks the build.
-        "jinja2==3.0.3" if is_python_3 else "jinja2==2.10.3",
-    ]
-    # Other tools used by devs that are useful to have.
-    + (["pre-commit", "ruamel.yaml"] if is_python_27_or_greater else [])
-    + (["ruamel.ordereddict==0.4.14;sys_platform=='win32'"] if is_python_27 else []),
+        "jinja2==3.0.3",
+        # Other tools used by devs that are useful to have.
+        "pre-commit",
+        "ruamel.yaml",
+    ],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Pytest",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",

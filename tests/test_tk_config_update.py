@@ -129,10 +129,12 @@ def test_update_config(
     assert updated_files == [os.path.join(test_config, modified_file)]
 
     with open(os.path.join(cloned_config, modified_file), "rt") as fh:
-        expected_cfg = yaml.load(fh, Loader=yaml.Loader)
+        _yaml = yaml.YAML()
+        expected_cfg = _yaml.load(fh)
 
     with open(os.path.join(test_config, modified_file), "rt") as fh:
-        test_config = yaml.load(fh, Loader=yaml.Loader)
+        _yaml = yaml.YAML()
+        test_config = _yaml.load(fh)
 
     value = expected_cfg
     for key in path_to_descriptor:

@@ -212,15 +212,16 @@ def update_files(repo_root, bundle, version):
     for yml_file in enumerate_yaml_files(repo_root):
         # Load it and preserve the formatting
         with open(yml_file, "r") as fh:
-            yaml_data = yaml.load(fh, yaml.RoundTripLoader)
+            _yaml = yaml.YAML()
+            yaml_data = _yaml.load(fh)
 
         # If we found a descriptor to update
         if update_yaml_data(yaml_data, bundle, version):
             # Write back the changes and update the git index.
             with open(yml_file, "w") as fh:
-                yaml.dump(
-                    yaml_data, fh, default_flow_style=False, Dumper=yaml.RoundTripDumper
-                )
+                _yaml = yaml.YAML()
+                _yaml.default_flow_style = False
+                _yaml.dump(yaml_data, fh)
             yield yml_file
 
 
