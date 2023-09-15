@@ -60,7 +60,7 @@ setup(
             ),
         ]
     },
-    python_requires=">=3.6.0",
+    python_requires=">=3.7.0",
     install_requires=[
         # Tests
         "pytest==7.4.2",
@@ -92,7 +92,9 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Operating System :: OS Independent",
