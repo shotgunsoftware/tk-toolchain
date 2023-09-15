@@ -15,7 +15,6 @@ resources:
       type: github
       ref: python-310-311  # To revert to master before merge
       # ref: refs/heads/master
-      ref: python-310-311
       endpoint: shotgunsoftware
 
 # We want builds to trigger for 3 reasons:
