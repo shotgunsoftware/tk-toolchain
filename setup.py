@@ -68,7 +68,7 @@ setup(
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==5.1.0",
-        "coverage==7.3.1",
+        "coverage==7.2.7",  # supports Python 3.7
         # Doc generation
         "PyYAML",
         # Use the latest version of Sphinx that supports Python 2 and 3.
