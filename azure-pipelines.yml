@@ -52,4 +52,3 @@ jobs:
     - name: tk-config-basic
       ref: v1.3.0
     - name: python-api
-    tk_core_ref: ticket/SG-32657_py310  # Revert this line after 3.10 testing
