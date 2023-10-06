@@ -60,16 +60,15 @@ setup(
             ),
         ]
     },
-    python_requires=">=3.6.0",
+    python_requires=">=3.7.0",
     install_requires=[
         # Tests
-        "pytest==4.6.6",
-        "pytest-cov==4.0.0",
+        "pytest==7.4.2",
+        "pytest-cov==4.1.0",
         # Locking down these 3 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
-        "mock==2.0.0",
-        "coverage==6.2",
-        "unittest2==1.1.0",
+        "mock==5.1.0",
+        "coverage==7.2.7",  # supports Python 3.7
         # Doc generation
         "PyYAML",
         # Use the latest version of Sphinx that supports Python 2 and 3.
@@ -93,7 +92,9 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Operating System :: OS Independent",
