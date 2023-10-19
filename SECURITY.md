@@ -1,3 +1,4 @@
+<!-- DOCTOC SKIP -->
 # Security Policy
 
 ## Security
