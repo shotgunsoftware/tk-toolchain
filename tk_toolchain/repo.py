@@ -177,6 +177,14 @@ class Repository(object):
         :returns: ``True`` is the repository is for the Python API, ``False`` otherwise.
         """
         return self._folder_contains("shotgun_api3")
+    
+    def is_sg_jira_bridge(self):
+        """
+        Check if the repository is for the Jira Bridge
+
+        :returns: ``True`` is the repository is for the Jira Bridge, ``False`` otherwise.
+        """
+        return self._folder_contains("sg_jira")
 
     def _folder_contains(self, filename):
         """

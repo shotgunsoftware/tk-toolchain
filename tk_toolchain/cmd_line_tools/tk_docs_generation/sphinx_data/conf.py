@@ -212,7 +212,7 @@ release = "vX.Y.Z"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -365,9 +365,10 @@ htmlhelp_basename = "tkdoc"
 # external references. This allows for proper cross referencing between bundles
 # and extrnal libs
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/2", None),
+    "python": ("https://docs.python.org/3.9", None), 
     "PySide": ("http://pyside.github.io/docs/pyside/", None),
-    "PySide2": ("https://doc.qt.io/qtforpython", None),
+    "PySide2": ("https://doc.qt.io/qtforpython-5", None),
+    "PySide6": ("https://doc.qt.io/qtforpython", None),
     "sgtk": ("http://developer.shotgridsoftware.com/tk-core/", None),
     "tk-framework-qtwidgets": (
         "http://developer.shotgridsoftware.com/tk-framework-qtwidgets/",

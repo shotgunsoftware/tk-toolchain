@@ -192,18 +192,20 @@ to type "tk-docs-preview" to preview the documentation.
             return 0
 
         # Make sure Qt is available if we're dealing with Toolkit repos.
-        if not repo.is_python_api():
+        if not repo.is_python_api() and not repo.is_sg_jira_bridge():
             try:
-                import PySide  # noqa
+                import PySide2  # noqa
             except ImportError:
                 try:
-                    import PySide2  # noqa testing importability, ignore unused import
+                    import PySide6  # noqa
                 except ImportError:
-                    log.error(
-                        "PySide or PySide2 are required to build the documentation."
-                    )
-                    return 1
-
+                    try:
+                        import PySide  # noqa
+                    except ImportError:
+                        log.error(
+                            "PySide, PySide2, or PySide6 are required to build the documentation."
+                        )
+                        return 1
         # If the specified the core path, we'll use it.
         if options.core:
             core_path = util.expand_path(options.core)
