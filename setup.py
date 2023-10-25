@@ -12,6 +12,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import codecs
 from setuptools import setup, find_packages
 
@@ -29,7 +30,7 @@ def read_file(fname):
 
 setup(
     name="tk-toolchain",
-    version="0.2.0.dev",
+    version="0.2.1.dev",
     author="Autodesk",
     author_email="https://developer.shotgridsoftware.com",
     maintainer="Autodesk",
@@ -65,21 +66,16 @@ setup(
         # Tests
         "pytest==7.4.2",
         "pytest-cov==4.1.0",
-        # Locking down these 3 tools to these specific versions is important
+        # Locking down these 2 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==5.1.0",
-        "coverage==7.2.7",  # supports Python 3.7
+        "coverage==7.2.7",
         # Doc generation
         "PyYAML",
-        # Use the latest version of Sphinx that supports Python 2 and 3.
-        # We have some rendering issues on Sphinx 2, notably bullet list in .rst items
-        # get rendered to html without the * in front.
-        "sphinx==1.8.5",
-        "sphinx_rtd_theme==0.4.3",
+        "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
+        "sphinx_rtd_theme==1.3.0",
         "docopt==0.6.2",
         "six==1.14.0",
-        # Lock down docutils because 0.18 break the build.
-        "docutils==0.17.1",
         # Lock down jinja because 3.1.0 breaks the build.
         "jinja2==3.0.3",
         # Other tools used by devs that are useful to have.
