@@ -365,7 +365,7 @@ htmlhelp_basename = "tkdoc"
 # external references. This allows for proper cross referencing between bundles
 # and extrnal libs
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.9", None), 
+    "python": ("https://docs.python.org/3.9", None),
     "PySide": ("http://pyside.github.io/docs/pyside/", None),
     "PySide2": ("https://doc.qt.io/qtforpython-5", None),
     "PySide6": ("https://doc.qt.io/qtforpython", None),
