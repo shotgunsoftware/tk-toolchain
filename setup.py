@@ -12,6 +12,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import codecs
 from setuptools import setup, find_packages
 
@@ -71,7 +72,7 @@ setup(
         "coverage==7.2.7",
         # Doc generation
         "PyYAML",
-        "sphinx==7.0.0",
+        "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
         "sphinx_rtd_theme==1.3.0",
         "docopt==0.6.2",
         "six==1.14.0",
