@@ -40,7 +40,6 @@ jobs:
     # Tell the build system that we want to pip install tk-toolchain
     # from the current branch.
     tk_toolchain_ref: $(Build.SourceBranch)
-    tk_core_ref: ticket/SG-30910_upgrade_sphinx  # REMOVE ME before merge
     # These extra repositories are required to test some of the command line tools
     additional_repositories:
     - name: tk-framework-shotgunutils
