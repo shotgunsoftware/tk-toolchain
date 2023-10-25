@@ -368,7 +368,7 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3.9", None),
     "PySide": ("http://pyside.github.io/docs/pyside/", None),
     "PySide2": ("https://doc.qt.io/qtforpython-5", None),
-    "PySide6": ("https://doc.qt.io/qtforpython", None),
+    "PySide6": ("https://doc.qt.io/qtforpython-6", None),
     "sgtk": ("http://developer.shotgridsoftware.com/tk-core/", None),
     "tk-framework-qtwidgets": (
         "http://developer.shotgridsoftware.com/tk-framework-qtwidgets/",
