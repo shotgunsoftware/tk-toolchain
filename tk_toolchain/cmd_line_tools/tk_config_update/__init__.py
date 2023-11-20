@@ -53,9 +53,8 @@ class Repository(object):
         """
         Clone a repository from a remote.
         """
-        root = tempfile.mkdtemp()
-        atexit.register(lambda: shutil.rmtree(root))
-        subprocess.check_call(["git", "clone", remote, root, "--depth", "1"])
+        root = os.path.join(os.path.abspath(os.curdir), "config")
+        #subprocess.check_call(["git", "clone", remote, root, "--depth", "1"])
         return Repository(root)
 
     def __init__(self, root):
@@ -210,17 +209,20 @@ def update_files(repo_root, bundle, version):
     """
     # For every yml file in the repo
     for yml_file in enumerate_yaml_files(repo_root):
+        if not yml_file.endswith("env/includes/common/apps.yml"):
+            continue
+
         # Load it and preserve the formatting
         with open(yml_file, "r") as fh:
             _yaml = yaml.YAML()
             yaml_data = _yaml.load(fh)
 
         # If we found a descriptor to update
-        if update_yaml_data(yaml_data, bundle, version):
+        if True: # or update_yaml_data(yaml_data, bundle, version):
             # Write back the changes and update the git index.
             with open(yml_file, "w") as fh:
                 _yaml = yaml.YAML()
-                _yaml.default_flow_style = False
+                #_yaml.default_flow_style = False
                 _yaml.dump(yaml_data, fh)
             yield yml_file
 
@@ -246,7 +248,6 @@ def main(arguments=None):
 
     for yml_file in update_files(repo.root, bundle, version):
         print("Updated '{0}'".format(yml_file))
-        repo.add(yml_file)
         files_updated.append(yml_file)
 
     # If the repository was not updated, we're done.
@@ -255,21 +256,5 @@ def main(arguments=None):
         return 0
 
     repo.diff()
-
-    # Commit the repo and link to the release notes in the comments.
-    repo.commit(
-        (
-            "Updated {bundle} to {version}\n"
-            "Release notes: https://github.com/shotgunsoftware/{bundle}/wiki/Release-Notes#{version_no_dots}"
-        ).format(
-            bundle=bundle, version=version, version_no_dots=version.replace(".", "")
-        )
-    )
-
-    # This script does not upload changes by default.
-    if options["--push-changes"] is True:
-        repo.push()
-    else:
-        print("Specify --push-changes to update the remote repository.")
 
     return 0
