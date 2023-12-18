@@ -221,6 +221,7 @@ def update_files(repo_root, bundle, version):
             with open(yml_file, "w") as fh:
                 _yaml = yaml.YAML()
                 _yaml.default_flow_style = False
+                _yaml.width = 500
                 _yaml.dump(yaml_data, fh)
             yield yml_file
 
