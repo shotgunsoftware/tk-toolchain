@@ -77,7 +77,7 @@ setup(
         "docopt==0.6.2",
         "six==1.14.0",
         # Lock down jinja because 3.1.0 breaks the build.
-        "jinja2==3.0.3",
+        "jinja2==3.1.3",
         # Other tools used by devs that are useful to have.
         "pre-commit",
         "ruamel.yaml",
