@@ -37,7 +37,7 @@ setup(
     maintainer_email="https://developers.shotgridsoftware.com",
     license=read_file("LICENSE"),
     url="https://github.com/shotgunsoftware/tk-toolchain",
-    description="Build tools for Shotgrid Toolkit.",
+    description="Build tools for Flow Production Tracking Toolkit.",
     long_description=read_file("README.md"),
     packages=find_packages(),
     data_files=[("", ["LICENSE"])],
