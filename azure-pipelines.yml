@@ -49,5 +49,5 @@ jobs:
     # an update on the configuration during the tests. We want to work from
     # a known and stable state.
     - name: tk-config-basic
-      ref: v1.3.0
+      ref: v1.6.1
     - name: python-api
