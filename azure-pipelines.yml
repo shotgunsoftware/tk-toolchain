@@ -48,6 +48,7 @@ jobs:
     # The version of the configuration is pinned because we're going to be running
     # an update on the configuration during the tests. We want to work from
     # a known and stable state.
+    # If you change this, please update cloned_config fixture too.
     - name: tk-config-basic
       ref: v1.6.1
     - name: python-api
