@@ -220,5 +220,13 @@ expected_config_files = set(
         "env/includes/photoshopcc/site.yml",
         "env/includes/nuke/shot_step.yml",
         "env/includes/aftereffects/site.yml",
+        # Added after v1.3.0
+        "env/includes/shotgun/version.yml",
+        "env/version.yml",
+        "env/includes/alias/asset_step.yml",
+        "env/includes/vred/asset_step.yml",
+        "env/playlist.yml",
+        "env/includes/shotgun/playlist.yml",
+
     ]
 )
