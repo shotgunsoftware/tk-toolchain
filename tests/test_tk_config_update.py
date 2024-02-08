@@ -227,6 +227,5 @@ expected_config_files = set(
         "env/includes/vred/asset_step.yml",
         "env/playlist.yml",
         "env/includes/shotgun/playlist.yml",
-
     ]
 )
