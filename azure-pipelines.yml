@@ -43,7 +43,6 @@ jobs:
     # These extra repositories are required to test some of the command line tools
     additional_repositories:
     - name: tk-framework-shotgunutils
-      ref: ticket/SG-34514_py11  # remove me after testing
     - name: tk-multi-publish2
     - name: tk-maya
     # The version of the configuration is pinned because we're going to be running
