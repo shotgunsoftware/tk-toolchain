@@ -14,7 +14,7 @@ resources:
     - repository: templates
       type: github
       name: shotgunsoftware/tk-ci-tools
-      ref: refs/heads/master
+      ref: python-311-poc
       endpoint: shotgunsoftware
 
 # We want builds to trigger for 3 reasons:
@@ -48,6 +48,7 @@ jobs:
     # The version of the configuration is pinned because we're going to be running
     # an update on the configuration during the tests. We want to work from
     # a known and stable state.
+    # If you change this, please update cloned_config fixture too.
     - name: tk-config-basic
-      ref: v1.3.0
+      ref: v1.6.1
     - name: python-api

@@ -30,7 +30,7 @@ def read_file(fname):
 
 setup(
     name="tk-toolchain",
-    version="0.2.1.dev",
+    version="0.3.0.dev",
     author="Autodesk",
     author_email="https://help.autodesk.com/view/SGDEV/ENU/",
     maintainer="Autodesk",
@@ -91,6 +91,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Operating System :: OS Independent",
