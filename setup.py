@@ -37,7 +37,7 @@ setup(
     maintainer_email="https://help.autodesk.com/view/SGDEV/ENU/",
     license=read_file("LICENSE"),
     url="https://github.com/shotgunsoftware/tk-toolchain",
-    description="Build tools for Flow Production Tracking Toolkit.",
+    description="Build tools for Flow Production Tracking.",
     long_description=read_file("README.md"),
     packages=find_packages(),
     data_files=[("", ["LICENSE"])],
