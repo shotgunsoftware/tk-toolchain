@@ -26,16 +26,16 @@ def cloned_config(tk_config_root, tmpdir_factory):
     """
     Clone tk-config-basic so we don't modify the user's repo.
 
-    If this clone fails, it's likely because tag v1.3.0 is not in your
+    If this clone fails, it's likely because tag v1.6.1 is not in your
     copy of the repository or because tk-config-basic is missing.
     """
     tmp_path = tmpdir_factory.mktemp("config")
     # cast LocalPath to str since Python 2 compatible methods manipulate strings
     tmp_path = str(tmp_path)
-    # We're cloning version v1.3.0 to ensure the test doesn't fail due to a change
+    # We're cloning version v1.6.1 to ensure the test doesn't fail due to a change
     # in the config.
     subprocess.check_call(
-        ["git", "clone", "--depth", "1", "--branch", "v1.3.0", tk_config_root, tmp_path]
+        ["git", "clone", "--depth", "1", "--branch", "v1.6.1", tk_config_root, tmp_path]
     )
     return six.ensure_str(tmp_path)
 
@@ -220,5 +220,12 @@ expected_config_files = set(
         "env/includes/photoshopcc/site.yml",
         "env/includes/nuke/shot_step.yml",
         "env/includes/aftereffects/site.yml",
+        # Added after v1.3.0
+        "env/includes/shotgun/version.yml",
+        "env/version.yml",
+        "env/includes/alias/asset_step.yml",
+        "env/includes/vred/asset_step.yml",
+        "env/playlist.yml",
+        "env/includes/shotgun/playlist.yml",
     ]
 )
