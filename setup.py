@@ -30,7 +30,7 @@ def read_file(fname):
 
 setup(
     name="tk-toolchain",
-    version="0.3.0.dev",
+    version="v0.4.0",
     author="Autodesk",
     author_email="https://help.autodesk.com/view/SGDEV/ENU/",
     maintainer="Autodesk",
