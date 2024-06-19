@@ -199,13 +199,10 @@ to type "tk-docs-preview" to preview the documentation.
                 try:
                     import PySide6  # noqa
                 except ImportError:
-                    try:
-                        import PySide  # noqa
-                    except ImportError:
-                        log.error(
-                            "PySide, PySide2, or PySide6 are required to build the documentation."
-                        )
-                        return 1
+                    log.error(
+                        "PySide2, or PySide6 are required to build the documentation."
+                    )
+                    return 1
         # If the specified the core path, we'll use it.
         if options.core:
             core_path = util.expand_path(options.core)
