@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Copyright (c) 2024 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
@@ -30,14 +29,19 @@ def verify_compiler(compiler):
         version_compiler = subprocess.check_output(
             [compiler, "--version"], text=True
         ).strip()
-        return True, version_compiler
-    except Exception as error:
-        return False, error
+        return version_compiler
+
+    except (FileNotFoundError, subprocess.CalledProcessError) as error:
+        print(
+            "The PySide compiler version cannot be "
+            f"determine: {error}"
+        )
+        return False
 
 
-def build_qt(compiler, output, py_built_path, import_text):
+def build_qt(compiler, py_filename, py_built_path, import_text):
     print(f"The import text to replace will be '{import_text}'")
-    output_path = f"{py_built_path}/{output}.py"
+    output_path = f"{py_built_path}/{py_filename}.py"
     subprocess.run(compiler.split(" "), stdout=open(output_path, "w"), check=True)
     content = open(output_path, "r").read()
     content = re.sub(
@@ -54,40 +58,38 @@ def build_qt(compiler, output, py_built_path, import_text):
     open(output_path, "w").write(content)
 
 
-def build_ui(compiler, qt_ui_path, py_built_path, import_text, name):
-    build_qt(
-        f"{compiler} -g python --from-imports {qt_ui_path}/{name}.ui",
-        name,
-        py_built_path,
-        import_text,
-    )
+def build_ui(compiler, qt_ui_path, py_built_path, import_text, filename):
+    return {
+        "compiler": f"{compiler} -g python --from-imports {qt_ui_path}/{filename}.ui",
+        "py_filename": filename,
+        "py_built_path": py_built_path,
+        "import_text": import_text,
+    }
 
 
-def build_res(compiler, qt_ui_path, py_built_path, import_text, name):
-    build_qt(
-        f"{compiler} -g python {qt_ui_path}/{name}.qrc",
-        f"{name}_rc",
-        py_built_path,
-        import_text,
-    )
+def build_res(compiler, qt_ui_path, py_built_path, import_text, filename):
+    return {
+        "compiler": f"{compiler} -g python {qt_ui_path}/{filename}.qrc",
+        "py_filename": f"{filename}_rc",
+        "py_built_path": py_built_path,
+        "import_text": import_text,
+    }
 
 
 def main():
     parser = argparse.ArgumentParser(description="Build UI and resource files")
-    parser.add_argument("-u", "--uic", type=str, help="The PySide uic compiler")
-    parser.add_argument("-r", "--rcc", type=str, help="The PySide rcc compiler")
-    parser.add_argument("-p", "--pyenv", type=str, help="The Python environment path")
+    parser.add_argument("-u", "--uic", help="The PySide uic compiler")
+    parser.add_argument("-r", "--rcc", help="The PySide rcc compiler")
+    parser.add_argument("-p", "--pyenv", help="The Python environment path")
     parser.add_argument(
         "-q",
         "--qtuipath",
-        type=str,
         required=True,
         help="The path with resources Qt .ui files",
     )
     parser.add_argument(
         "-py",
         "--pybuiltpath",
-        type=str,
         required=True,
         help="The path to output all built .py files to",
     )
@@ -109,7 +111,6 @@ def main():
         "-i",
         "--importtext",
         default="tank.platform.qt",
-        type=str,
         help="The import text to replace",
     )
     args = parser.parse_args()
@@ -128,19 +129,27 @@ def main():
         return 1
 
     for compiler in [args.uic, args.rcc]:
-        verified, version_or_error = verify_compiler(compiler)
-        if not verified:
-            print(
-                "The PySide compiler version cannot be "
-                f"determine: {version_or_error}"
-            )
+        version = verify_compiler(compiler)
+        if not version:
             return 1
-        print(f"Using PySide compiler version: {version_or_error}")
+        print(f"Using PySide compiler version: {version}")
+
+    build_params = {
+        "qt_ui_path": args.qtuipath,
+        "py_built_path": args.pybuiltpath,
+        "import_text": args.importtext,
+    }
 
     print("Building user interfaces...")
     for ui_file in args.uifiles:
-        build_ui(args.uic, args.qtuipath, args.pybuiltpath, args.importtext, ui_file)
+        build_params["compiler"] = args.uic
+        build_params["filename"] = ui_file
+        build_qt_params = build_ui(**build_params)
+        build_qt(**build_qt_params)
 
     print("Building resources...")
     for res_file in args.resfiles:
-        build_res(args.rcc, args.qtuipath, args.pybuiltpath, args.importtext, res_file)
+        build_params["compiler"] = args.rcc
+        build_params["filename"] = res_file
+        build_qt_params = build_res(**build_params)
+        build_qt(**build_qt_params)
