@@ -32,10 +32,7 @@ def verify_compiler(compiler):
         return version_compiler
 
     except (FileNotFoundError, subprocess.CalledProcessError) as error:
-        print(
-            "The PySide compiler version cannot be "
-            f"determine: {error}"
-        )
+        print(f"The PySide compiler version cannot be determine: {error}")
         return False
 
 
