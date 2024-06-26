@@ -103,7 +103,7 @@ setup(
             "tk-docs-preview = tk_toolchain.cmd_line_tools.tk_docs_generation:main",
             "tk-run-app = tk_toolchain.cmd_line_tools.tk_run_app:main",
             "tk-config-update = tk_toolchain.cmd_line_tools.tk_config_update:main",
-            "tk-build-resource = tk_toolchain.cmd_line_tools.tk_build_resource:main",
+            "tk-build-qt-resources = tk_toolchain.cmd_line_tools.tk_build_qt_resources.__main__:main",
         ],
     },
 )
