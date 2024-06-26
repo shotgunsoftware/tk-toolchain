@@ -28,8 +28,7 @@ def verify_compiler(compiler):
     try:
         print("Verifying compiler: ", compiler)
         version_compiler = subprocess.check_output(
-            [compiler, "--version"],
-            text=True
+            [compiler, "--version"], text=True
         ).strip()
         return True, version_compiler
     except Exception as error:
@@ -39,30 +38,20 @@ def verify_compiler(compiler):
 def build_qt(compiler, output, py_built_path, import_text):
     print(f"The import text to replace will be '{import_text}'")
     output_path = f"{py_built_path}/{output}.py"
-    subprocess.run(
-        compiler.split(" "),
-        stdout=open(output_path, "w"),
-        check=True
-    )
-    content = open(output_path, 'r').read()
+    subprocess.run(compiler.split(" "), stdout=open(output_path, "w"), check=True)
+    content = open(output_path, "r").read()
     content = re.sub(
-        r'^from PySide2.QtWidgets(\s.*)?$',
-        '',
-        content,
-        flags=re.MULTILINE
+        r"^from PySide2.QtWidgets(\s.*)?$", "", content, flags=re.MULTILINE
     )
-    content = re.sub(r'^\s*$', '', content, flags=re.MULTILINE)
+    content = re.sub(r"^\s*$", "", content, flags=re.MULTILINE)
     content = re.sub(
-        r'^from PySide2\.(\w+) import (.*)$',
+        r"^from PySide2\.(\w+) import (.*)$",
         lambda m: process_import_line(m.group(1), import_text),
         content,
-        flags=re.MULTILINE
+        flags=re.MULTILINE,
     )
-    content = content.replace(
-        'from PySide2 import',
-        f'from {import_text} import'
-    )
-    open(output_path, 'w').write(content)
+    content = content.replace("from PySide2 import", f"from {import_text} import")
+    open(output_path, "w").write(content)
 
 
 def build_ui(compiler, qt_ui_path, py_built_path, import_text, name):
@@ -70,7 +59,7 @@ def build_ui(compiler, qt_ui_path, py_built_path, import_text, name):
         f"{compiler} -g python --from-imports {qt_ui_path}/{name}.ui",
         name,
         py_built_path,
-        import_text
+        import_text,
     )
 
 
@@ -79,63 +68,49 @@ def build_res(compiler, qt_ui_path, py_built_path, import_text, name):
         f"{compiler} -g python {qt_ui_path}/{name}.qrc",
         f"{name}_rc",
         py_built_path,
-        import_text
+        import_text,
     )
 
 
 def main():
     parser = argparse.ArgumentParser(description="Build UI and resource files")
-    parser.add_argument(
-        "-u",
-        "--uic",
-        type=str, help="The PySide uic compiler"
-    )
-    parser.add_argument(
-        "-r",
-        "--rcc",
-        type=str,
-        help="The PySide rcc compiler"
-    )
-    parser.add_argument(
-        "-p",
-        "--pyenv",
-        type=str,
-        help="The Python environment path"
-    )
+    parser.add_argument("-u", "--uic", type=str, help="The PySide uic compiler")
+    parser.add_argument("-r", "--rcc", type=str, help="The PySide rcc compiler")
+    parser.add_argument("-p", "--pyenv", type=str, help="The Python environment path")
     parser.add_argument(
         "-q",
         "--qtuipath",
         type=str,
         required=True,
-        help="The path with resources Qt .ui files"
+        help="The path with resources Qt .ui files",
     )
     parser.add_argument(
         "-py",
         "--pybuiltpath",
         type=str,
         required=True,
-        help="The path to output all built .py files to"
+        help="The path to output all built .py files to",
     )
     parser.add_argument(
         "-uf",
         "--uifiles",
-        nargs='+',
+        nargs="+",
         required=True,
-        help="The path with resources Qt .ui files"
+        help="The path with resources Qt .ui files",
     )
     parser.add_argument(
         "-rf",
         "--resfiles",
-        nargs='+',
+        nargs="+",
         required=True,
-        help="The path to output all built .py files to"
+        help="The path to output all built .py files to",
     )
     parser.add_argument(
         "-i",
         "--importtext",
         default="tank.platform.qt",
         type=str,
-        help="The import text to replace"
+        help="The import text to replace",
     )
     args = parser.parse_args()
 
@@ -164,20 +139,8 @@ def main():
 
     print("Building user interfaces...")
     for ui_file in args.uifiles:
-        build_ui(
-            args.uic,
-            args.qtuipath,
-            args.pybuiltpath,
-            args.importtext,
-            ui_file
-        )
+        build_ui(args.uic, args.qtuipath, args.pybuiltpath, args.importtext, ui_file)
 
     print("Building resources...")
     for res_file in args.resfiles:
-        build_res(
-            args.rcc,
-            args.qtuipath,
-            args.pybuiltpath,
-            args.importtext,
-            res_file
-        )
+        build_res(args.rcc, args.qtuipath, args.pybuiltpath, args.importtext, res_file)
