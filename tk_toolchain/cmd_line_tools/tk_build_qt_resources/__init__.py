@@ -48,9 +48,7 @@ def process_import_line(module, import_text):
 def verify_compiler(compiler):
     try:
         print("Verifying compiler: ", compiler)
-        return subprocess.check_output(
-            [compiler, "--version"], text=True
-        ).strip()
+        return subprocess.check_output([compiler, "--version"], text=True).strip()
 
     except (FileNotFoundError, subprocess.CalledProcessError) as error:
         print(f"The PySide compiler version cannot be determine: {error}")
