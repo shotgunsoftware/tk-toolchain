@@ -30,6 +30,7 @@
   - [`tk-docs-preview`](#tk-docs-preview)
   - [`tk-run-app`](#tk-run-app)
   - [`tk-config-update`](#tk-config-update)
+  - [`tk-build-qt-resources`](#tk-build-qt-resources)
 - [FAQ](#faq)
   - [When I run `tk-run-app` or `tk-docs-preview`, I get `command not found: tk-run-app`](#when-i-run-tk-run-app-or-tk-docs-preview-i-get-command-not-found-tk-run-app)
 
@@ -284,6 +285,34 @@ Options:
 
 Example:
     tk-config-update git@github.com:shotgunsoftware/tk-config-default2.git tk-core v0.19.0
+```
+
+## `tk-build-qt-resources`
+
+This is a Python script that compiles Qt .ui and .qrc files into Python files using PySide2 compilers. The script allows you to specify the compilers directly or provide a Python environment path to locate them.
+
+```
+Toolkit Build Qt resources
+
+Compile Qt interface and resource files with a specified PySide compiler.
+
+Usage:
+    tk-build-qt-resources (-p <pyenv> | [-u <uic>] [-r <rcc>]) -q <qtuipath> -py <pybuiltpath> -uf <uifiles>... -rf <resfiles>... [-i <importtext>]
+
+Options:
+    -u --uic        The PySide uic compiler.
+    -r --rcc        The PySide rcc compiler.
+    -p --pyenv      The Python environment path.
+    -q --qtuipath   The path with Qt .ui files.
+    -py --pybuiltpath The path to output all built .py files.
+    -uf --uifiles   The Qt .ui files to compile.
+    -rf --resfiles  The Qt .qrc resource files to compile.
+    -i --importtext The import text to replace (default is "tank.platform.qt").
+
+Examples:
+    tkbuild-qt-resources -u /path/to/pyside2-uic -r /path/to/pyside2-rcc -q /path/to/qt/ui/files -py /path/to/output/py/files -uf file1 file2 -rf resource1 resource2 -i custom.import.path
+
+    tkbuild-qt-resources -p /path/to/python/env -q /path/to/qt/ui/files -py /path/to/output/py/files -uf file1 file2 -rf resource1 resource2 -i custom.import.path
 ```
 
 # FAQ
