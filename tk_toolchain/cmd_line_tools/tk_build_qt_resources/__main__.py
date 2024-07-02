@@ -8,7 +8,7 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from tk_toolchain.cmd_line_tools.tk_build_qt_resources import main
+from . import main
 
 import sys
 
