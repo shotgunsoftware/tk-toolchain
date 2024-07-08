@@ -177,20 +177,22 @@ def main():
 
     print("Building user interfaces...")
     for index, ui_file in enumerate(args.uifiles):
-        build_params_ui_files = build_params.copy()
-        build_params_ui_files["compiler"] = args.uic
-        build_params_ui_files["filename"] = ui_file
-        if args.uifilenames:
-            build_params_ui_files["py_filename"] = args.uifilenames[index]
+        build_params_ui_files = {
+            **build_params,
+            "compiler": args.uic,
+            "filename": ui_file,
+            "py_filename": args.uifilenames[index] if args.uifilenames else None,
+        }
         build_qt_params = build_ui(**build_params_ui_files)
         build_qt(**build_qt_params)
 
     print("Building resources...")
     for index, res_file in enumerate(args.resfiles):
-        build_params_res_files = build_params.copy()
-        build_params_res_files["compiler"] = args.rcc
-        build_params_res_files["filename"] = res_file
-        if args.resfilenames:
-            build_params_res_files["py_filename"] = args.resfilenames[index]
+        build_params_res_files = {
+            **build_params,
+            "compiler": args.rcc,
+            "filename": res_file,
+            "py_filename": args.resfilenames[index] if args.resfilenames else None,
+        }
         build_qt_params = build_res(**build_params_res_files)
         build_qt(**build_qt_params)
