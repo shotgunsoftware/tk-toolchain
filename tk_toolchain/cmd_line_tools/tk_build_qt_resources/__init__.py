@@ -77,7 +77,9 @@ def build_qt(compiler, py_filename, py_built_path, import_text):
     open(output_path, "w").write(content)
 
 
-def build_ui(compiler, qt_ui_path, py_built_path, import_text, filename, py_filename=None):
+def build_ui(
+    compiler, qt_ui_path, py_built_path, import_text, filename, py_filename=None
+):
     return {
         "compiler": f"{compiler} -g python --from-imports {qt_ui_path}/{filename}.ui",
         "py_filename": py_filename or filename,
@@ -86,7 +88,9 @@ def build_ui(compiler, qt_ui_path, py_built_path, import_text, filename, py_file
     }
 
 
-def build_res(compiler, qt_ui_path, py_built_path, import_text, filename, py_filename=None):
+def build_res(
+    compiler, qt_ui_path, py_built_path, import_text, filename, py_filename=None
+):
     return {
         "compiler": f"{compiler} -g python {qt_ui_path}/{filename}.qrc",
         "py_filename": f"{py_filename or filename}_rc",
