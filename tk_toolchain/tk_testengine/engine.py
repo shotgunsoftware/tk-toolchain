@@ -25,6 +25,9 @@ class TestEngine(sgtk.platform.Engine):
         """
         Called before apps and loaded.
         """
+
+        # TODO: Should we enable High DPI support here?
+
         # Since this method is called after Qt has been setup, but before
         # apps have been loaded, this makes it the perfect opportunity to
         # initialize QApplication so that apps can call has_ui and get a
