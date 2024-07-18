@@ -118,7 +118,9 @@ def build_resources(**kwagrs):
             **build_params,
             "compiler": kwagrs.get("uic"),
             "filename": ui_file,
-            "py_filename": kwagrs.get("uifilenames")[index] if kwagrs.get("uifilenames") else None,
+            "py_filename": (
+                kwagrs.get("uifilenames")[index] if kwagrs.get("uifilenames") else None
+            ),
         }
         build_qt_params = build_ui(**build_params_ui_files)
         build_qt(**build_qt_params)
@@ -129,14 +131,18 @@ def build_resources(**kwagrs):
             **build_params,
             "compiler": kwagrs.get("rcc"),
             "filename": res_file,
-            "py_filename": kwagrs.get("resfilenames")[index] if kwagrs.get("resfilenames") else None,
+            "py_filename": (
+                kwagrs.get("resfilenames")[index]
+                if kwagrs.get("resfilenames")
+                else None
+            ),
         }
         build_qt_params = build_res(**build_params_res_files)
         build_qt(**build_qt_params)
 
 
 def run_yaml_commands(yaml_file, uic, rcc):
-    with open(yaml_file, 'r') as file:
+    with open(yaml_file, "r") as file:
         yaml = YAML()
         yaml_commands = yaml.load(file)
 
@@ -158,7 +164,7 @@ def run_yaml_commands(yaml_file, uic, rcc):
             uifilenames=new_names_ui_files,
             rcc=rcc,
             resfiles=res_files,
-            resfilenames=new_names_res_files
+            resfilenames=new_names_res_files,
         )
 
 
@@ -166,7 +172,9 @@ def main():
     parser = argparse.ArgumentParser(description="Build UI and resource files")
     parser.add_argument("-u", "--uic", help="The PySide uic compiler")
     parser.add_argument("-r", "--rcc", help="The PySide rcc compiler")
-    parser.add_argument("-p", "--pyenv", default=PYTHON_ENV, help="The Python environment path")
+    parser.add_argument(
+        "-p", "--pyenv", default=PYTHON_ENV, help="The Python environment path"
+    )
     parser.add_argument(
         "-q",
         "--qtuipath",
@@ -246,5 +254,5 @@ def main():
         uifilenames=args.uifilenames,
         rcc=args.rcc,
         resfiles=args.resfiles,
-        resfilenames=args.resfilenames
+        resfilenames=args.resfilenames,
     )
