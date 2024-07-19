@@ -14,26 +14,20 @@ Toolkit Build Qt resources
 Compile Qt interface and resource files with a specified PySide compiler.
 
 Usage:
-    tk-build-qt-resources (-p <pyenv> | [-u <uic>] [-r <rcc>]) -q <qtuipath> -py <pybuiltpath> -uf <uifiles>... [-ufn <uifilenames>...] -rf <resfiles>... [-rfn <resfilenames>...] [-i <importtext>]
+    tk-build-qt-resources -y <yamlfile> (-p <pyenv> | [-u <uic>] [-r <rcc>])
 
 Options:
+    -y --yamlfile   The path to the YAML file with commands.
+    -p --pyenv      The Python environment path.
     -u --uic        The PySide uic compiler.
     -r --rcc        The PySide rcc compiler.
-    -p --pyenv      The Python environment path.
-    -q --qtuipath   The path with Qt .ui files.
-    -py --pybuiltpath The path to output all built .py files.
-    -uf --uifiles   The Qt .ui files to compile.
-    -ufn --uifilenames   Specific Qt .ui file names to compile.
-    -rf --resfiles  The Qt .qrc resource files to compile.
-    -rfn --resfilenames  Specific Qt .qrc file names to compile.
-    -i --importtext The import text to replace (default is "tank.platform.qt").
 
 Examples:
-    tkbuild-qt-resources -u /path/to/pyside2-uic -r /path/to/pyside2-rcc -q /path/to/qt/ui/files -py /path/to/output/py/files -uf file1 file2 -rf resource1 resource2 -i custom.import.path
+    tkbuild-qt-resources -y /path/to/yml/file/with/commands
 
-    tkbuild-qt-resources -p /path/to/python/env -q /path/to/qt/ui/files -py /path/to/output/py/files -uf file1 file2 -rf resource1 resource2 -i custom.import.path
+    tkbuild-qt-resources -y /path/to/yml/file/with/commands -p /path/to/python/env
 
-    tkbuild-qt-resources -p /path/to/python/env -q /path/to/qt/ui/files -py /path/to/output/py/files -uf file1 file2 -ufn ui_file1 ui_file2 -rf resource1 resource2 -i custom.import.path
+    tkbuild-qt-resources -y /path/to/yml/file/with/commands -u /path/to/pyside2-uic -r /path/to/pyside2-rcc
 """
 
 import argparse
@@ -105,40 +99,11 @@ def build_res(
     }
 
 
-def build_resources(**kwagrs):
-    build_params = {
-        "qt_ui_path": kwagrs.get("qtuipath"),
-        "py_built_path": kwagrs.get("pybuiltpath"),
-        "import_text": kwagrs.get("importtext"),
-    }
+def build_absolute_path(path1, path2):
+    dir1 = os.path.dirname(path1)
+    combined_path = os.path.normpath(os.path.join(dir1, path2))
 
-    print("Building user interfaces...")
-    for index, ui_file in enumerate(kwagrs.get("uifiles")):
-        build_params_ui_files = {
-            **build_params,
-            "compiler": kwagrs.get("uic"),
-            "filename": ui_file,
-            "py_filename": (
-                kwagrs.get("uifilenames")[index] if kwagrs.get("uifilenames") else None
-            ),
-        }
-        build_qt_params = build_ui(**build_params_ui_files)
-        build_qt(**build_qt_params)
-
-    print("Building resources...")
-    for index, res_file in enumerate(kwagrs.get("resfiles")):
-        build_params_res_files = {
-            **build_params,
-            "compiler": kwagrs.get("rcc"),
-            "filename": res_file,
-            "py_filename": (
-                kwagrs.get("resfilenames")[index]
-                if kwagrs.get("resfilenames")
-                else None
-            ),
-        }
-        build_qt_params = build_res(**build_params_res_files)
-        build_qt(**build_qt_params)
+    return combined_path
 
 
 def run_yaml_commands(yaml_file, uic, rcc):
@@ -147,25 +112,45 @@ def run_yaml_commands(yaml_file, uic, rcc):
         yaml_commands = yaml.load(file)
 
     for command_set in yaml_commands:
-        qt_ui_path = command_set["ui_src"]
-        py_built_path = command_set["py_dest"]
-        import_text = command_set["import_pattern"]
-        ui_files = command_set.get("ui_files", [])
-        new_names_ui_files = command_set.get("new_names_ui_files", [])
-        res_files = command_set.get("res_files", [])
-        new_names_res_files = command_set.get("new_names_res_files", [])
+        try:
+            build_params = {
+                "qt_ui_path": build_absolute_path(yaml_file, command_set["ui_src"]),
+                "py_built_path": build_absolute_path(yaml_file, command_set["py_dest"]),
+                "import_text": command_set["import_pattern"],
+            }
+        except KeyError:
+            print("'ui_src', 'py_dest' and 'import_pattern' are required in yml config")
+            return 1
 
-        build_resources(
-            qtuipath=qt_ui_path,
-            pybuiltpath=py_built_path,
-            importtext=import_text,
-            uic=uic,
-            uifiles=ui_files,
-            uifilenames=new_names_ui_files,
-            rcc=rcc,
-            resfiles=res_files,
-            resfilenames=new_names_res_files,
-        )
+        print("Building user interfaces...")
+        for index, ui_file in enumerate(command_set.get("ui_files", [])):
+            build_params_ui_files = {
+                **build_params,
+                "compiler": uic,
+                "filename": ui_file,
+                "py_filename": (
+                    command_set.get("new_names_ui_files", [])[index]
+                    if command_set.get("new_names_ui_files", [])
+                    else None
+                ),
+            }
+            build_qt_params = build_ui(**build_params_ui_files)
+            build_qt(**build_qt_params)
+
+        print("Building resources...")
+        for index, res_file in enumerate(command_set.get("res_files", [])):
+            build_params_res_files = {
+                **build_params,
+                "compiler": rcc,
+                "filename": res_file,
+                "py_filename": (
+                    command_set.get("new_names_res_files", [])[index]
+                    if command_set.get("new_names_res_files", [])
+                    else None
+                ),
+            }
+            build_qt_params = build_res(**build_params_res_files)
+            build_qt(**build_qt_params)
 
 
 def main():
@@ -176,48 +161,9 @@ def main():
         "-p", "--pyenv", default=PYTHON_ENV, help="The Python environment path"
     )
     parser.add_argument(
-        "-q",
-        "--qtuipath",
-        help="The path with resources Qt .ui files",
-    )
-    parser.add_argument(
-        "-py",
-        "--pybuiltpath",
-        help="The path to output all built .py files to",
-    )
-    parser.add_argument(
-        "-uf",
-        "--uifiles",
-        nargs="+",
-        help="The Qt .ui files to compile.",
-    )
-    parser.add_argument(
-        "-ufn",
-        "--uifilenames",
-        nargs="+",
-        help="Specific Qt .ui file names to compile.",
-    )
-    parser.add_argument(
-        "-rf",
-        "--resfiles",
-        nargs="+",
-        help="The Qt .qrc resource files to compile.",
-    )
-    parser.add_argument(
-        "-rfn",
-        "--resfilenames",
-        nargs="+",
-        help="Specific Qt .qrc file names to compile.",
-    )
-    parser.add_argument(
-        "-i",
-        "--importtext",
-        default="tank.platform.qt",
-        help="The import text to replace",
-    )
-    parser.add_argument(
         "-y",
         "--yamlfile",
+        required=True,
         help="The path to the YAML file with commands",
     )
     args = parser.parse_args()
@@ -241,18 +187,4 @@ def main():
             return 1
         print(f"Using PySide compiler version: {version}")
 
-    if args.yamlfile:
-        run_yaml_commands(args.yamlfile, args.uic, args.rcc)
-        return 1
-
-    build_resources(
-        qtuipath=args.qtuipath,
-        pybuiltpath=args.pybuiltpath,
-        importtext=args.importtext,
-        uic=args.uic,
-        uifiles=args.uifiles,
-        uifilenames=args.uifilenames,
-        rcc=args.rcc,
-        resfiles=args.resfiles,
-        resfilenames=args.resfilenames,
-    )
+    run_yaml_commands(args.yamlfile, args.uic, args.rcc)
