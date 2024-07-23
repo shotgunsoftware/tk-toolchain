@@ -115,11 +115,11 @@ def run_yaml_commands(yaml_file, uic, rcc):
         try:
             build_params = {
                 "qt_ui_path": build_absolute_path(yaml_file, command_set["ui_src"]),
-                "py_built_path": build_absolute_path(yaml_file, command_set["py_dest"]),
-                "import_text": command_set["import_pattern"],
+                "py_built_path": build_absolute_path(yaml_file, command_set.get("py_dest", command_set["ui_src"])),
+                "import_text": command_set.get("import_pattern", "."),
             }
         except KeyError:
-            print("'ui_src', 'py_dest' and 'import_pattern' are required in yml config")
+            print("'ui_src'is required in yml config")
             return 1
 
         print("Building user interfaces...")
