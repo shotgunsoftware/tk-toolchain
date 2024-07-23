@@ -163,8 +163,8 @@ def main():
     parser.add_argument(
         "-y",
         "--yamlfile",
-        required=True,
         help="The path to the YAML file with commands",
+        default="build_resources.yml"
     )
     args = parser.parse_args()
 
