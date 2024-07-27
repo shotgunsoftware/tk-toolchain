@@ -14,7 +14,7 @@ Toolkit Build Qt resources
 Compile Qt interface and resource files with a specified PySide compiler.
 
 Usage:
-    tk-build-qt-resources -y <yamlfile> (-p <pyenv> | [-u <uic>] [-r <rcc>])
+    tk-build-qt-resources [-y <yamlfile>] (-p <pyenv> | [-u <uic>] [-r <rcc>])
 
 Options:
     -y --yamlfile   The path to the YAML file with commands.
@@ -23,11 +23,13 @@ Options:
     -r --rcc        The PySide rcc compiler.
 
 Examples:
-    tkbuild-qt-resources -y /path/to/yml/file/with/commands
+    tk-build-qt-resources
 
-    tkbuild-qt-resources -y /path/to/yml/file/with/commands -p /path/to/python/env
+    tk-build-qt-resources -y name_of_yml_file_with_commands.yml
 
-    tkbuild-qt-resources -y /path/to/yml/file/with/commands -u /path/to/pyside2-uic -r /path/to/pyside2-rcc
+    tk-build-qt-resources -y name_of_yml_file_with_commands.yml -p /path/to/python/env
+
+    tk-build-qt-resources -y name_of_yml_file_with_commands.yml -u /path/to/pyside2-uic -r /path/to/pyside2-rcc
 """
 
 import argparse
@@ -36,10 +38,6 @@ import re
 import subprocess
 
 from ruamel.yaml import YAML
-
-# Set the Python environment variable. If 'PYTHONPATH' is not set, use the default path "/usr/bin/"
-# or you can override the Python environment path for a specific virtual environment
-PYTHON_ENV = os.getenv("PYTHONPATH", "/usr/bin/")
 
 
 def process_import_line(module, import_text):
@@ -99,28 +97,28 @@ def build_res(
     }
 
 
-def build_absolute_path(path1, path2):
-    dir1 = os.path.dirname(path1)
-    combined_path = os.path.normpath(os.path.join(dir1, path2))
+def build_absolute_path(path_or_file):
+    dir = os.getcwd()
+    combined_path = os.path.normpath(os.path.join(dir, path_or_file))
 
     return combined_path
 
 
 def run_yaml_commands(yaml_file, uic, rcc):
-    with open(yaml_file, "r") as file:
-        yaml = YAML()
-        yaml_commands = yaml.load(file)
+    yaml = YAML()
+    yaml_commands = yaml.load(open(build_absolute_path(yaml_file)))
 
     for command_set in yaml_commands:
-        try:
-            build_params = {
-                "qt_ui_path": build_absolute_path(yaml_file, command_set["ui_src"]),
-                "py_built_path": build_absolute_path(yaml_file, command_set["py_dest"]),
-                "import_text": command_set["import_pattern"],
-            }
-        except KeyError:
-            print("'ui_src', 'py_dest' and 'import_pattern' are required in yml config")
+        ui_src = command_set.get("ui_src")
+        if not ui_src:
+            print("'ui_src' is required in yml config")
             return 1
+
+        build_params = {
+            "qt_ui_path": build_absolute_path(ui_src),
+            "py_built_path": build_absolute_path(command_set.get("py_dest", ui_src)),
+            "import_text": command_set.get("import_pattern", "."),
+        }
 
         print("Building user interfaces...")
         for index, ui_file in enumerate(command_set.get("ui_files", [])):
@@ -158,12 +156,15 @@ def main():
     parser.add_argument("-u", "--uic", help="The PySide uic compiler")
     parser.add_argument("-r", "--rcc", help="The PySide rcc compiler")
     parser.add_argument(
-        "-p", "--pyenv", default=PYTHON_ENV, help="The Python environment path"
+        "-p",
+        "--pyenv",
+        default=os.getenv("PYTHONPATH", "/usr/bin/"),
+        help="The Python environment path",
     )
     parser.add_argument(
         "-y",
         "--yamlfile",
-        required=True,
+        default="build_resources.yml",
         help="The path to the YAML file with commands",
     )
     args = parser.parse_args()
