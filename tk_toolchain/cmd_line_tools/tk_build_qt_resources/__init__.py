@@ -27,9 +27,9 @@ Examples:
 
     tk-build-qt-resources -y name_of_yml_file_with_commands.yml
 
-    tk-build-qt-resources -y name_of_yml_file_with_commands.yml -p /path/to/python/env
+    tk-build-qt-resources -p /path/to/python/env
 
-    tk-build-qt-resources -y name_of_yml_file_with_commands.yml -u /path/to/pyside2-uic -r /path/to/pyside2-rcc
+    tk-build-qt-resources -u /path/to/pyside2-uic -r /path/to/pyside2-rcc
 """
 
 import argparse
@@ -108,10 +108,10 @@ def run_yaml_commands(yaml_file, uic, rcc):
     yaml = YAML()
     yaml_commands = yaml.load(open(build_absolute_path(yaml_file)))
 
-    for command_set in yaml_commands:
+    for index, command_set in enumerate(yaml_commands, 1):
         ui_src = command_set.get("ui_src")
         if not ui_src:
-            print("'ui_src' is required in yml config")
+            print(f"'ui_src' is required in yml config {index}")
             return 1
 
         build_params = {
@@ -150,6 +150,8 @@ def run_yaml_commands(yaml_file, uic, rcc):
             build_qt_params = build_res(**build_params_res_files)
             build_qt(**build_qt_params)
 
+    return 1
+
 
 def main():
     parser = argparse.ArgumentParser(description="Build UI and resource files")
@@ -158,7 +160,7 @@ def main():
     parser.add_argument(
         "-p",
         "--pyenv",
-        default=os.getenv("PYTHONPATH", "/usr/bin/"),
+        default=os.getenv("PYTHONPATH"),
         help="The Python environment path",
     )
     parser.add_argument(
@@ -188,4 +190,4 @@ def main():
             return 1
         print(f"Using PySide compiler version: {version}")
 
-    run_yaml_commands(args.yamlfile, args.uic, args.rcc)
+    return run_yaml_commands(args.yamlfile, args.uic, args.rcc)

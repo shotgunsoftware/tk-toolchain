@@ -297,22 +297,46 @@ Toolkit Build Qt resources
 Compile Qt interface and resource files with a specified PySide compiler.
 
 Usage:
-    tk-build-qt-resources (-p <pyenv> | [-u <uic>] [-r <rcc>]) -q <qtuipath> -py <pybuiltpath> -uf <uifiles>... -rf <resfiles>... [-i <importtext>]
+    tk-build-qt-resources [-y <yamlfile>] (-p <pyenv> | [-u <uic>] [-r <rcc>])
 
 Options:
+    -y --yamlfile   The path to the YAML file with commands.
+    -p --pyenv      The Python environment path.
     -u --uic        The PySide uic compiler.
     -r --rcc        The PySide rcc compiler.
-    -p --pyenv      The Python environment path.
-    -q --qtuipath   The path with Qt .ui files.
-    -py --pybuiltpath The path to output all built .py files.
-    -uf --uifiles   The Qt .ui files to compile.
-    -rf --resfiles  The Qt .qrc resource files to compile.
-    -i --importtext The import text to replace (default is "tank.platform.qt").
 
 Examples:
-    tkbuild-qt-resources -u /path/to/pyside2-uic -r /path/to/pyside2-rcc -q /path/to/qt/ui/files -py /path/to/output/py/files -uf file1 file2 -rf resource1 resource2 -i custom.import.path
+    tk-build-qt-resources
 
-    tkbuild-qt-resources -p /path/to/python/env -q /path/to/qt/ui/files -py /path/to/output/py/files -uf file1 file2 -rf resource1 resource2 -i custom.import.path
+    tk-build-qt-resources -y name_of_yml_file_with_commands.yml
+
+    tk-build-qt-resources -p /path/to/python/env
+
+    tk-build-qt-resources -u /path/to/pyside2-uic -r /path/to/pyside2-rcc
+```
+
+And then it is going to be necessary to have a 'build_resources.yml' file in each repository.
+So this YAML file defines the configuration for building Qt UI and resource files using the tk-build-qt-resources script.
+Each entry in the file represents a separate build configuration with the following fields:
+
+- `ui_src`: The source directory containing the Qt .ui files.
+- `ui_files`: A list of .ui file names (without extensions) to compile.
+- `new_names_ui_files`: (Optional) A list of new names for the compiled .ui files (without extensions).
+                      If not provided, the original names will be used.
+- `res_files`: A list of .qrc resource file names (without extensions) to compile.
+- `py_dest`: (Optional) The destination directory where the compiled .py files will be placed,
+           (default is same directory of 'ui_src').
+- `import_pattern`: (Optional) The import text pattern to replace (default is ".").
+
+Example:
+```
+- ui_src: path/to/ui_files
+  ui_files:
+    - main_window
+  res_files:
+    - resources
+  py_dest: path/to/output
+  import_pattern: custom.import.path
 ```
 
 # FAQ
