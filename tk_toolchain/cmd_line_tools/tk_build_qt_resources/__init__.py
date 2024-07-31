@@ -36,6 +36,7 @@ import argparse
 import os
 import re
 import subprocess
+import sys
 
 from ruamel.yaml import YAML
 
@@ -108,16 +109,16 @@ def run_yaml_commands(yaml_file, uic, rcc):
     yaml = YAML()
     yaml_commands = yaml.load(open(build_absolute_path(yaml_file)))
 
-    for index, command_set in enumerate(yaml_commands, 1):
+    for command_set in yaml_commands:
         ui_src = command_set.get("ui_src")
         if not ui_src:
-            print(f"'ui_src' is required in yml config {index}")
-            return 1
+            print("'ui_src' is required in yml config")
+            sys.exit(1)
 
         build_params = {
             "qt_ui_path": build_absolute_path(ui_src),
             "py_built_path": build_absolute_path(command_set.get("py_dest", ui_src)),
-            "import_text": command_set.get("import_pattern", "."),
+            "import_text": command_set.get("import_pattern", "tank.platform.qt"),
         }
 
         print("Building user interfaces...")
@@ -190,4 +191,4 @@ def main():
             return 1
         print(f"Using PySide compiler version: {version}")
 
-    return run_yaml_commands(args.yamlfile, args.uic, args.rcc)
+    run_yaml_commands(args.yamlfile, args.uic, args.rcc)

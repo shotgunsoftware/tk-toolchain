@@ -326,7 +326,7 @@ Each entry in the file represents a separate build configuration with the follow
 - `res_files`: A list of .qrc resource file names (without extensions) to compile.
 - `py_dest`: (Optional) The destination directory where the compiled .py files will be placed,
            (default is same directory of 'ui_src').
-- `import_pattern`: (Optional) The import text pattern to replace (default is ".").
+- `import_pattern`: (Optional) The import text pattern to replace (default is "tank.platform.qt").
 
 Example:
 ```
