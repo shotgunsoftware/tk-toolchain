@@ -12,7 +12,6 @@
 - [What can it do?](#what-can-it-do)
 - [How can I install `tk-toolchain`?](#how-can-i-install-tk-toolchain)
   - [Installing the `master` branch from GitHub](#installing-the-master-branch-from-github)
-  - [Installing any branch from GitHub](#installing-any-branch-from-github)
   - [Installing for development or debugging](#installing-for-development-or-debugging)
 - [Pre-requisites](#pre-requisites)
 - [How can I run these tools?](#how-can-i-run-these-tools)
@@ -64,13 +63,13 @@ If you wish to install the current `master` branch, use the following command:
 pip install git+https://github.com/shotgunsoftware/tk-toolchain.git#egg=tk-toolchain
 ```
 
-## Installing any branch from GitHub
-
-If you wish to install a development branch, use the following command:
+or 
 
 ```
-pip install git+https://github.com/shotgunsoftware/tk-toolchain.git@development_branch#egg=tk-toolchain
+pip install https://github.com/shotgunsoftware/tk-toolchain/archive/master.zip
 ```
+
+> You can replace `master` with any development branch.
 
 ## Installing for development or debugging
 
