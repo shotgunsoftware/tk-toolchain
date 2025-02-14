@@ -73,6 +73,7 @@ setup(
         # Doc generation
         "PyYAML",
         "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
+        "sphinx-favicon",
         "sphinx_rtd_theme==1.3.0",
         "docopt==0.6.2",
         "six==1.14.0",

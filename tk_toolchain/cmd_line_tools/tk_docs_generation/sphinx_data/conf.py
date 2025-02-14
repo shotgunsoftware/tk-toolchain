@@ -165,6 +165,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
+    "sphinx_favicon",
 ]
 
 # FIXME: Toolkit API does not rely on this plugin. Adding it generates errors.
@@ -384,3 +385,13 @@ intersphinx_mapping = {
 autodoc_member_order = "bysource"
 
 suppress_warnings = ["image.nonlocal_uri"]
+
+favicons = [
+    {
+        "href": "icon_32x32.png",
+    },
+    {
+        "rel": "apple-touch-icon",
+        "href": "icon_180x180.png",
+    },
+]
