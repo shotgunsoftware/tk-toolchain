@@ -7,7 +7,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Toolkit Build tools](#toolkit-build-tools)
 - [What can it do?](#what-can-it-do)
 - [How can I install `tk-toolchain`?](#how-can-i-install-tk-toolchain)
@@ -63,7 +62,7 @@ If you wish to install the current `master` branch, use the following command:
 pip install git+https://github.com/shotgunsoftware/tk-toolchain.git#egg=tk-toolchain
 ```
 
-or 
+or
 
 ```
 pip install https://github.com/shotgunsoftware/tk-toolchain/archive/master.zip
