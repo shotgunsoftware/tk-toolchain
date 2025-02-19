@@ -240,12 +240,16 @@ def main(arguments=None):
 
     engine = _start_engine(
         repo,
-        options["--context-entity-type"]
-        if options["--context-entity-type"] is not None
-        else "Project",
-        int(options["--context-entity-id"])
-        if options["--context-entity-id"] is not None
-        else None,
+        (
+            options["--context-entity-type"]
+            if options["--context-entity-type"] is not None
+            else "Project"
+        ),
+        (
+            int(options["--context-entity-id"])
+            if options["--context-entity-id"] is not None
+            else None
+        ),
         config,
     )
 
