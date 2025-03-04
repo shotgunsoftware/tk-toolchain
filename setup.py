@@ -64,8 +64,8 @@ setup(
     python_requires=">=3.7.0",
     install_requires=[
         # Tests
-        "pytest==7.4.2",
-        "pytest-cov==4.1.0",
+        "pytest",
+        "pytest-cov",
         # Locking down these 2 tools to these specific versions is important
         # because we should use the same tools that tk-core ships with.
         "mock==5.1.0",
