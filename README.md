@@ -63,7 +63,7 @@ If you wish to install the current `master` branch, use the following command:
 pip install git+https://github.com/shotgunsoftware/tk-toolchain.git#egg=tk-toolchain
 ```
 
-or 
+or
 
 ```
 pip install https://github.com/shotgunsoftware/tk-toolchain/archive/master.zip
