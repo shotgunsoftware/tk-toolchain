@@ -10,7 +10,7 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 import pytest
-from mock import Mock
+from unittest.mock import Mock
 
 
 from tk_toolchain.authentication import _get_toolkit_user

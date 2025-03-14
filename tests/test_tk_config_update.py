@@ -11,7 +11,6 @@
 
 import os
 import subprocess
-import six
 
 import pytest
 from ruamel import yaml
@@ -30,14 +29,12 @@ def cloned_config(tk_config_root, tmpdir_factory):
     copy of the repository or because tk-config-basic is missing.
     """
     tmp_path = tmpdir_factory.mktemp("config")
-    # cast LocalPath to str since Python 2 compatible methods manipulate strings
-    tmp_path = str(tmp_path)
     # We're cloning version v1.6.1 to ensure the test doesn't fail due to a change
     # in the config.
     subprocess.check_call(
         ["git", "clone", "--depth", "1", "--branch", "v1.6.1", tk_config_root, tmp_path]
     )
-    return six.ensure_str(tmp_path)
+    return tmp_path
 
 
 @pytest.fixture

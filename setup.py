@@ -66,16 +66,13 @@ setup(
         # Tests
         "pytest==7.4.2",
         "pytest-cov==4.1.0",
-        # Locking down these 2 tools to these specific versions is important
+        # Locking down coverage to a specific version is important
         # because we should use the same tools that tk-core ships with.
-        "mock==5.1.0",
         "coverage==7.2.7",
         # Doc generation
-        "PyYAML",
         "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
         "sphinx_rtd_theme==1.3.0",
         "docopt==0.6.2",
-        "six==1.14.0",
         # Lock down jinja because 3.1.0 breaks the build.
         "jinja2==3.0.3",
         # Other tools used by devs that are useful to have.

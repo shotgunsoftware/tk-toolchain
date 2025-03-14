@@ -58,9 +58,7 @@ class TestEngine(sgtk.platform.Engine):
 
         See sgtk.platform.Engine documentation's for more details.
         """
-        dialog = super(self.__class__, self).show_dialog(
-            title, bundle, widget_class, *args, **kwargs
-        )
+        dialog = super().show_dialog(title, bundle, widget_class, *args, **kwargs)
         # Forces the dialog to show on top of other dialogs when using PySide 1
         dialog.window().raise_()
         dialog.window().show()
