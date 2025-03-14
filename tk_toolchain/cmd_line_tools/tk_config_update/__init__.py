@@ -27,18 +27,15 @@ Example:
     tk-config-update git@github.com:shotgunsoftware/tk-config-default2.git tk-core v0.19.0
 """
 
-import subprocess
-import sys
+import atexit
 import os
 import shutil
-import atexit
+import subprocess
+import sys
 import tempfile
-import docopt
 
-try:
-    from ruamel import yaml
-except ImportError:
-    sys.exit("This tool can only be run with Python 2.7 or greater.")
+import docopt
+from ruamel import yaml
 
 
 # FIXME: Maybe we should rename the other repository class (tk_toolchain.repo.Repository)

@@ -47,6 +47,8 @@ def tk_test_project(tk_test_shotgun):
 
     :returns: Current project name and id
     """
+    import sgtk
+
     # Create or update the integration_tests local storage with the current test run.
     # Cannot use a unique name for storage_name because Workfiles2 automation
     # is using an advanced custom config and it has storage name harcoded in roots.yml
@@ -58,8 +60,17 @@ def tk_test_project(tk_test_shotgun):
         local_storage = tk_test_shotgun.create("LocalStorage", {"code": storage_name})
     # Always update local storage path
     local_storage["path"] = os.path.expandvars("${SHOTGUN_CURRENT_REPO_ROOT}")
+    if sgtk.util.is_windows():
+        storage_key = "windows_path"
+    elif sgtk.util.is_linux():
+        storage_key = "linux_path"
+    elif sgtk.util.is_macos():
+        storage_key = "mac_path"
+    else:
+        raise Exception("Unknown platform")
+
     tk_test_shotgun.update(
-        "LocalStorage", local_storage["id"], {"windows_path": local_storage["path"]}
+        "LocalStorage", local_storage["id"], {storage_key: local_storage["path"]}
     )
 
     # Make sure there is not already an automation project created
