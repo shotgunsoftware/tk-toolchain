@@ -28,7 +28,7 @@ def cloned_config(tk_config_root, tmpdir_factory):
     If this clone fails, it's likely because tag v1.6.1 is not in your
     copy of the repository or because tk-config-basic is missing.
     """
-    tmp_path = tmpdir_factory.mktemp("config")
+    tmp_path = str(tmpdir_factory.mktemp("config"))
     # We're cloning version v1.6.1 to ensure the test doesn't fail due to a change
     # in the config.
     subprocess.check_call(
