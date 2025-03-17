@@ -10,31 +10,14 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-"""
-Toolkit Configuration Update
-
-Update the version of a bundle in a config to the specified version and pushes
-it back to the source repository.
-
-Usage:
-    tk-config-update <config> <bundle> <version> [--push-changes]
-
-Options:
-    --push-changes  Pushes the changes to the repository. If not specified,
-                    the remote repository is not updated.
-
-Example:
-    tk-config-update git@github.com:shotgunsoftware/tk-config-default2.git tk-core v0.19.0
-"""
-
+import argparse
 import atexit
 import os
 import shutil
 import subprocess
-import sys
 import tempfile
+import textwrap
 
-import docopt
 from ruamel import yaml
 
 
@@ -230,19 +213,53 @@ def main(arguments=None):
     This will launch all the Toolkit applications and panels registered at app init
     and wait until all of them have been closed.
     """
-    arguments = arguments or sys.argv[1:]
 
-    # docopt does not care about the script name, so skip or we'll
-    # get an error.
-    options = docopt.docopt(__doc__, argv=arguments)
+    parser = argparse.ArgumentParser(
+        description = """
+            Toolkit Configuration Update
 
-    repo = Repository.clone(options["<config>"])
-    bundle = options["<bundle>"]
-    version = options["<version>"]
+            Update the version of a bundle in a config to the specified version
+            and pushes
+        """,
+        epilog = textwrap.dedent("""
+            Example:
+                tk-config-update git@github.com:shotgunsoftware/tk-config-default2.git tk-core v0.19.0
+        """),
+
+    )
+
+    parser.add_argument(
+        "config",
+        description="URL to the TK config git repository to update",
+    )
+
+    parser.add_argument(
+        "bundle",
+        description="Name of the TK component",
+    )
+
+    parser.add_argument(
+        "version",
+        description="Version of the TK component",
+    )
+
+    parser.add_argument(
+        "--push-changes",
+        description = """
+            Pushes the changes to the repository. If not specified, the remote
+            repository is not updated.
+        """,
+        action="store_true",
+        default=False,
+    )
+
+    args = parser.parse_args(args=arguments)
+
+    repo = Repository.clone(args.config)
 
     files_updated = []
 
-    for yml_file in update_files(repo.root, bundle, version):
+    for yml_file in update_files(repo.root, args.bundle, args.version):
         print("Updated '{0}'".format(yml_file))
         repo.add(yml_file)
         files_updated.append(yml_file)
@@ -260,12 +277,12 @@ def main(arguments=None):
             "Updated {bundle} to {version}\n"
             "Release notes: https://github.com/shotgunsoftware/{bundle}/wiki/Release-Notes#{version_no_dots}"
         ).format(
-            bundle=bundle, version=version, version_no_dots=version.replace(".", "")
+            bundle=args.bundle, version=args.version, version_no_dots=args.version.replace(".", "")
         )
     )
 
     # This script does not upload changes by default.
-    if options["--push-changes"] is True:
+    if args.push_changes is True:
         repo.push()
     else:
         print("Specify --push-changes to update the remote repository.")

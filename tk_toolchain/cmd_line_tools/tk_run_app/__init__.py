@@ -46,7 +46,7 @@ import os
 import sys
 from pprint import pprint
 
-import docopt
+import docopt  # TODO here too!
 
 from tk_toolchain.repo import Repository
 from tk_toolchain import util, authentication
