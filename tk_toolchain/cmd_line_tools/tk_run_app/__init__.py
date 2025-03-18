@@ -10,43 +10,11 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-"""
-Toolkit Application Runner
-
-Launch a Toolkit application from the command line by running this tool in any
-Toolkit repository.
-
-Usage:
-    tk-run-app [--context-entity-type=<entity-type>] [--context-entity-id=<entity-id>] [--location=<location>] [--commands=<commands>] [--config=<config>]
-
-Options:
-
-    -e, --context-entity-type=<entity-type>
-                       Specifies the type of the entity of the context.
-
-    -i, --context-entity-id=<entity-id>
-                       Specifies the id of the entity of the context.
-
-    --location=<location>
-                        Specifies the location where the Toolkit application is.
-                        If missing, the tk-run-app assumes it is run from inside
-                        the repository and launch the application at the root of
-                        it.
-
-    --commands=<commands>
-                        Comma-separated list of commands to run. These can be long
-                        or short Toolkit command names. If missing, tk-run-app
-                        assumes all commands should be run.
-
-    -c, --config=<config>
-                        Specifies the location of the Toolkit config folder to use.
-"""
-
+import argparse
 import os
+import pprint
 import sys
-from pprint import pprint
-
-import docopt
+import textwrap
 
 from tk_toolchain.repo import Repository
 from tk_toolchain import util, authentication
@@ -170,7 +138,7 @@ def _get_available_commands(engine):
     )
 
     print("Available application commands (long and short versions):")
-    pprint(possible_commands)
+    pprint.pprint(possible_commands)
 
     return possible_commands, long_command_names
 
@@ -192,7 +160,7 @@ def _validate_requested_commands(commands, available_commands, long_command_name
 
     print("The following commands will be run:")
     if commands:
-        pprint(sorted(commands))
+        pprint.pprint(sorted(commands))
         return commands
     else:
         # Only print the long command names for clarity. Not every app has a short
@@ -208,28 +176,75 @@ def main(arguments=None):
     This will launch all the Toolkit applications and panels registered at app init
     and wait until all of them have been closed.
     """
-    arguments = arguments or sys.argv[1:]
 
-    # docopt does not care about the script name, so skip or we'll
-    # get an error.
-    options = docopt.docopt(__doc__, argv=arguments)
+    parser = argparse.ArgumentParser(
+        prog="tk_run_app",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent(
+            """
+            Toolkit Application Runner
+
+            Launch a Toolkit application from the command line by running this
+            tool in any Toolkit repository.
+            """
+        ),
+    )
+
+    parser.add_argument(
+        "--context-entity-type",
+        "-e",
+        help="Specifies the type of the entity of the context",
+    )
+
+    parser.add_argument(
+        "--context-entity-id",
+        "-i",
+        help="Specifies the id of the entity of the context",
+    )
+
+    parser.add_argument(
+        "--location",
+        help="""
+            Specifies the location where the Toolkit application is.
+            If missing, the tk-run-app assumes it is run from inside
+            the repository and launch the application at the root of
+            it.
+        """,
+    )
+
+    parser.add_argument(
+        "--commands",
+        help="""
+            Comma-separated list of commands to run. These can be long
+            or short Toolkit command names. If missing, tk-run-app
+            assumes all commands should be run.
+        """,
+    )
+
+    parser.add_argument(
+        "--config",
+        "-c",
+        help="Specifies the location of the Toolkit config folder to use",
+    )
+
+    args = parser.parse_args(args=arguments)
 
     # Check to see if a Toolkit config location was passed and resolve any
     # environment variables in the path.
-    config = util.expand_path(options["--config"]) if options["--config"] else None
+    config = util.expand_path(args.config) if args.config else None
 
     if config and not os.path.exists(config):
         print("This config location does not exist. %s" % config)
         return 1
 
     # Find the current repo and add Toolkit to the PYTHONPATH so we ca import it.
-    repo = Repository(util.expand_path(options["--location"] or os.getcwd()))
+    repo = Repository(util.expand_path(args.location or os.getcwd()))
     tk_core = os.path.join(repo.parent, "tk-core", "python")
     sys.path.insert(0, tk_core)
 
-    if options["--commands"]:
+    if args.commands:
         commands_to_run = [
-            command.strip() for command in (options["--commands"] or "").split(",")
+            command.strip() for command in (args.commands or "").split(",")
         ]
     else:
         commands_to_run = []
@@ -241,15 +256,11 @@ def main(arguments=None):
     engine = _start_engine(
         repo,
         (
-            options["--context-entity-type"]
-            if options["--context-entity-type"] is not None
+            args.context_entity_type
+            if args.context_entity_type is not None
             else "Project"
         ),
-        (
-            int(options["--context-entity-id"])
-            if options["--context-entity-id"] is not None
-            else None
-        ),
+        (int(args.context_entity_id) if args.context_entity_id is not None else None),
         config,
     )
 
