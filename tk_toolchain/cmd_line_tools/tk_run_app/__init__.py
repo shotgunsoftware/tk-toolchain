@@ -12,8 +12,9 @@
 
 import argparse
 import os
+import pprint
 import sys
-from pprint import pprint
+import textwrap
 
 from tk_toolchain.repo import Repository
 from tk_toolchain import util, authentication
@@ -137,7 +138,7 @@ def _get_available_commands(engine):
     )
 
     print("Available application commands (long and short versions):")
-    pprint(possible_commands)
+    pprint.pprint(possible_commands)
 
     return possible_commands, long_command_names
 
@@ -159,7 +160,7 @@ def _validate_requested_commands(commands, available_commands, long_command_name
 
     print("The following commands will be run:")
     if commands:
-        pprint(sorted(commands))
+        pprint.pprint(sorted(commands))
         return commands
     else:
         # Only print the long command names for clarity. Not every app has a short
@@ -177,12 +178,16 @@ def main(arguments=None):
     """
 
     parser = argparse.ArgumentParser(
-        description="""
+        prog="tk_run_app",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent(
+            """
             Toolkit Application Runner
 
             Launch a Toolkit application from the command line by running this
             tool in any Toolkit repository.
-        """,
+            """
+        ),
     )
 
     parser.add_argument(
