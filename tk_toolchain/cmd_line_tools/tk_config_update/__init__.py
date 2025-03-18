@@ -225,7 +225,6 @@ def main(arguments=None):
             Example:
                 tk-config-update git@github.com:shotgunsoftware/tk-config-default2.git tk-core v0.19.0
         """),
-
     )
 
     parser.add_argument(
