@@ -215,16 +215,18 @@ def main(arguments=None):
     """
 
     parser = argparse.ArgumentParser(
-        description = """
+        description="""
             Toolkit Configuration Update
 
             Update the version of a bundle in a config to the specified version
             and pushes
         """,
-        epilog = textwrap.dedent("""
+        epilog=textwrap.dedent(
+            """
             Example:
                 tk-config-update git@github.com:shotgunsoftware/tk-config-default2.git tk-core v0.19.0
-        """),
+        """
+        ),
     )
 
     parser.add_argument(
@@ -244,7 +246,7 @@ def main(arguments=None):
 
     parser.add_argument(
         "--push-changes",
-        description = """
+        description="""
             Pushes the changes to the repository. If not specified, the remote
             repository is not updated.
         """,
@@ -276,7 +278,9 @@ def main(arguments=None):
             "Updated {bundle} to {version}\n"
             "Release notes: https://github.com/shotgunsoftware/{bundle}/wiki/Release-Notes#{version_no_dots}"
         ).format(
-            bundle=args.bundle, version=args.version, version_no_dots=args.version.replace(".", "")
+            bundle=args.bundle,
+            version=args.version,
+            version_no_dots=args.version.replace(".", ""),
         )
     )
 

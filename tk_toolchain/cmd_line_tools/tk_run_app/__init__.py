@@ -177,7 +177,7 @@ def main(arguments=None):
     """
 
     parser = argparse.ArgumentParser(
-        description= """
+        description="""
             Toolkit Application Runner
 
             Launch a Toolkit application from the command line by running this
@@ -255,11 +255,7 @@ def main(arguments=None):
             if args.context_entity_type is not None
             else "Project"
         ),
-        (
-            int(args.context_entity_id)
-            if args.context_entity_id is not None
-            else None
-        ),
+        (int(args.context_entity_id) if args.context_entity_id is not None else None),
         config,
     )
 
