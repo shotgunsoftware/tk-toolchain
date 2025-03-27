@@ -280,11 +280,10 @@ def main(arguments=None):
     repo.commit(
         (
             "Updated {bundle} to {version}\n"
-            "Release notes: https://github.com/shotgunsoftware/{bundle}/wiki/Release-Notes#{version_no_dots}"
+            "Release notes: https://github.com/shotgunsoftware/{bundle}/releases/tag/{version}"
         ).format(
             bundle=args.bundle,
             version=args.version,
-            version_no_dots=args.version.replace(".", ""),
         )
     )
 
