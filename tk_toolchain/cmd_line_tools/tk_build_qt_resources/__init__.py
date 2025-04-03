@@ -107,7 +107,10 @@ def build_absolute_path(path_or_file):
 
 def run_yaml_commands(yaml_file, uic, rcc):
     yaml = YAML()
-    yaml_commands = yaml.load(open(build_absolute_path(yaml_file)))
+    yaml_commands = yaml.load(
+        open(build_absolute_path(yaml_file)),
+        Loader=yaml.FullLoader,
+    )
 
     for command_set in yaml_commands:
         ui_src = command_set.get("ui_src")
