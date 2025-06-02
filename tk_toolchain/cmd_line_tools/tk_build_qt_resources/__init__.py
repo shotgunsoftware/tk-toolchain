@@ -72,7 +72,7 @@ def build_qt(compiler, py_filename, py_built_path, import_text):
     # Check which PySide version is being used
     pyside_version = next((version for version in PYSIDE_VERSIONS if version in content), None)
     if not pyside_version:
-        raise ModuleNotFoundError(f"No Supported PySide Version Found. \nSupported Versions Are: {PYSIDE_VERSIONS}")
+        raise ValueError(f"No Supported PySide Version Found. \nSupported Versions Are: {PYSIDE_VERSIONS}")
 
     content = re.sub(
         rf"^from {pyside_version}\.QtWidgets(\s.*)?$", "", content, flags=re.MULTILINE
