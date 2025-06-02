@@ -66,8 +66,8 @@ def build_qt(compiler, py_filename, py_built_path, import_text):
     output_path = os.path.join(py_built_path, f"{py_filename}.py")
     subprocess.run(compiler.split(" "), stdout=open(output_path, "w"), check=True)
 
-    with open(output_path, "r") as f:
-        content = f.read()
+    with open(output_path, "r") as py_file:
+        content = py_file.read()
 
     # Check which PySide version is being used
     pyside_version = next((version for version in PYSIDE_VERSIONS if version in content), None)
@@ -86,8 +86,8 @@ def build_qt(compiler, py_filename, py_built_path, import_text):
     )
     content = content.replace(f"from {pyside_version} import", f"from {import_text} import")
 
-    with open(output_path, "w") as f:
-        f.write(content)
+    with open(output_path, "w") as py_file:
+        py_file.write(content)
 
 
 def build_ui(
