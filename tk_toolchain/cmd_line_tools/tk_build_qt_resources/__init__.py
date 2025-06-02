@@ -41,6 +41,10 @@ import sys
 from ruamel.yaml import YAML
 
 
+# Store the supported versions in a tuple
+PYSIDE_VERSIONS = ("PySide2", "PySide6")
+
+
 def process_import_line(module, import_text):
     return (
         f"from {import_text} import {module}\n"
@@ -61,19 +65,29 @@ def verify_compiler(compiler):
 def build_qt(compiler, py_filename, py_built_path, import_text):
     output_path = os.path.join(py_built_path, f"{py_filename}.py")
     subprocess.run(compiler.split(" "), stdout=open(output_path, "w"), check=True)
-    content = open(output_path, "r").read()
+
+    with open(output_path, "r") as py_file:
+        content = py_file.read()
+
+    # Check which PySide version is being used
+    pyside_version = next((version for version in PYSIDE_VERSIONS if version in content), None)
+    if not pyside_version:
+        raise ValueError(f"No Supported PySide Version Found. \nSupported Versions Are: {PYSIDE_VERSIONS}")
+
     content = re.sub(
-        r"^from PySide2.QtWidgets(\s.*)?$", "", content, flags=re.MULTILINE
+        rf"^from {pyside_version}\.QtWidgets(\s.*)?$", "", content, flags=re.MULTILINE
     )
     content = re.sub(r"^\s*$", "", content, flags=re.MULTILINE)
     content = re.sub(
-        r"^from PySide2\.(\w+) import (.*)$",
+        rf"^from {pyside_version}\.(\w+) import (.*)$",
         lambda m: process_import_line(m.group(1), import_text),
         content,
         flags=re.MULTILINE,
     )
-    content = content.replace("from PySide2 import", f"from {import_text} import")
-    open(output_path, "w").write(content)
+    content = content.replace(f"from {pyside_version} import", f"from {import_text} import")
+
+    with open(output_path, "w") as py_file:
+        py_file.write(content)
 
 
 def build_ui(
