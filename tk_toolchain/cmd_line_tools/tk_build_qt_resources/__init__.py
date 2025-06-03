@@ -43,14 +43,7 @@ from ruamel.yaml import YAML
 
 # Store the supported versions in a tuple
 PYSIDE_VERSIONS = ("PySide2", "PySide6")
-
-
-def process_import_line(module, import_text):
-    return (
-        f"from {import_text} import {module}\n"
-        f"for name, cls in {module}.__dict__.items():\n"
-        f"    if isinstance(cls, type): globals()[name] = cls\n"
-    )
+QT_MODULES = ["QtCore", "QtGui", "QtWidgets"]
 
 
 def verify_compiler(compiler):
@@ -62,9 +55,31 @@ def verify_compiler(compiler):
         print(f"The PySide compiler version cannot be determine: {error}")
 
 
+def process_import_block(module, import_text):
+    return (
+        f"from {import_text} import {module}\n"
+        f"for name, cls in {module}.__dict__.items():\n"
+        f"    if isinstance(cls, type): globals()[name] = cls\n"
+    )
+
+
+def add_import_block_after_header(file_content, import_block):
+    lines = file_content.splitlines()
+    index = 0
+
+    while index < len(lines) and (lines[index].strip().startswith("#") or lines[index].strip() == ""):
+        index += 1
+
+    header = "\n".join(lines[:index]).rstrip()
+    body = "\n".join(lines[index:]).lstrip()
+
+    return f"{header}\n\n{import_block.strip()}\n\n{body}\n"
+
+
 def build_qt(compiler, py_filename, py_built_path, import_text):
     output_path = os.path.join(py_built_path, f"{py_filename}.py")
-    subprocess.run(compiler.split(" "), stdout=open(output_path, "w"), check=True)
+    with open(output_path, "w") as out_file:
+        subprocess.run(compiler.split(" "), stdout=out_file, check=True)
 
     with open(output_path, "r") as py_file:
         content = py_file.read()
@@ -72,22 +87,44 @@ def build_qt(compiler, py_filename, py_built_path, import_text):
     # Check which PySide version is being used
     pyside_version = next((version for version in PYSIDE_VERSIONS if version in content), None)
     if not pyside_version:
-        raise ValueError(f"No Supported PySide Version Found. \nSupported Versions Are: {PYSIDE_VERSIONS}")
+        return
 
+    def remove_qt_imports(file_content, module):
+        """
+        Remove Qt import lines from the given module, including parenthesised and multi-line formats.
+        """
+        imports_with_parenthesis = rf"from {pyside_version}\.{module} import\s*\((?:.|\n)*?\)\s*"
+        file_content = re.sub(imports_with_parenthesis, "", file_content, flags=re.MULTILINE)
+
+        inline_imports = rf"from {pyside_version}\.{module} import [^\n]+(?:\n[ \t]+[^\n]+)*"
+        file_content = re.sub(inline_imports, "", file_content, flags=re.MULTILINE)
+
+        return file_content
+
+    # Remove Qt module imports
+    for qt_module in QT_MODULES:
+        content = remove_qt_imports(content, qt_module)
+
+    # Remove any leftover lines
     content = re.sub(
-        rf"^from {pyside_version}\.QtWidgets(\s.*)?$", "", content, flags=re.MULTILINE
-    )
-    content = re.sub(r"^\s*$", "", content, flags=re.MULTILINE)
-    content = re.sub(
-        rf"^from {pyside_version}\.(\w+) import (.*)$",
-        lambda m: process_import_line(m.group(1), import_text),
+        r"^\s*[A-Za-z_][A-Za-z0-9_]*(\s*,\s*[A-Za-z_][A-Za-z0-9_]*)*\s*\)?\s*$",
+        "",
         content,
         flags=re.MULTILINE,
     )
-    content = content.replace(f"from {pyside_version} import", f"from {import_text} import")
+    # Remove blank lines
+    content = re.sub(r"\n\s*\n", "\n", content).strip()
+
+    # Create the new imports
+    import_block = (
+        process_import_block("QtCore", import_text) + "\n" +
+        process_import_block("QtGui", import_text)
+    )
+
+    final_content = add_import_block_after_header(content, import_block)
 
     with open(output_path, "w") as py_file:
-        py_file.write(content)
+        py_file.write(final_content)
 
 
 def build_ui(
