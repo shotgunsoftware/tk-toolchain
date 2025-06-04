@@ -96,8 +96,11 @@ def build_qt(compiler, py_filename, py_built_path, import_text):
         imports_with_parenthesis = rf"from {pyside_version}\.{module} import\s*\((?:.|\n)*?\)\s*"
         file_content = re.sub(imports_with_parenthesis, "", file_content, flags=re.MULTILINE)
 
-        inline_imports = rf"from {pyside_version}\.{module} import [^\n]+(?:\n[ \t]+[^\n]+)*"
-        file_content = re.sub(inline_imports, "", file_content, flags=re.MULTILINE)
+        inline_imports_submodule = rf"from {pyside_version}\.{module} import [^\n]+(?:\n[ \t]+[^\n]+)*"
+        file_content = re.sub(inline_imports_submodule, "", file_content, flags=re.MULTILINE)
+
+        inline_imports_root = rf"from {pyside_version} import [^\n]+(?:\n[ \t]+[^\n]+)*"
+        file_content = re.sub(inline_imports_root, "", file_content, flags=re.MULTILINE)
 
         return file_content
 
