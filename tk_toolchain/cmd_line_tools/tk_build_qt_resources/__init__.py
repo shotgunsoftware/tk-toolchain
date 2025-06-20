@@ -60,7 +60,7 @@ def verify_compiler(compiler):
 
 def build_qt(compiler, py_filename, py_built_path, import_text):
     output_path = os.path.join(py_built_path, f"{py_filename}.py")
-    subprocess.run(compiler.split(" "), stdout=open(output_path, "w"), check=True)
+    subprocess.run(compiler, stdout=open(output_path, "w"), check=True)
     content = open(output_path, "r").read()
     content = re.sub(
         r"^from PySide2.QtWidgets(\s.*)?$", "", content, flags=re.MULTILINE
@@ -80,7 +80,13 @@ def build_ui(
     compiler, qt_ui_path, py_built_path, import_text, filename, py_filename=None
 ):
     return {
-        "compiler": f"{compiler} -g python --from-imports {qt_ui_path}/{filename}.ui",
+        "compiler": [
+            compiler,
+            "-g",
+            "python",
+            "--from-imports",
+            f"{qt_ui_path}/{filename}.ui",
+        ],
         "py_filename": py_filename or filename,
         "py_built_path": py_built_path,
         "import_text": import_text,
@@ -91,7 +97,12 @@ def build_res(
     compiler, qt_ui_path, py_built_path, import_text, filename, py_filename=None
 ):
     return {
-        "compiler": f"{compiler} -g python {qt_ui_path}/{filename}.qrc",
+        "compiler": [
+            compiler,
+            "-g",
+            "python",
+            f"{qt_ui_path}/{filename}.qrc",
+        ],
         "py_filename": f"{py_filename or filename}_rc",
         "py_built_path": py_built_path,
         "import_text": import_text,
