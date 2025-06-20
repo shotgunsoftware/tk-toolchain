@@ -60,7 +60,12 @@ def verify_compiler(compiler):
 
 def build_qt(compiler, py_filename, py_built_path, import_text):
     output_path = os.path.join(py_built_path, f"{py_filename}.py")
-    subprocess.run(compiler, stdout=open(output_path, "w"), check=True)
+    compiler.extend([
+        "--output",
+        output_path,
+    ])
+
+    subprocess.run(compiler, check=True)
     content = open(output_path, "r").read()
     content = re.sub(
         r"^from PySide2.QtWidgets(\s.*)?$", "", content, flags=re.MULTILINE
