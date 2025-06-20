@@ -161,7 +161,7 @@ def main():
     parser.add_argument(
         "-p",
         "--pyenv",
-        default=os.getenv("PYTHONPATH"),
+        default=os.getenv("PYENV_VIRTUAL_ENV", os.getenv("VIRTUAL_ENV")),
         help="The Python environment path",
     )
     parser.add_argument(
@@ -173,8 +173,8 @@ def main():
     args = parser.parse_args()
 
     if (not args.uic and not args.rcc) and args.pyenv:
-        args.uic = f"{args.pyenv}/pyside2-uic"
-        args.rcc = f"{args.pyenv}/pyside2-rcc"
+        args.uic = f"{args.pyenv}/bin/pyside2-uic"
+        args.rcc = f"{args.pyenv}/bin/pyside2-rcc"
 
     if not args.rcc or not args.uic:
         print(
