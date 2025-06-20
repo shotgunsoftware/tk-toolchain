@@ -33,6 +33,7 @@ Examples:
 """
 
 import argparse
+import glob
 import os
 import re
 import subprocess
@@ -170,15 +171,31 @@ def run_yaml_commands(yaml_file, uic, rcc):
     return 1
 
 
+def scan_sgd_folder(path: str) -> tuple|None: # tuple[str,str]
+    for found_uic in glob.glob(f"{path}/Python*/lib/python*/site-packages/PySide2/uic"):
+        rrc_path = os.path.join(os.path.dirname(found_uic), "rcc")
+        if os.path.exists(rrc_path):
+            return(found_uic, rrc_path)
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Build UI and resource files")
-    parser.add_argument("-u", "--uic", help="The PySide uic compiler")
-    parser.add_argument("-r", "--rcc", help="The PySide rcc compiler")
+    parser = argparse.ArgumentParser(
+        description="Helper script to build the Qt UI and resource files for Toolkit components",
+    )
+    # parser.add_argument("-u", "--uic", help="The PySide uic compiler", default="pyside2-uic")
+    # parser.add_argument("-r", "--rcc", help="The PySide rcc compiler")
     parser.add_argument(
         "-p",
         "--pyenv",
         default=os.getenv("PYENV_VIRTUAL_ENV", os.getenv("VIRTUAL_ENV")),
         help="The Python environment path",
+    )
+    parser.add_argument(
+        "--python-from-desktop-app",
+        help="If set, use the FPTR desktop app installation folder for Python environment",
+        # Set to 1 or true to autodect
+        # or a path for another installation
+        # Take precedense on args.uic and args.rcc
     )
     parser.add_argument(
         "-y",
@@ -188,7 +205,20 @@ def main():
     )
     args = parser.parse_args()
 
-    if (not args.uic and not args.rcc) and args.pyenv:
+    if args.python_from_desktop_app:
+        if not os.path.exists(args.python_from_desktop_app):
+            if sys.platform == "linux":
+                args.python_from_desktop_app = "/opt/Shotgun"
+            elif sys.platform == "darwin":
+                args.python_from_desktop_app = "/Applications/Shotgun.app/Contents/MacOS"
+            elif sys.platform == "win32": 
+                args.python_from_desktop_app = "C:\Program Files\Shotgun"
+            else:
+                raise NotImplementedError()
+        
+        (args.uic, args.rcc) = scan_sgd_folder(args.python_from_desktop_app)
+
+    elif (not args.uic and not args.rcc) and args.pyenv:
         args.uic = f"{args.pyenv}/bin/pyside2-uic"
         args.rcc = f"{args.pyenv}/bin/pyside2-rcc"
 
