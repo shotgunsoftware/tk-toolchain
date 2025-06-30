@@ -223,6 +223,19 @@ to type "tk-docs-preview" to preview the documentation.
         else:
             additional_paths = None
 
+        # In case we're dealing with tk-core documentation, we need to add the new bootstrap hook location
+        # as additional path to be able to generate the documentation
+        if repo.is_tk_core():
+            additional_tk_core_path = os.path.join(
+                repo.root, "python", "tank", "bootstrap", "hooks"
+            )
+            if os.path.exists(additional_tk_core_path):
+                additional_paths = (
+                    [additional_tk_core_path]
+                    if not additional_paths
+                    else additional_paths.append(additional_tk_core_path)
+                )
+
         # FIXME: Warnings as error is turned off for the Python API, because that API currently has errors in it.
         # It's too late to fix (we're rebranding), so we'll just disable warnings_as_error for now.
         preview_docs(
