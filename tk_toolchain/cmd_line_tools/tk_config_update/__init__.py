@@ -35,7 +35,7 @@ class Repository(object):
         """
         root = tempfile.mkdtemp()
         atexit.register(lambda: shutil.rmtree(root))
-        subprocess.check_call(["git", "clone", remote, root, "--depth", "1"])
+        subprocess.check_call(["git", "clone", remote, root, "--depth", "1", "--branch", "ticket/SG-40595-test-debugs"])
         return Repository(root)
 
     def __init__(self, root):
@@ -71,7 +71,7 @@ class Repository(object):
         """
         Push the repository back to the remote.
         """
-        self._git("push", "origin", "master")
+        self._git("push", "origin", "ticket/SG-40595-test-debugs")
 
     def diff(self):
         """
