@@ -236,13 +236,10 @@ to type "tk-docs-preview" to preview the documentation.
                     else additional_paths.append(additional_tk_core_path)
                 )
 
-        # FIXME: Warnings as error is turned off for the Python API, because that API currently has errors in it.
-        # It's too late to fix (we're rebranding), so we'll just disable warnings_as_error for now.
         preview_docs(
             core_path,
             repo.root,
             options.build_only,
-            warnings_as_errors=not repo.is_python_api(),
             additional_paths=additional_paths,
         )
         exit_code = 0
