@@ -206,8 +206,14 @@ to type "tk-docs-preview" to preview the documentation.
         # If the specified the core path, we'll use it.
         if options.core:
             core_path = util.expand_path(options.core)
-        # The Python API, tk-toolchain and tk-core do not require the core path to be set.
-        elif repo.is_python_api() or repo.is_tk_toolchain() or repo.is_tk_core():
+        elif any(
+            # The Python API, Jira Bridge, tk-toolchain and tk-core do not
+            # require the core path to be set.
+            repo.is_python_api(),
+            repo.is_tk_toolchain(),
+            repo.is_tk_core(),
+            repo.is_sg_jira_bridge(),
+        ):
             core_path = None
         # The user didn't specify the core location, so we'll have to guess it.
         else:
