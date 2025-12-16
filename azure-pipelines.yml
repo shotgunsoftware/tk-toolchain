@@ -52,4 +52,3 @@ jobs:
     - name: tk-config-basic
       ref: v1.6.1
     - name: python-api
-      ref: ticket/SG-41463-fixup-docs
