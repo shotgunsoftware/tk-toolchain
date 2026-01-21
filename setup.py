@@ -73,7 +73,7 @@ setup(
         "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
         "sphinx_rtd_theme==1.3.0",
         # Lock down jinja because 3.1.0 breaks the build.
-        "jinja2==3.0.3",
+        "jinja2==3.1.3",
         # Other tools used by devs that are useful to have.
         "pre-commit",
         "ruamel.yaml",
