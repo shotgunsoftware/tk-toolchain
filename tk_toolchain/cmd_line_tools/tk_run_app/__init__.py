@@ -180,14 +180,12 @@ def main(arguments=None):
     parser = argparse.ArgumentParser(
         prog="tk_run_app",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=textwrap.dedent(
-            """
+        description=textwrap.dedent("""
             Toolkit Application Runner
 
             Launch a Toolkit application from the command line by running this
             tool in any Toolkit repository.
-            """
-        ),
+            """),
     )
 
     parser.add_argument(
