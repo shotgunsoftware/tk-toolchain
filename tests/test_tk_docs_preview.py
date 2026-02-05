@@ -14,7 +14,6 @@ import tempfile
 
 from tk_toolchain.cmd_line_tools import tk_docs_generation
 
-
 # Note: These tests are likely to introduce side effects because they monkey
 # patch toolkit. For now we're running them in-process because it makes
 # coverage easier to retrieve

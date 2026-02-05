@@ -178,7 +178,7 @@ to type "tk-docs-preview" to preview the documentation.
         )
 
         # parse cmd line
-        (options, _) = parser.parse_args(arguments)
+        options, _ = parser.parse_args(arguments)
 
         # Unless bundle is overridden, we'll assume the current repo root is the bundle
         try:
