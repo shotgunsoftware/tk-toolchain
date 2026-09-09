@@ -145,8 +145,25 @@ def remove_module_docstring(app, what, name, obj, options, lines):
         del lines[:]
 
 
+def skip_qt_binding_inherited_members(app, what, name, obj, skip, options):
+    """
+    :inherited-members: makes autodoc walk the full MRO, so with PySide6 (whose
+    nested enums are real Python classes) the same Qt object gets described once
+    per widget subclass, which Sphinx flags as a duplicate object description.
+    Skip members actually defined in the Qt binding, already covered by the
+    PySide2/PySide6 intersphinx mapping.
+    """
+    if skip:
+        return skip
+    module = getattr(obj, "__module__", None) or ""
+    if module.startswith(("PySide2", "PySide6", "PyQt4", "PyQt5")):
+        return True
+    return None
+
+
 def setup(app):
     app.connect("autodoc-process-docstring", remove_module_docstring)
+    app.connect("autodoc-skip-member", skip_qt_binding_inherited_members)
 
 
 ########################
