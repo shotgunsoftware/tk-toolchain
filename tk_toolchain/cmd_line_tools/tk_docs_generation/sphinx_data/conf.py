@@ -39,6 +39,16 @@ def setup_toolkit():
         )
         return
 
+    # TEMPORARY (SG-45110): stream tank's debug logs to stdout so QtImporter's own
+    # debug messages show up in the Rundeck build log. Revert once root-caused.
+    from tank.log import LogManager
+
+    log_manager = LogManager()
+    log_manager.global_debug = True
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setFormatter(logging.Formatter("[%(levelname)s %(name)s] %(message)s"))
+    log_manager.initialize_custom_handler(stdout_handler)
+
     try:
         # components also use PySide, so make sure  we have this loaded up correctly
         # before starting auto-doc.
