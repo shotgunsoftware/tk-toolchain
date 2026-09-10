@@ -39,19 +39,11 @@ def setup_toolkit():
         )
         return
 
-    # TEMPORARY (SG-45110): stream tank's debug logs to stdout so QtImporter's own
-    # debug messages show up in the Rundeck build log. Revert once root-caused.
-    from tank.log import LogManager
-
-    log_manager = LogManager()
-    log_manager.global_debug = True
-    stdout_handler = logging.StreamHandler(sys.stdout)
-    stdout_handler.setFormatter(logging.Formatter("[%(levelname)s %(name)s] %(message)s"))
-    log_manager.initialize_custom_handler(stdout_handler)
-
     try:
         # components also use PySide, so make sure  we have this loaded up correctly
         # before starting auto-doc.
+        import types
+
         from tank.util.qt_importer import QtImporter
 
         importer = QtImporter()
@@ -59,14 +51,18 @@ def setup_toolkit():
         tank.platform.qt.QtCore = importer.QtCore
         tank.platform.qt.QtGui = importer.QtGui
 
-        # TEMPORARY (SG-45110): QtImporter() never raises even when no Qt binding could
-        # be imported, so surface that failure explicitly instead of hitting a confusing
-        # AttributeError deep inside autodoc later. Revert once root-caused.
+        # SG-45110: no Qt binding could be imported (e.g. missing OpenGL/EGL shared
+        # libraries on a headless server). Bundles like tk-framework-qtwidgets access
+        # QtCore.__dict__/QtGui.__dict__ at import time, so fall back to empty stub
+        # modules instead of leaving None, which would crash autodoc entirely. This
+        # means Qt classes simply won't be documented for this build.
         if importer.QtCore is None:
             print(
-                "SG-45110 DEBUG: QtImporter() could not import any Qt binding "
-                "(QtCore is None). Doc build will likely fail on Qt-based widgets."
+                "WARNING: No Qt binding could be imported. Qt-based classes will not "
+                "be documented for this build."
             )
+            tank.platform.qt.QtCore = types.ModuleType("QtCore")
+            tank.platform.qt.QtGui = types.ModuleType("QtGui")
     except:
         print("WARNING: PySide was not found in the current environment.")
         pass
