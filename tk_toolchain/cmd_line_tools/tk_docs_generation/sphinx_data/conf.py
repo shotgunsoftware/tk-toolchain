@@ -48,6 +48,15 @@ def setup_toolkit():
 
         tank.platform.qt.QtCore = importer.QtCore
         tank.platform.qt.QtGui = importer.QtGui
+
+        # TEMPORARY (SG-45110): QtImporter() never raises even when no Qt binding could
+        # be imported, so surface that failure explicitly instead of hitting a confusing
+        # AttributeError deep inside autodoc later. Revert once root-caused.
+        if importer.QtCore is None:
+            print(
+                "SG-45110 DEBUG: QtImporter() could not import any Qt binding "
+                "(QtCore is None). Doc build will likely fail on Qt-based widgets."
+            )
     except:
         print("WARNING: PySide was not found in the current environment.")
         pass
