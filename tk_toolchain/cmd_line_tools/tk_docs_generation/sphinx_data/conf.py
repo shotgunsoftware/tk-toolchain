@@ -117,8 +117,6 @@ def setup_toolkit():
     # Monkey patch Toolkit so Toolkit bundles can be loaded for documentation
     # purpose.
     try:
-        import sys
-
         sys.setrecursionlimit(1500)
 
         # make sure we patch our proxy methods with doc strings
