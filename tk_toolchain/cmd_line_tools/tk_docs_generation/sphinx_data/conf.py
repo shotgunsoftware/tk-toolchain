@@ -52,17 +52,37 @@ def setup_toolkit():
         tank.platform.qt.QtGui = importer.QtGui
 
         # SG-45110: no Qt binding could be imported (e.g. missing OpenGL/EGL shared
-        # libraries on a headless server). Bundles like tk-framework-qtwidgets access
-        # QtCore.__dict__/QtGui.__dict__ at import time, so fall back to empty stub
-        # modules instead of leaving None, which would crash autodoc entirely. This
-        # means Qt classes simply won't be documented for this build.
+        # libraries on a headless server). Bundles using generated Qt Designer output
+        # access Qt symbols at import time in ways an empty module can't satisfy:
+        # QtCore.__dict__/QtGui.__dict__ (safe, iterated directly), but also
+        # QtCore.qRegisterResourceData(...) calls in *_rc.py resource files and
+        # subclassing (e.g. class ActivityStreamWidget(QtGui.QWidget)). So any
+        # attribute access on the stub returns a class that is itself callable and
+        # subclassable, recursively falling back the same way. This means Qt classes
+        # simply won't be documented for this build.
         if importer.QtCore is None:
             print(
                 "WARNING: No Qt binding could be imported. Qt-based classes will not "
                 "be documented for this build."
             )
-            tank.platform.qt.QtCore = types.ModuleType("QtCore")
-            tank.platform.qt.QtGui = types.ModuleType("QtGui")
+
+            class _QtStubMeta(type):
+                def __getattr__(cls, name):
+                    return _make_qt_stub_class(name)
+
+                def __call__(cls, *args, **kwargs):
+                    return None
+
+            def _make_qt_stub_class(name):
+                return _QtStubMeta(name, (object,), {})
+
+            def _make_qt_stub_module(module_name):
+                stub = types.ModuleType(module_name)
+                stub.__getattr__ = _make_qt_stub_class
+                return stub
+
+            tank.platform.qt.QtCore = _make_qt_stub_module("QtCore")
+            tank.platform.qt.QtGui = _make_qt_stub_module("QtGui")
     except:
         print("WARNING: PySide was not found in the current environment.")
         pass
