@@ -44,21 +44,15 @@ setup(
     package_data={
         "tk_toolchain": [
             os.path.join("tk_testengine", "*"),
-            os.path.join("cmd_line_tools", "tk_docs_generation", "sphinx_data", "*"),
+            os.path.join("sphinx_docs", "sphinx_data", "*"),
             os.path.join("cmd_line_tools", "tk_run_app", "config", "env", "*"),
             os.path.join("cmd_line_tools", "tk_run_app", "config", "core", "*"),
             os.path.join(
                 "cmd_line_tools", "tk_run_app", "config", "core", "hooks", "*"
             ),
-            os.path.join(
-                "cmd_line_tools", "tk_docs_generation", "sphinx_data", "_static", "*"
-            ),
-            os.path.join(
-                "cmd_line_tools", "tk_docs_generation", "sphinx_data", "_templates", "*"
-            ),
-            os.path.join(
-                "cmd_line_tools", "tk_docs_generation", "sphinx_data", "resources", "*"
-            ),
+            os.path.join("sphinx_docs", "sphinx_data", "_static", "*"),
+            os.path.join("sphinx_docs", "sphinx_data", "_templates", "*"),
+            os.path.join("sphinx_docs", "sphinx_data", "resources", "*"),
         ]
     },
     python_requires=">=3.7.0",

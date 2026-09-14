@@ -15,14 +15,12 @@
 
 import os
 import logging
-import webbrowser
 import optparse
 import sys
 
-from .sphinx_processor import SphinxProcessor
-
 from tk_toolchain.repo import Repository
 from tk_toolchain import util
+from tk_toolchain.sphinx_docs import preview_docs
 
 # set up logging channel for this script
 log = logging.getLogger("sgtk.sphinx")
@@ -36,59 +34,6 @@ class OptionParserLineBreakingEpilog(optparse.OptionParser):
 
     def format_epilog(self, formatter):
         return self.epilog
-
-
-def preview_docs(
-    core_path,
-    bundle_path,
-    is_build_only,
-    warnings_as_errors=True,
-    additional_paths=None,
-):
-    """
-    Generate doc preview in a temp folder and show it in
-    a web browser.
-
-    :param core_path: Path to toolkit core
-    :param bundle_path: Path to app/engine/fw to document
-    :param additional_paths: Additional file paths to prepend to the PYTHONPATH and sys.path, for
-        sphinx to generate the docs.
-    """
-
-    log.info("Starting preview run for %s" % bundle_path)
-    sphinx_processor = SphinxProcessor(core_path, bundle_path, log, additional_paths)
-
-    # Project Name:
-    # assume the name of the folder is the name of the sphinx project
-    # e.g. /path/to/git/tk-my-app --> 'tk-my-app'
-    #
-    # NOTE! This is only handled this way during the preview phase.
-    # when you run the proper publishing script, where the git tag/branch
-    # is well known, the documentation name will be pulled strictly from
-    # the repository data.
-    #
-    # But here - in preview mode - the itention is to keep things as flexible
-    # as possible, not even assuming the existence of a git repo at this point
-    # so we pull the *temporary preview name* for the docs from the folder
-    # name.
-    #
-    doc_name = os.path.basename(bundle_path)
-
-    log.info(
-        "Note: In preview mode, a placeholder documentation title will be "
-        "extracted from the path where the content is located. "
-        "Later on when you release the documentation using "
-        "the release script, the proper github details will be extracted."
-    )
-
-    # build docs
-    location = sphinx_processor.build_docs(doc_name, "vX.Y.Z", warnings_as_errors)
-
-    if not is_build_only:
-        # show in browser
-        webbrowser.open_new("file://%s" % os.path.join(location, "index.html"))
-
-    log.info("Doc generation done.")
 
 
 ####################################################################################
@@ -191,18 +136,6 @@ to type "tk-docs-preview" to preview the documentation.
             log.info("No documentation was found.")
             return 0
 
-        # Make sure Qt is available if we're dealing with Toolkit repos.
-        if not repo.is_python_api() and not repo.is_sg_jira_bridge():
-            try:
-                import PySide2  # noqa
-            except ImportError:
-                try:
-                    import PySide6  # noqa
-                except ImportError:
-                    log.error(
-                        "PySide2, or PySide6 are required to build the documentation."
-                    )
-                    return 1
         # If the specified the core path, we'll use it.
         if options.core:
             core_path = util.expand_path(options.core)

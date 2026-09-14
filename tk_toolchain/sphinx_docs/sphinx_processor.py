@@ -184,7 +184,8 @@ class SphinxProcessor(object):
 
         return self._sphinx_build_dir
 
-    def copy_docs(self, log, src, dst):
+    @staticmethod
+    def copy_docs(log, src, dst):
         """
         Alternative implementation to shutil.copytree
         Copies recursively with very open permissions.
@@ -204,7 +205,7 @@ class SphinxProcessor(object):
 
             try:
                 if os.path.isdir(srcname):
-                    self.copy_docs(log, srcname, dstname)
+                    SphinxProcessor.copy_docs(log, srcname, dstname)
                 else:
                     shutil.copy(srcname, dstname)
                     log.debug("Copy %s -> %s" % (srcname, dstname))
