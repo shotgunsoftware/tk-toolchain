@@ -23,6 +23,7 @@
 
 import logging
 import sys
+import types
 
 
 def setup_toolkit():
@@ -39,12 +40,11 @@ def setup_toolkit():
         )
         return
 
-    # Stream tank's debug logs to stdout so they show up in the doc build log
-    # (e.g. Rundeck's console output). Particularly useful to diagnose QtImporter
-    # failures, which are otherwise silently swallowed by the except blocks below.
-    from tank.log import LogManager
-
-    log_manager = LogManager()
+    # Stream Toolkit's debug logs to stdout so they show up in the doc build
+    # output. Particularly useful to diagnose QtImporter failures, which are
+    # otherwise silently swallowed by the except blocks below.
+    import tank.log
+    log_manager = tank.log.LogManager()
     log_manager.global_debug = True
     stdout_handler = logging.StreamHandler(sys.stdout)
     stdout_handler.setFormatter(
@@ -55,8 +55,6 @@ def setup_toolkit():
     try:
         # components also use PySide, so make sure  we have this loaded up correctly
         # before starting auto-doc.
-        import types
-
         from tank.util.qt_importer import QtImporter
 
         importer = QtImporter()
@@ -227,12 +225,15 @@ def skip_qt_binding_inherited_members(app, what, name, obj, skip, options):
     Skip members actually defined in the Qt binding, already covered by the
     PySide2/PySide6 intersphinx mapping.
     """
+
     if skip:
         return skip
+
     module = getattr(obj, "__module__", None) or ""
-    if module.startswith(("PySide2", "PySide6", "PyQt4", "PyQt5")):
-        return True
-    return None
+    if not module.startswith(("PySide2", "PySide6")):
+        return False
+    
+    return True
 
 
 def setup(app):
