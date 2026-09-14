@@ -55,11 +55,13 @@ def setup_toolkit():
         # libraries on a headless server). Bundles using generated Qt Designer output
         # access Qt symbols at import time in ways an empty module can't satisfy:
         # QtCore.__dict__/QtGui.__dict__ (safe, iterated directly), but also
-        # QtCore.qRegisterResourceData(...) calls in *_rc.py resource files and
-        # subclassing (e.g. class ActivityStreamWidget(QtGui.QWidget)). So any
-        # attribute access on the stub returns a class that is itself callable and
-        # subclassable, recursively falling back the same way. This means Qt classes
-        # simply won't be documented for this build.
+        # QtCore.qRegisterResourceData(...) calls in *_rc.py resource files,
+        # subclassing (e.g. class ActivityStreamWidget(QtGui.QWidget)), and
+        # arithmetic/bitwise ops on enum-like constants (e.g. Qt.UserRole + 1,
+        # Qt.AlignHCenter | Qt.AlignTop). So any attribute access on the stub
+        # returns a class that is itself callable, subclassable and supports those
+        # operators as no-ops, recursively falling back the same way. This means Qt
+        # classes simply won't be documented for this build.
         if importer.QtCore is None:
             print(
                 "WARNING: No Qt binding could be imported. Qt-based classes will not "
@@ -72,6 +74,35 @@ def setup_toolkit():
 
                 def __call__(cls, *args, **kwargs):
                     return None
+
+                def __hash__(cls):
+                    return id(cls)
+
+            for _op in (
+                "__add__",
+                "__radd__",
+                "__sub__",
+                "__rsub__",
+                "__mul__",
+                "__rmul__",
+                "__or__",
+                "__ror__",
+                "__and__",
+                "__rand__",
+                "__xor__",
+                "__rxor__",
+                "__lshift__",
+                "__rshift__",
+                "__eq__",
+                "__ne__",
+                "__lt__",
+                "__le__",
+                "__gt__",
+                "__ge__",
+                "__neg__",
+                "__invert__",
+            ):
+                setattr(_QtStubMeta, _op, lambda cls, *args: cls)
 
             def _make_qt_stub_class(name):
                 return _QtStubMeta(name, (object,), {})
