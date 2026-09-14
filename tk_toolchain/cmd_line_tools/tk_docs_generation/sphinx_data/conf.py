@@ -75,9 +75,12 @@ def setup_toolkit():
                 def __call__(cls, *args, **kwargs):
                     return None
 
-                def __hash__(cls):
-                    return id(cls)
-
+            # Only arithmetic/bitwise ops, never comparison ops: real bundle classes
+            # subclassing a stub inherit this same metaclass (metaclasses propagate to
+            # subclasses), so overriding __eq__/__ne__ here would make Sphinx's
+            # inherited-member check (`member.class_ == documented_class`) always true,
+            # causing every subclass to redocument its base class's members (duplicate
+            # object description).
             for _op in (
                 "__add__",
                 "__radd__",
@@ -93,12 +96,6 @@ def setup_toolkit():
                 "__rxor__",
                 "__lshift__",
                 "__rshift__",
-                "__eq__",
-                "__ne__",
-                "__lt__",
-                "__le__",
-                "__gt__",
-                "__ge__",
                 "__neg__",
                 "__invert__",
             ):
