@@ -64,8 +64,7 @@ setup(
     python_requires=">=3.7.0",
     install_requires=[
         # Tests
-        "pytest==7.4.2",
-        "pytest-cov==4.1.0",
+        "pytest",
         # Locking down coverage to a specific version is important
         # because we should use the same tools that tk-core ships with.
         "coverage==7.2.7",
