@@ -43,6 +43,7 @@ def setup_toolkit():
     # output. Particularly useful to diagnose QtImporter failures, which are
     # otherwise silently swallowed by the except blocks below.
     import tank.log
+
     log_manager = tank.log.LogManager()
     log_manager.global_debug = True
     stdout_handler = logging.StreamHandler(sys.stdout)
