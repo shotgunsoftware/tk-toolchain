@@ -161,14 +161,14 @@ def skip_qt_binding_inherited_members(app, what, name, obj, skip, options):
     nested enums are real Python classes) the same Qt object gets described once
     per widget subclass, which Sphinx flags as a duplicate object description.
     Skip members actually defined in the Qt binding, already covered by the
-    PySide2/PySide6 intersphinx mapping.
+    PySide6 intersphinx mapping.
     """
 
     if skip:
         return skip
 
     module = getattr(obj, "__module__", None) or ""
-    return module.startswith("PySide6"):
+    return module.startswith("PySide6")
 
 
 def setup(app):
