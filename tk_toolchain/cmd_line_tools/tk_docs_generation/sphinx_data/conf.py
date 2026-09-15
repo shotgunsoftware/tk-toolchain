@@ -23,7 +23,6 @@
 
 import logging
 import sys
-import types
 
 
 def setup_toolkit():
@@ -61,67 +60,6 @@ def setup_toolkit():
 
         tank.platform.qt.QtCore = importer.QtCore
         tank.platform.qt.QtGui = importer.QtGui
-
-        # SG-45110: no Qt binding could be imported (e.g. missing OpenGL/EGL shared
-        # libraries on a headless server). Bundles using generated Qt Designer output
-        # access Qt symbols at import time in ways an empty module can't satisfy:
-        # QtCore.__dict__/QtGui.__dict__ (safe, iterated directly), but also
-        # QtCore.qRegisterResourceData(...) calls in *_rc.py resource files,
-        # subclassing (e.g. class ActivityStreamWidget(QtGui.QWidget)), and
-        # arithmetic/bitwise ops on enum-like constants (e.g. Qt.UserRole + 1,
-        # Qt.AlignHCenter | Qt.AlignTop). So any attribute access on the stub
-        # returns a class that is itself callable, subclassable and supports those
-        # operators as no-ops, recursively falling back the same way. This means Qt
-        # classes simply won't be documented for this build.
-        if importer.QtCore is None:
-            print(
-                "WARNING: No Qt binding could be imported. Qt-based classes will not "
-                "be documented for this build."
-            )
-
-            class _QtStubMeta(type):
-                def __getattr__(cls, name):
-                    return _make_qt_stub_class(name)
-
-                def __call__(cls, *args, **kwargs):
-                    return None
-
-            # Only arithmetic/bitwise ops, never comparison ops: real bundle classes
-            # subclassing a stub inherit this same metaclass (metaclasses propagate to
-            # subclasses), so overriding __eq__/__ne__ here would make Sphinx's
-            # inherited-member check (`member.class_ == documented_class`) always true,
-            # causing every subclass to redocument its base class's members (duplicate
-            # object description).
-            for _op in (
-                "__add__",
-                "__radd__",
-                "__sub__",
-                "__rsub__",
-                "__mul__",
-                "__rmul__",
-                "__or__",
-                "__ror__",
-                "__and__",
-                "__rand__",
-                "__xor__",
-                "__rxor__",
-                "__lshift__",
-                "__rshift__",
-                "__neg__",
-                "__invert__",
-            ):
-                setattr(_QtStubMeta, _op, lambda cls, *args: cls)
-
-            def _make_qt_stub_class(name):
-                return _QtStubMeta(name, (object,), {})
-
-            def _make_qt_stub_module(module_name):
-                stub = types.ModuleType(module_name)
-                stub.__getattr__ = _make_qt_stub_class
-                return stub
-
-            tank.platform.qt.QtCore = _make_qt_stub_module("QtCore")
-            tank.platform.qt.QtGui = _make_qt_stub_module("QtGui")
     except:
         print("WARNING: PySide was not found in the current environment.")
         pass
@@ -230,10 +168,7 @@ def skip_qt_binding_inherited_members(app, what, name, obj, skip, options):
         return skip
 
     module = getattr(obj, "__module__", None) or ""
-    if not module.startswith(("PySide2", "PySide6")):
-        return False
-    
-    return True
+    return module.startswith("PySide6"):
 
 
 def setup(app):
