@@ -71,8 +71,7 @@ setup(
         "PySide2; python_version <= '3.10'",
         "PySide6<6.9; python_version > '3.10'",
         # Tests
-        "pytest==7.4.2",
-        "pytest-cov==4.1.0",
+        "pytest",
         # Locking down coverage to a specific version is important
         # because we should use the same tools that tk-core ships with.
         "coverage==7.2.7",
