@@ -66,7 +66,6 @@ setup(
         # Tests
         "pytest==7.4.2",
         "pytest-cov==4.1.0",
-        "coverage",
         # Doc generation
         "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
         "sphinx_rtd_theme==1.3.0",
