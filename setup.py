@@ -12,7 +12,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import codecs
 from setuptools import setup, find_packages
 
@@ -61,7 +60,7 @@ setup(
             ),
         ]
     },
-    python_requires=">=3.7.0",
+    python_requires=">=3.9.0",
     install_requires=[
         # Tests
         "pytest==7.4.2",
@@ -70,10 +69,8 @@ setup(
         # because we should use the same tools that tk-core ships with.
         "coverage==7.2.7",
         # Doc generation
-        "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
+        "sphinx==7.0.0",
         "sphinx_rtd_theme==1.3.0",
-        # Lock down jinja because 3.1.0 breaks the build.
-        "jinja2==3.0.3",
         # Other tools used by devs that are useful to have.
         "pre-commit",
         "ruamel.yaml",
@@ -84,10 +81,10 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Operating System :: OS Independent",
