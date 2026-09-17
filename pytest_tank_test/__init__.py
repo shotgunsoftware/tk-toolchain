@@ -184,11 +184,11 @@ def _ensure_dependencies(repo):
                 )
 
 
-def pytest_ignore_collect(path, config):
+def pytest_ignore_collect(collection_path, config):
     """
     Ignore unit tests for third parties found inside tk-core and any Python
     source file inside tests/fixtures.
     """
-    return os.path.join("tests", "python", "third_party") in str(path) or os.path.join(
-        "tests", "fixtures"
-    ) in str(path)
+    return os.path.join("tests", "python", "third_party") in str(
+        collection_path
+    ) or os.path.join("tests", "fixtures") in str(collection_path)
