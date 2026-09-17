@@ -19,9 +19,9 @@ from .tk_fixtures import (  # noqa
     tk_test_entities,
 )
 from ruamel.yaml import YAML
+from typing import Union
 
 import os
-import pathlib
 import pytest
 import sys
 
@@ -186,7 +186,9 @@ def _ensure_dependencies(repo):
                 )
 
 
-def pytest_ignore_collect(collection_path: pathlib.Path, config: pytest.Config) -> bool:
+def pytest_ignore_collect(
+    collection_path: Union[str, os.PathLike], config: pytest.Config
+) -> bool:
     """
     Ignore unit tests for third parties found inside tk-core and any Python
     source file inside tests/fixtures.
