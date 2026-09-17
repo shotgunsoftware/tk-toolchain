@@ -63,6 +63,13 @@ setup(
     },
     python_requires=">=3.7.0",
     install_requires=[
+        # Qt for Python - required by tk-docs-preview and sphinx processor to
+        # import Toolkit modules during doc generation.
+        # Loose constraints intentional: any working version suffices; callers
+        # (tk-ci-tools, ...) might want to control the version via their own
+        # environment setup.
+        "PySide2; python_version <= '3.10'",
+        "PySide6<6.9; python_version > '3.10'",
         # Tests
         "pytest==7.4.2",
         "pytest-cov==4.1.0",
