@@ -9,8 +9,6 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from __future__ import annotations
-
 from tk_toolchain.repo import Repository
 from tk_toolchain import util
 from tk_toolchain.tk_testengine import get_test_engine_environment
@@ -23,6 +21,7 @@ from .tk_fixtures import (  # noqa
 from ruamel.yaml import YAML
 
 import os
+import pathlib
 import pytest
 import sys
 
@@ -187,9 +186,7 @@ def _ensure_dependencies(repo):
                 )
 
 
-def pytest_ignore_collect(
-    collection_path: str | os.PathLike, config: pytest.Config
-) -> bool:
+def pytest_ignore_collect(collection_path: pathlib.Path, config: pytest.Config) -> bool:
     """
     Ignore unit tests for third parties found inside tk-core and any Python
     source file inside tests/fixtures.
