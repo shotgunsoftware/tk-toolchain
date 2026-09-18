@@ -71,11 +71,7 @@ setup(
         "PySide2; python_version <= '3.10'",
         "PySide6<6.9; python_version > '3.10'",
         # Tests
-        "pytest==7.4.2",
-        "pytest-cov==4.1.0",
-        # Locking down coverage to a specific version is important
-        # because we should use the same tools that tk-core ships with.
-        "coverage==7.2.7",
+        "pytest",
         # Doc generation
         "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
         "sphinx_rtd_theme==1.3.0",
