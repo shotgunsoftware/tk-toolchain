@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2018 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
@@ -13,7 +12,7 @@
 import os
 
 
-class Repository(object):
+class Repository:
     """
     This class allows to introspect the repository.
     """

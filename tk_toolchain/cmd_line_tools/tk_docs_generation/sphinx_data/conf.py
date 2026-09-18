@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2019 Shotgun Software Inc.
 #
@@ -71,7 +70,7 @@ def setup_toolkit():
     # sphinx to run its introspection, so we need to replace these import
     # methods with proxy
 
-    class ModuleImportProxy(object):
+    class ModuleImportProxy:
         """
         Proxy class that returns None for any attribute request.
         This so that the code that is being documented can
@@ -85,7 +84,7 @@ def setup_toolkit():
         def __getattr__(self, name):
             return object
 
-    class BundleProxy(object):
+    class BundleProxy:
         """
         Proxy object representing a tank bundle object.
         This is primarily so we can implement a proxy wrapper for

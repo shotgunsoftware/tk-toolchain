@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2019 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
@@ -23,7 +22,7 @@ from ruamel import yaml
 
 # FIXME: Maybe we should rename the other repository class (tk_toolchain.repo.Repository)
 # to Bundle?
-class Repository(object):
+class Repository:
     """
     Handles operations on a repository.
     """

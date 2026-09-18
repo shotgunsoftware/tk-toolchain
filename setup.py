@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2019 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
@@ -9,10 +8,8 @@
 # By accessing, using, copying or modifying this work you indicate your
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
-# -*- coding: utf-8 -*-
 
 import os
-import codecs
 from setuptools import setup, find_packages
 
 
@@ -23,7 +20,7 @@ def read_file(fname):
     :returns: The text content.
     """
     file_path = os.path.join(os.path.dirname(__file__), fname)
-    with codecs.open(file_path, encoding="utf-8") as fh:
+    with open(file_path, encoding="utf-8") as fh:
         return fh.read()
 
 
