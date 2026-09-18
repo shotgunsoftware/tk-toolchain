@@ -21,6 +21,8 @@ from .tk_fixtures import (  # noqa
 from ruamel.yaml import YAML
 
 import os
+import pathlib
+import pytest
 import sys
 
 
@@ -184,8 +186,8 @@ def _ensure_dependencies(repo):
                 )
 
 
-def pytest_ignore_collect(path, config):
+def pytest_ignore_collect(collection_path: pathlib.Path, config: pytest.Config) -> bool:
     """
     Ignore any Python source file inside tests/fixtures.
     """
-    return os.path.join("tests", "fixtures") in str(path)
+    return os.path.join("tests", "fixtures") in str(collection_path)
