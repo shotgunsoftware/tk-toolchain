@@ -39,6 +39,19 @@ def setup_toolkit():
         )
         return
 
+    # Stream Toolkit's debug logs to stdout so they show up in the doc build
+    # output. Particularly useful to diagnose QtImporter failures, which are
+    # otherwise silently swallowed by the except blocks below.
+    import tank.log
+
+    log_manager = tank.log.LogManager()
+    log_manager.global_debug = True
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setFormatter(
+        logging.Formatter("[%(levelname)s %(name)s] %(message)s")
+    )
+    log_manager.initialize_custom_handler(stdout_handler)
+
     try:
         # components also use PySide, so make sure  we have this loaded up correctly
         # before starting auto-doc.
@@ -98,8 +111,6 @@ def setup_toolkit():
     # Monkey patch Toolkit so Toolkit bundles can be loaded for documentation
     # purpose.
     try:
-        import sys
-
         sys.setrecursionlimit(1500)
 
         # make sure we patch our proxy methods with doc strings
@@ -145,8 +156,25 @@ def remove_module_docstring(app, what, name, obj, options, lines):
         del lines[:]
 
 
+def skip_qt_binding_inherited_members(app, what, name, obj, skip, options):
+    """
+    :inherited-members: makes autodoc walk the full MRO, so with PySide6 (whose
+    nested enums are real Python classes) the same Qt object gets described once
+    per widget subclass, which Sphinx flags as a duplicate object description.
+    Skip members actually defined in the Qt binding, already covered by the
+    PySide6 intersphinx mapping.
+    """
+
+    if skip:
+        return skip
+
+    module = getattr(obj, "__module__", None) or ""
+    return module.startswith("PySide6")
+
+
 def setup(app):
     app.connect("autodoc-process-docstring", remove_module_docstring)
+    app.connect("autodoc-skip-member", skip_qt_binding_inherited_members)
 
 
 ########################

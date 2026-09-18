@@ -62,12 +62,15 @@ setup(
     },
     python_requires=">=3.9.0",
     install_requires=[
+        # Qt for Python - required by tk-docs-preview and sphinx processor to
+        # import Toolkit modules during doc generation.
+        # Loose constraints intentional: any working version suffices; callers
+        # (tk-ci-tools, ...) might want to control the version via their own
+        # environment setup.
+        "PySide2; python_version <= '3.10'",
+        "PySide6<6.9; python_version > '3.10'",
         # Tests
-        "pytest==7.4.2",
-        "pytest-cov==4.1.0",
-        # Locking down coverage to a specific version is important
-        # because we should use the same tools that tk-core ships with.
-        "coverage==7.2.7",
+        "pytest",
         # Doc generation
         "sphinx==7.0.0",
         "sphinx_rtd_theme==1.3.0",
