@@ -72,7 +72,6 @@ setup(
         "PySide6<6.9; python_version > '3.10'",
         # Tests
         "pytest",
-        "pytest-cov",
         # Doc generation
         "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
         "sphinx_rtd_theme==1.3.0",
