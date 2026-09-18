@@ -29,7 +29,7 @@ def read_file(fname):
 
 setup(
     name="tk-toolchain",
-    version="v0.4.0",
+    version="v0.5.0",
     author="Autodesk",
     author_email="https://help.autodesk.com/view/SGDEV/ENU/",
     maintainer="Autodesk",
@@ -72,8 +72,8 @@ setup(
         # Tests
         "pytest",
         # Doc generation
-        "sphinx==7.0.0",
-        "sphinx_rtd_theme==1.3.0",
+        "sphinx~=7.0.0",
+        "sphinx_rtd_theme~=1.3.0",
         # Other tools used by devs that are useful to have.
         "pre-commit",
         "ruamel.yaml",
