@@ -10,7 +10,7 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 import os
-from setuptools import setup, find_packages
+import setuptools
 
 
 def read_file(fname):
@@ -24,7 +24,7 @@ def read_file(fname):
         return fh.read()
 
 
-setup(
+setuptools.setup(
     name="tk-toolchain",
     version="v0.5.0",
     author="Autodesk",
@@ -35,7 +35,7 @@ setup(
     url="https://github.com/shotgunsoftware/tk-toolchain",
     description="Build tools for Flow Production Tracking.",
     long_description=read_file("README.md"),
-    packages=find_packages(),
+    packages=setuptools.find_packages(),
     data_files=[("", ["LICENSE"])],
     package_data={
         "tk_toolchain": [
