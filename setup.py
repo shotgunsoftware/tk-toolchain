@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2019 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
@@ -9,12 +8,9 @@
 # By accessing, using, copying or modifying this work you indicate your
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
-# -*- coding: utf-8 -*-
 
 import os
-import sys
-import codecs
-from setuptools import setup, find_packages
+import setuptools
 
 
 def read_file(fname):
@@ -24,13 +20,13 @@ def read_file(fname):
     :returns: The text content.
     """
     file_path = os.path.join(os.path.dirname(__file__), fname)
-    with codecs.open(file_path, encoding="utf-8") as fh:
+    with open(file_path, encoding="utf-8") as fh:
         return fh.read()
 
 
-setup(
+setuptools.setup(
     name="tk-toolchain",
-    version="v0.4.0",
+    version="v0.5.0",
     author="Autodesk",
     author_email="https://help.autodesk.com/view/SGDEV/ENU/",
     maintainer="Autodesk",
@@ -39,7 +35,7 @@ setup(
     url="https://github.com/shotgunsoftware/tk-toolchain",
     description="Build tools for Flow Production Tracking.",
     long_description=read_file("README.md"),
-    packages=find_packages(),
+    packages=setuptools.find_packages(),
     data_files=[("", ["LICENSE"])],
     package_data={
         "tk_toolchain": [
@@ -61,7 +57,7 @@ setup(
             ),
         ]
     },
-    python_requires=">=3.7.0",
+    python_requires=">=3.9.0",
     install_requires=[
         # Qt for Python - required by tk-docs-preview and sphinx processor to
         # import Toolkit modules during doc generation.
@@ -73,10 +69,8 @@ setup(
         # Tests
         "pytest",
         # Doc generation
-        "sphinx==7.0.0" if sys.version_info[0:2] >= (3, 9) else "sphinx==5.3.0",
-        "sphinx_rtd_theme==1.3.0",
-        # Lock down jinja because 3.1.0 breaks the build.
-        "jinja2==3.0.3",
+        "sphinx~=7.0.0",
+        "sphinx_rtd_theme~=1.3.0",
         # Other tools used by devs that are useful to have.
         "pre-commit",
         "ruamel.yaml",
@@ -87,10 +81,10 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Operating System :: OS Independent",

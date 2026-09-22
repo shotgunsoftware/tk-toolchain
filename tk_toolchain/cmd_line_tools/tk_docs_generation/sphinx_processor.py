@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2019 Shotgun Software Inc.
 #
 # CONFIDENTIAL AND PROPRIETARY
@@ -29,7 +28,7 @@ def execute_command(log, command, expected_code=0):
         log.debug("Command %s executed successfully." % command)
 
 
-class SphinxProcessor(object):
+class SphinxProcessor:
     """
     Class that wraps sphinx doc generation
     """
