@@ -393,7 +393,7 @@ htmlhelp_basename = "tkdoc"
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3.9", None),
     "PySide": ("http://pyside.github.io/docs/pyside/", None),
-    "PySide2": ("https://doc.qt.io/qtforpython-5", None),
+    "PySide2": ("https://doc.qt.io/archives/qtforpython-5", None),
     "PySide6": ("https://doc.qt.io/qtforpython-6", None),
     "sgtk": ("http://developers.shotgridsoftware.com/tk-core/", None),
     "tk-framework-qtwidgets": (
