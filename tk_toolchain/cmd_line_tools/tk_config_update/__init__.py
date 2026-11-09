@@ -266,7 +266,10 @@ GITHUB_API_URL = "https://api.github.com"
 # credential helper configured by tk-ci-tools uses to push.
 GITHUB_TOKEN_ENV_VAR = "GH_ACCESS_TOKEN"
 
+# Anchored on both ends so only github.com itself matches, not lookalike hosts
+# (e.g. notgithub.com) or URLs merely containing "github.com" in their path.
 _GITHUB_URL_REGEX = re.compile(
+    r"^(?:https://(?:[^@/]+@)?|git@|ssh://git@)"
     r"github\.com[:/](?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?/?$"
 )
 
@@ -275,8 +278,8 @@ def parse_github_url(url):
     """
     Extract the owner and the name of a repository from a GitHub remote URL.
 
-    Supports both https://github.com/owner/repo.git and
-    git@github.com:owner/repo.git.
+    Supports https://github.com/owner/repo.git, git@github.com:owner/repo.git and
+    ssh://git@github.com/owner/repo.git. Any other host is rejected.
 
     :param str url: URL of the remote.
 
@@ -284,7 +287,7 @@ def parse_github_url(url):
 
     :raises ValueError: If the URL is not a GitHub repository URL.
     """
-    match = _GITHUB_URL_REGEX.search(url)
+    match = _GITHUB_URL_REGEX.match(url)
     if not match:
         raise ValueError("'{0}' is not a GitHub repository URL.".format(url))
     return match.group("owner"), match.group("repo")

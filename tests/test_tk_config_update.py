@@ -159,6 +159,14 @@ def test_update_config(
             "git@github.com:shotgunsoftware/tk-config-default2.git",
             ("shotgunsoftware", "tk-config-default2"),
         ),
+        (
+            "ssh://git@github.com/shotgunsoftware/tk-config-rv.git",
+            ("shotgunsoftware", "tk-config-rv"),
+        ),
+        (
+            "https://x-access-token@github.com/shotgunsoftware/tk-config-rv.git",
+            ("shotgunsoftware", "tk-config-rv"),
+        ),
     ],
 )
 def test_parse_github_url(url, expected):
@@ -168,12 +176,26 @@ def test_parse_github_url(url, expected):
     assert tk_config_update.parse_github_url(url) == expected
 
 
-def test_parse_github_url_invalid():
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://example.com/owner/repo.git",
+        # Lookalike hosts.
+        "https://notgithub.com/owner/repo.git",
+        "https://github.com.evil.com/owner/repo.git",
+        "git@notgithub.com:owner/repo.git",
+        # github.com only appearing in the path or as a prefix.
+        "https://example.com/github.com/owner/repo.git",
+        "file:///tmp/github.com/owner/repo.git",
+        "/tmp/github.com/owner/repo.git",
+    ],
+)
+def test_parse_github_url_invalid(url):
     """
     Ensure non GitHub URLs are rejected.
     """
     with pytest.raises(ValueError):
-        tk_config_update.parse_github_url("https://example.com/owner/repo.git")
+        tk_config_update.parse_github_url(url)
 
 
 def test_create_pull_request(monkeypatch):
@@ -276,6 +298,169 @@ def test_repository_branch_operations(tmp_path):
     )
     repo.push("update/tk-core-v1.0.0")
     assert repo.remote_branch_exists("update/tk-core-v1.0.0")
+
+
+CONFIG_URL = "https://github.com/shotgunsoftware/tk-config-basic.git"
+
+_GIT_IDENTITY = ["git", "-c", "user.name=t", "-c", "user.email=t@example.com"]
+
+
+@pytest.fixture
+def fake_github(monkeypatch, tmp_path):
+    """
+    Make CONFIG_URL point to a local bare repository, so main() can clone and push
+    for real without ever reaching GitHub, and stub out the pull request creation.
+
+    :returns: Tuple of (path to the bare remote, list of pull request calls).
+    """
+    remote = tmp_path / "remote.git"
+    subprocess.check_call(["git", "init", "--bare", "-b", "main", str(remote)])
+
+    seed = tmp_path / "seed"
+    subprocess.check_call(["git", "init", "-b", "main", str(seed)])
+    (seed / "apps.yml").write_text(
+        "location:\n"
+        "  type: app_store\n"
+        "  name: tk-core\n"
+        "  version: v1.0.0\n"
+    )
+    subprocess.check_call(["git", "add", "apps.yml"], cwd=str(seed))
+    subprocess.check_call(_GIT_IDENTITY + ["commit", "-m", "init"], cwd=str(seed))
+    subprocess.check_call(["git", "push", str(remote), "main"], cwd=str(seed))
+
+    # Redirect the GitHub URL to the local remote.
+    for name, value in (
+        ("GIT_CONFIG_COUNT", "1"),
+        ("GIT_CONFIG_KEY_0", "url.{0}.insteadOf".format(remote.as_uri())),
+        ("GIT_CONFIG_VALUE_0", CONFIG_URL),
+        ("GIT_AUTHOR_NAME", "t"),
+        ("GIT_AUTHOR_EMAIL", "t@example.com"),
+        ("GIT_COMMITTER_NAME", "t"),
+        ("GIT_COMMITTER_EMAIL", "t@example.com"),
+        (tk_config_update.GITHUB_TOKEN_ENV_VAR, "secret"),
+    ):
+        monkeypatch.setenv(name, value)
+
+    pull_requests = []
+
+    def fake_create_pull_request(owner, repo, token, title, head, base, body):
+        pull_requests.append(
+            {
+                "base": base,
+                "body": body,
+                "head": head,
+                "owner": owner,
+                "repo": repo,
+                "title": title,
+                "token": token,
+            }
+        )
+        return "https://github.com/{0}/{1}/pull/1".format(owner, repo)
+
+    monkeypatch.setattr(
+        tk_config_update, "create_pull_request", fake_create_pull_request
+    )
+
+    return str(remote), pull_requests
+
+
+def _remote_branches(remote):
+    """
+    List the branches of a repository.
+    """
+    output = subprocess.check_output(
+        ["git", "branch", "--format=%(refname:short)"], cwd=remote, text=True
+    )
+    return set(output.split())
+
+
+def test_main_opens_pull_request(fake_github):
+    """
+    Ensure the update is pushed to a branch and a pull request is opened, leaving
+    the default branch untouched.
+    """
+    remote, pull_requests = fake_github
+    main_before = subprocess.check_output(
+        ["git", "rev-parse", "main"], cwd=remote, text=True
+    )
+
+    assert (
+        tk_config_update.main([CONFIG_URL, "tk-core", "v2.0.0", "--push-changes"]) == 0
+    )
+
+    assert _remote_branches(remote) == {"main", "update/tk-core-v2.0.0"}
+    assert (
+        subprocess.check_output(["git", "rev-parse", "main"], cwd=remote, text=True)
+        == main_before
+    )
+    updated = subprocess.check_output(
+        ["git", "show", "update/tk-core-v2.0.0:apps.yml"], cwd=remote, text=True
+    )
+    assert "version: v2.0.0" in updated
+
+    assert pull_requests == [
+        {
+            "base": "main",
+            "body": (
+                "Release notes: "
+                "https://github.com/shotgunsoftware/tk-core/releases/tag/v2.0.0"
+            ),
+            "head": "update/tk-core-v2.0.0",
+            "owner": "shotgunsoftware",
+            "repo": "tk-config-basic",
+            "title": "Updated tk-core to v2.0.0",
+            "token": "secret",
+        }
+    ]
+
+
+def test_main_without_push_changes(fake_github):
+    """
+    Ensure nothing is pushed and no pull request is opened without --push-changes.
+    """
+    remote, pull_requests = fake_github
+
+    assert tk_config_update.main([CONFIG_URL, "tk-core", "v2.0.0"]) == 0
+
+    assert _remote_branches(remote) == {"main"}
+    assert pull_requests == []
+
+
+def test_main_nothing_to_update(fake_github):
+    """
+    Ensure no branch is pushed and no pull request is opened if no file changed.
+    """
+    remote, pull_requests = fake_github
+
+    arguments = [CONFIG_URL, "tk-toolkit-app", "v2.0.0", "--push-changes"]
+    assert tk_config_update.main(arguments) == 0
+
+    assert _remote_branches(remote) == {"main"}
+    assert pull_requests == []
+
+
+def test_main_existing_branch(fake_github):
+    """
+    Ensure we refuse to touch a branch that already exists, rather than force it.
+    """
+    remote, pull_requests = fake_github
+    subprocess.check_call(
+        ["git", "branch", "update/tk-core-v2.0.0", "main"], cwd=remote
+    )
+    branch_before = subprocess.check_output(
+        ["git", "rev-parse", "update/tk-core-v2.0.0"], cwd=remote, text=True
+    )
+
+    with pytest.raises(RuntimeError, match="already exists"):
+        tk_config_update.main([CONFIG_URL, "tk-core", "v2.0.0", "--push-changes"])
+
+    assert pull_requests == []
+    assert (
+        subprocess.check_output(
+            ["git", "rev-parse", "update/tk-core-v2.0.0"], cwd=remote, text=True
+        )
+        == branch_before
+    )
 
 
 # This will of files will not change over time as the repository for the tests
