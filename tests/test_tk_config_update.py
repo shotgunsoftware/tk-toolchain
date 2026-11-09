@@ -319,10 +319,7 @@ def fake_github(monkeypatch, tmp_path):
     seed = tmp_path / "seed"
     subprocess.check_call(["git", "init", "-b", "main", str(seed)])
     (seed / "apps.yml").write_text(
-        "location:\n"
-        "  type: app_store\n"
-        "  name: tk-core\n"
-        "  version: v1.0.0\n"
+        "location:\n" "  type: app_store\n" "  name: tk-core\n" "  version: v1.0.0\n"
     )
     subprocess.check_call(["git", "add", "apps.yml"], cwd=str(seed))
     subprocess.check_call(_GIT_IDENTITY + ["commit", "-m", "init"], cwd=str(seed))
