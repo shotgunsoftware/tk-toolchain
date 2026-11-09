@@ -267,19 +267,21 @@ Known limitations:
 
 ## `tk-config-update`
 
-This is an internal tool that allows the Toolkit team to easily update a configuration whenever a new version of a bundle is tagged on a repository on Github. By default, the changes are not pushed back to the origin. Adding `--push-changes` will push the changes back to the origin.
+This is an internal tool that allows the Toolkit team to easily update a configuration whenever a new version of a bundle is tagged on a repository on Github. The changes are never committed to the configuration's default branch directly. Adding `--push-changes` will push them to a new `update/<bundle>-<version>` branch and open a pull request against the default branch. This requires the `GH_ACCESS_TOKEN` environment variable to hold a GitHub token allowed to push branches and open pull requests. Without `--push-changes`, the remote repository is not updated.
 
 ```
 Toolkit Configuration Update
 
-Update the version of a bundle in a config to the specified version and pushes
-it back to the source repository.
+Update the version of a bundle in a config to the specified version, pushes
+the change to a new branch and opens a pull request.
 
 Usage:
     tk-config-update <config> <bundle> <version> [--push-changes]
 
 Options:
-    --push-changes  Pushes the changes to the repository. If not specified,
+    --push-changes  Pushes the changes to a new branch and opens a pull
+                    request against the default branch. Requires the
+                    GH_ACCESS_TOKEN environment variable. If not specified,
                     the remote repository is not updated.
 
 Example:

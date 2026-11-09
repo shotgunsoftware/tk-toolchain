@@ -8,8 +8,11 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
+import io
+import json
 import os
 import subprocess
+import urllib.error
 
 import pytest
 from ruamel import yaml
@@ -139,6 +142,140 @@ def test_update_config(
     value["version"] = expected_version
 
     assert expected_cfg == test_config
+
+
+@pytest.mark.parametrize(
+    "url, expected",
+    [
+        (
+            "https://github.com/shotgunsoftware/tk-config-basic.git",
+            ("shotgunsoftware", "tk-config-basic"),
+        ),
+        (
+            "https://github.com/shotgunsoftware/tk-config-basic",
+            ("shotgunsoftware", "tk-config-basic"),
+        ),
+        (
+            "git@github.com:shotgunsoftware/tk-config-default2.git",
+            ("shotgunsoftware", "tk-config-default2"),
+        ),
+    ],
+)
+def test_parse_github_url(url, expected):
+    """
+    Ensure the owner and repository are extracted from GitHub URLs.
+    """
+    assert tk_config_update.parse_github_url(url) == expected
+
+
+def test_parse_github_url_invalid():
+    """
+    Ensure non GitHub URLs are rejected.
+    """
+    with pytest.raises(ValueError):
+        tk_config_update.parse_github_url("https://example.com/owner/repo.git")
+
+
+def test_create_pull_request(monkeypatch):
+    """
+    Ensure the pull request is requested with the right payload and credentials.
+    """
+    sent = {}
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def read(self, *args):
+            return json.dumps({"html_url": "https://github.com/o/r/pull/1"}).encode()
+
+    def fake_urlopen(request):
+        sent["request"] = request
+        return FakeResponse()
+
+    monkeypatch.setattr(tk_config_update.urllib.request, "urlopen", fake_urlopen)
+
+    url = tk_config_update.create_pull_request(
+        "o", "r", "secret", "title", head="my-branch", base="master", body="body"
+    )
+
+    request = sent["request"]
+    assert url == "https://github.com/o/r/pull/1"
+    assert request.full_url == "https://api.github.com/repos/o/r/pulls"
+    assert request.get_method() == "POST"
+    assert request.get_header("Authorization") == "Bearer secret"
+    assert json.loads(request.data) == {
+        "base": "master",
+        "body": "body",
+        "head": "my-branch",
+        "title": "title",
+    }
+
+
+def test_create_pull_request_error_does_not_leak_token(monkeypatch):
+    """
+    Ensure a GitHub refusal is reported without the token.
+    """
+
+    def fake_urlopen(request):
+        raise urllib.error.HTTPError(
+            request.full_url, 422, "Unprocessable", {}, io.BytesIO(b"already exists")
+        )
+
+    monkeypatch.setattr(tk_config_update.urllib.request, "urlopen", fake_urlopen)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        tk_config_update.create_pull_request(
+            "o", "r", "secret", "title", head="b", base="master", body=""
+        )
+    assert "already exists" in str(exc_info.value)
+    assert "secret" not in str(exc_info.value)
+
+
+def test_main_requires_token_to_push(monkeypatch):
+    """
+    Ensure we fail before cloning anything if we can't open a pull request.
+    """
+    monkeypatch.delenv(tk_config_update.GITHUB_TOKEN_ENV_VAR, raising=False)
+    with pytest.raises(RuntimeError):
+        tk_config_update.main(
+            [
+                "https://github.com/shotgunsoftware/tk-config-basic.git",
+                "tk-core",
+                "v1.0.0",
+                "--push-changes",
+            ]
+        )
+
+
+def test_repository_branch_operations(tmp_path):
+    """
+    Ensure the branch helpers behave against a real (local) remote.
+    """
+    remote = str(tmp_path / "remote.git")
+    subprocess.check_call(["git", "init", "--bare", "-b", "main", remote])
+
+    seed = str(tmp_path / "seed")
+    subprocess.check_call(["git", "init", "-b", "main", seed])
+    git = ["git", "-c", "user.name=t", "-c", "user.email=t@example.com"]
+    subprocess.check_call(git + ["commit", "--allow-empty", "-m", "init"], cwd=seed)
+    subprocess.check_call(["git", "push", remote, "main"], cwd=seed)
+
+    repo = tk_config_update.Repository.clone("file://" + remote)
+    assert repo.current_branch == "main"
+    assert not repo.remote_branch_exists("update/tk-core-v1.0.0")
+
+    repo.checkout_new_branch("update/tk-core-v1.0.0")
+    assert repo.current_branch == "update/tk-core-v1.0.0"
+
+    subprocess.check_call(
+        git + ["commit", "--allow-empty", "-m", "change"], cwd=repo.root
+    )
+    repo.push("update/tk-core-v1.0.0")
+    assert repo.remote_branch_exists("update/tk-core-v1.0.0")
 
 
 # This will of files will not change over time as the repository for the tests
