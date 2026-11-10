@@ -261,7 +261,7 @@ def test_main_requires_token_to_push(monkeypatch):
     """
     Ensure we fail before cloning anything if we can't open a pull request.
     """
-    monkeypatch.delenv(tk_config_update.GITHUB_TOKEN_ENV_VAR, raising=False)
+    monkeypatch.delenv(tk_config_update.GH_ACCESS_TOKEN, raising=False)
     with pytest.raises(RuntimeError):
         tk_config_update.main(
             [
@@ -334,7 +334,7 @@ def fake_github(monkeypatch, tmp_path):
         ("GIT_AUTHOR_EMAIL", "t@example.com"),
         ("GIT_COMMITTER_NAME", "t"),
         ("GIT_COMMITTER_EMAIL", "t@example.com"),
-        (tk_config_update.GITHUB_TOKEN_ENV_VAR, "secret"),
+        (tk_config_update.GH_ACCESS_TOKEN, "secret"),
     ):
         monkeypatch.setenv(name, value)
 

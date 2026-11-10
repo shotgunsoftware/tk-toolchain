@@ -264,7 +264,7 @@ GITHUB_API_URL = "https://api.github.com"
 
 # Environment variable holding the GitHub token. This is the same one the git
 # credential helper configured by tk-ci-tools uses to push.
-GITHUB_TOKEN_ENV_VAR = "GH_ACCESS_TOKEN"
+GH_ACCESS_TOKEN = "GH_ACCESS_TOKEN"
 
 # Anchored on both ends so only github.com itself matches, not lookalike hosts
 # (e.g. notgithub.com) or URLs merely containing "github.com" in their path.
@@ -389,11 +389,11 @@ def main(arguments=None):
     # Fail early if we know we won't be able to open the pull request.
     if args.push_changes is True:
         owner, repo_name = parse_github_url(args.config)
-        token = os.environ.get(GITHUB_TOKEN_ENV_VAR)
+        token = os.environ.get(GH_ACCESS_TOKEN)
         if not token:
             raise RuntimeError(
                 "The {0} environment variable is required with --push-changes.".format(
-                    GITHUB_TOKEN_ENV_VAR
+                    GH_ACCESS_TOKEN
                 )
             )
 
