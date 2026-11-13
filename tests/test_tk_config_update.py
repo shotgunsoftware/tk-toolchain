@@ -27,14 +27,14 @@ def cloned_config(tk_config_root, tmpdir_factory):
     """
     Clone tk-config-basic so we don't modify the user's repo.
 
-    If this clone fails, it's likely because tag v1.6.1 is not in your
+    If this clone fails, it's likely because tag v1.7.9 is not in your
     copy of the repository or because tk-config-basic is missing.
     """
     tmp_path = str(tmpdir_factory.mktemp("config"))
-    # We're cloning version v1.6.1 to ensure the test doesn't fail due to a change
+    # We're cloning version v1.7.9 to ensure the test doesn't fail due to a change
     # in the config.
     subprocess.check_call(
-        ["git", "clone", "--depth", "1", "--branch", "v1.6.1", tk_config_root, tmp_path]
+        ["git", "clone", "--depth", "1", "--branch", "v1.7.9", tk_config_root, tmp_path]
     )
     return tmp_path
 
@@ -542,5 +542,7 @@ expected_config_files = set(
         "env/includes/vred/asset_step.yml",
         "env/playlist.yml",
         "env/includes/shotgun/playlist.yml",
+        # Added after v1.7.9
+        "core/flow.yml",
     ]
 )

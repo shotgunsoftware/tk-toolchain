@@ -23,6 +23,10 @@
 import logging
 import sys
 
+# The Python API documentation is built from the path of the python-api checkout,
+# which is passed on the Sphinx command line.
+is_python_api = any("python-api" in arg for arg in sys.argv)
+
 
 def setup_toolkit():
     try:
@@ -142,7 +146,12 @@ def setup_toolkit():
         traceback.print_exc()
 
 
-setup_toolkit()
+# The Python API documentation doesn't need Toolkit, and importing it would make
+# tk-core load its own pinned copy of shotgun_api3, which then shadows the
+# python-api checkout being documented. Methods added to python-api since that
+# pinned version would then fail to be imported by autosummary.
+if not is_python_api:
+    setup_toolkit()
 
 
 ################################
@@ -196,11 +205,8 @@ extensions = [
 # FIXME: Toolkit API does not rely on this plugin. Adding it generates errors.
 # The Python API on the other hand does and we don't have time to fix the doc before
 # the rebrand, so add the plugin for the Python API and call it a day.
-is_python_api = False
-for arg in sys.argv:
-    if "python-api" in arg:
-        extensions.append("sphinx.ext.autosectionlabel")
-        break
+if is_python_api:
+    extensions.append("sphinx.ext.autosectionlabel")
 
 
 # Add any paths that contain templates here, relative to this directory.
